@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ソニックレーシングCW 構成ツール v8</title>
+    <title>ソニックレーシングCW 構成ツール v9</title>
     <style>
         :root {
             --bg-color: #f4f4f9;
@@ -75,6 +75,9 @@
         .btn-reset { background-color: #f44336; }
         .btn-reg { background-color: #2e7d32; }
         .btn-save { background-color: #607d8b; }
+        /* ランダムボタンのデザイン */
+        .btn-random { background-color: #9c27b0; color: white; } 
+
         .btn-share { background-color: #fbc02d; color: #333; width: 100%; font-size: 1.1em; padding: 12px; margin-top:10px;}
         .btn-delete-memo { background-color: #ff9800; padding: 4px 8px; font-size: 0.8rem; }
         .btn-delete-custom { background-color: #d32f2f; padding: 4px 8px; font-size: 0.8rem; margin-left: 10px; }
@@ -98,7 +101,7 @@
 </head>
 <body>
 
-    <h1>Sonic Racing CW 構成ツール v8</h1>
+    <h1>Sonic Racing CW 構成ツール v9</h1>
 
     <div class="container">
         <div class="card">
@@ -115,6 +118,7 @@
             <div class="controls" style="margin-top: 20px;">
                 <select id="gadgetSelect"><option value="" disabled selected>ガジェットを選択してください</option></select>
                 <button class="btn-add" onclick="tryAddGadget()">追加</button>
+                <button class="btn-random" onclick="setRandomSetup()">🎲ランダム</button>
                 <button class="btn-reset" onclick="resetCurrent()">リセット</button>
             </div>
         </div>
@@ -152,7 +156,6 @@
             </div>
         </div>
     </div>
-
 <script>
     // ★全データ完備★
     const defaultGadgets = [
@@ -299,7 +302,7 @@
         }
         if(currentVal) select.value = currentVal;
         
-        renderCustomList(); // リストも更新
+        renderCustomList(); 
     }
 
     function tryAddGadget() {
@@ -317,7 +320,7 @@
         }
     }
 
-    // 自動整理ロジック
+    // スマート追加
     function smartAdd(newItem) {
         const allItems = [...currentSetup.upper, ...currentSetup.lower, newItem];
         if (allItems.reduce((s, i) => s + i.cost, 0) > ROW_CAPACITY * 2) return false;
@@ -334,6 +337,41 @@
         return true;
     }
 
+    // ★ランダム構成生成ロジック★
+    function setRandomSetup() {
+        if(!confirm("現在の構成を破棄して、ランダムな構成を生成しますか？")) return;
+
+        // 候補リスト (標準 + カスタム)
+        const pool = [...defaultGadgets, ...customGadgets];
+
+        // 1列分(最大コスト3)をランダムに埋める関数
+        const fillRow = () => {
+            let row = [];
+            let cost = 0;
+            let safety = 0; // 無限ループ防止
+            // コスト3になるまで、または100回試行するまで繰り返す
+            while(cost < ROW_CAPACITY && safety < 100) {
+                const g = pool[Math.floor(Math.random() * pool.length)];
+                if (cost + g.cost <= ROW_CAPACITY) {
+                    row.push({ ...g, uid: Date.now() + Math.random() });
+                    cost += g.cost;
+                }
+                safety++;
+            }
+            // 詰め込んだガジェットをコスト順などで並べると綺麗だが、今回は追加順(ランダム)のままで
+            return row;
+        };
+
+        currentSetup.upper = fillRow();
+        currentSetup.lower = fillRow();
+        
+        // もし自動整理(コスト順ソート)も適用したい場合は、ここで一度 smartAdd的な処理を通しても良い
+        // 今回は「ランダム感」を出すためにそのままでOK
+        
+        render();
+        showMessage("🎲 ランダム構成を生成しました！");
+    }
+
     function registerCustomGadget() {
         const name = document.getElementById('customName').value.trim();
         const cost = parseInt(document.getElementById('customCost').value);
@@ -344,7 +382,6 @@
         document.getElementById('customName').value = '';
     }
     
-    // カスタム削除機能
     function deleteCustomGadget(id) {
         if(!confirm("このオリジナルガジェットを削除しますか？\n(使用中の構成からは消えませんが、リストからなくなります)")) return;
         customGadgets = customGadgets.filter(g => g.id !== id);
@@ -363,18 +400,16 @@
             const div = document.createElement('div');
             div.className = 'custom-item';
             div.innerHTML = `<span>${g.name} <small>(コスト${g.cost})</small></span>`;
-            
             const btn = document.createElement('button');
             btn.textContent = '削除';
             btn.className = 'btn-delete-custom';
             btn.onclick = () => deleteCustomGadget(g.id);
-            
             div.appendChild(btn);
             container.appendChild(div);
         });
     }
     
-        // 描画関連
+    // 描画関連
     function render() {
         renderRow('visualUpper', 'costUpper', currentSetup.upper);
         renderRow('visualLower', 'costLower', currentSetup.lower);
