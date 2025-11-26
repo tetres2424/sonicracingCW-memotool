@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ソニックレーシングCW 構成ツール v7</title>
+    <style>
+        :root {
+            --bg-color: #f4f4f9;
+            --slot-empty: #e0e0e0;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1, h3, h4 { text-align: center; margin: 0.5em 0; }
+        h1 { color: #0055ff; }
+
+        .container { display: flex; flex-direction: column; gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        /* スロット表示 */
+        .row-container { margin-bottom: 15px; }
+        .row-label { display: flex; justify-content: space-between; font-size: 0.9rem; color: #666; margin-bottom: 5px; }
+        
+        .visual-row {
+            display: flex; gap: 4px; height: 60px; background: #eee; padding: 4px; border-radius: 4px;
+        }
+
+        .slot-block {
+            flex: 1; border-radius: 3px; display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; color: white; font-weight: bold; 
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            overflow: hidden; white-space: nowrap; cursor: pointer; position: relative;
+            transition: transform 0.1s;
+        }
+        .slot-block:hover { transform: scale(1.02); z-index: 1; }
+        .block-empty { background-color: var(--slot-empty); border: 1px dashed #bbb; color: #aaa; text-shadow: none; cursor: default; }
+
+        /* --- Wiki準拠の色分け設定 --- */
+        .type-ring-get { background-color: #fbc02d; color: #333; text-shadow: none; } /* 金 */
+        .type-ring-ability { background-color: #ff9800; } /* 橙 */
+        .type-tech-boost { background-color: #4caf50; } /* 緑 */
+        .type-charge-boost { background-color: #009688; } /* 青緑 */
+        .type-param-boost { background-color: #f44336; } /* 赤 */
+        .type-support { background-color: #03a9f4; } /* 水色 */
+        .type-item-control { background-color: #9c27b0; } /* 紫 */
+        .type-item-boost { background-color: #673ab7; } /* 深紫 */
+        .type-standard { background-color: #9e9e9e; } /* 灰 */
+        .type-machine { background-color: #3f51b5; } /* 青 */
+        .type-char { background-color: #e91e63; } /* 桃 */
+        .type-advanced { background-color: #212121; } /* 黒 */
+
+        /* オリジナル (静止画の虹色グラデーション) */
+        .type-custom {
+            background: linear-gradient(90deg, #ff0000, #ff7f00, #cccc00, #00b300, #0000ff, #4b0082, #9400d3);
+        }
+
+        /* 操作パネル */
+        .controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; align-items: center; }
+        select, input[type="text"] { padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; }
+        
+        button {
+            padding: 10px 16px; font-size: 14px; cursor: pointer; border: none; border-radius: 4px;
+            color: white; font-weight: bold; transition: opacity 0.2s;
+        }
+        button:hover { opacity: 0.8; }
+        .btn-add { background-color: #0055ff; }
+        .btn-reset { background-color: #f44336; }
+        .btn-reg { background-color: #2e7d32; }
+        .btn-save { background-color: #607d8b; }
+        .btn-share { background-color: #fbc02d; color: #333; width: 100%; font-size: 1.1em; padding: 12px; margin-top:10px;}
+        .btn-delete-memo { background-color: #ff9800; padding: 4px 8px; font-size: 0.8rem; }
+
+        .custom-area {
+            background: #e8f5e9; padding: 15px; border-radius: 6px; border: 1px solid #c8e6c9; margin-top: 10px;
+            display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+        }
+        #message { text-align: center; min-height: 24px; font-weight: bold; margin-top: 5px; color: #0055ff; }
+        .memo-list { margin-top: 10px; max-height: 300px; overflow-y: auto; }
+        .memo-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #eee; background: #fafafa; }
+        #shareArea { display: none; margin-top: 15px; background: #fffde7; padding: 15px; border: 1px solid #fbc02d; border-radius: 4px; }
+        #shareUrl { width: 100%; padding: 8px; }
+    </style>
+</head>
+<body>
+
+    <h1>Sonic Racing CW 構成ツール v7</h1>
+
+    <div class="container">
+        <div class="card">
+            <div class="row-container">
+                <div class="row-label"><span>上段 (Upper)</span><span>Cost: <span id="costUpper">0</span>/3</span></div>
+                <div class="visual-row" id="visualUpper"></div>
+            </div>
+            <div class="row-container">
+                <div class="row-label"><span>下段 (Lower)</span><span>Cost: <span id="costLower">0</span>/3</span></div>
+                <div class="visual-row" id="visualLower"></div>
+            </div>
+            <div id="message"></div>
+
+            <div class="controls" style="margin-top: 20px;">
+                <select id="gadgetSelect"><option value="" disabled selected>ガジェットを選択してください</option></select>
+                <button class="btn-add" onclick="tryAddGadget()">追加</button>
+                <button class="btn-reset" onclick="resetCurrent()">リセット</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4>オリジナルガジェット登録</h4>
+            <div class="custom-area">
+                <input type="text" id="customName" placeholder="ガジェット名" style="flex-grow: 1;">
+                <select id="customCost" style="width: 100px;">
+                    <option value="1">コスト 1</option>
+                    <option value="2">コスト 2</option>
+                    <option value="3">コスト 3</option>
+                </select>
+                <button class="btn-reg" onclick="registerCustomGadget()">追加</button>
+            </div>
+            <p style="font-size:0.8rem; color:#666; text-align:center;">※オリジナルは静止画の虹色になります</p>
+        </div>
+
+        <div class="card">
+            <h3>保存と共有</h3>
+            <div class="controls" style="justify-content: flex-start; margin-bottom: 10px;">
+                <input type="text" id="memoTitle" placeholder="構成名を入力" style="padding: 8px; flex-grow: 1;">
+                <button class="btn-save" onclick="saveMemo()">メモ保存</button>
+            </div>
+            <div id="memoList" class="memo-list"></div>
+            <button class="btn-share" onclick="generateShareUrl()">共有URLを発行</button>
+            <div id="shareArea">
+                <input type="text" id="shareUrl" readonly onclick="this.select()">
+            </div>
+        </div>
+    </div>
+
+<script>
+    // ★全データ完備★
+    const defaultGadgets = [
+        // 1. リングゲット (ring-get)
+        { id: "101", name: "スタート成功ボーナス", cost: 1, type: "ring-get" },
+        { id: "102", name: "エアトリックボーナス", cost: 1, type: "ring-get" },
+        { id: "103", name: "アイテム攻撃リングボーナス", cost: 1, type: "ring-get" },
+        { id: "104", name: "ランオフボーナス", cost: 1, type: "ring-get" },
+        { id: "105", name: "スリップストリームボーナス", cost: 1, type: "ring-get" },
+        { id: "106", name: "トラベルリングボーナス", cost: 1, type: "ring-get" },
+        { id: "107", name: "変形時アクションボーナス", cost: 1, type: "ring-get" },
+        { id: "108", name: "ジャストチャージボーナス", cost: 2, type: "ring-get" },
+        { id: "109", name: "ダッシュパネルボーナス", cost: 2, type: "ring-get" },
+        { id: "110", name: "ダッシュパネルボーナスミニ", cost: 1, type: "ring-get" },
+        { id: "111", name: "ダッシュパネルボーナスコンボ", cost: 2, type: "ring-get" },
+
+        // 2. リングアビリティ (ring-ability)
+        { id: "112", name: "リング上限130", cost: 1, type: "ring-ability" },
+        { id: "113", name: "リング上限200", cost: 2, type: "ring-ability" },
+        { id: "114", name: "リングスティールミニ", cost: 1, type: "ring-ability" },
+        { id: "115", name: "リングスティール", cost: 2, type: "ring-ability" },
+        { id: "116", name: "リングゲットダッシュミニ", cost: 1, type: "ring-ability" },
+        { id: "117", name: "リングゲットダッシュ", cost: 2, type: "ring-ability" },
+        { id: "118", name: "リング獲得範囲アップ", cost: 1, type: "ring-ability" },
+
+        // 3. テクニック強化 (tech-boost)
+        { id: "119", name: "ロングスリップストリーム", cost: 1, type: "tech-boost" },
+        { id: "120", name: "空中ドリフト自由度アップ", cost: 1, type: "tech-boost" },
+        { id: "121", name: "チャージジャンプ自由度アップ", cost: 1, type: "tech-boost" },
+        { id: "122", name: "高速エアトリック", cost: 1, type: "tech-boost" },
+        { id: "123", name: "超高速エアトリック", cost: 2, type: "tech-boost" },
+        { id: "124", name: "ぶつかりダッシュ", cost: 2, type: "tech-boost" },
+        { id: "125", name: "スピンドリフト", cost: 2, type: "tech-boost" },
+
+        // 4. チャージ強化 (charge-boost)
+        { id: "126", name: "ファーストファストチャージ", cost: 2, type: "charge-boost" },
+        { id: "127", name: "セカンドファストチャージ", cost: 1, type: "charge-boost" },
+        { id: "128", name: "サードファストチャージ", cost: 1, type: "charge-boost" },
+        { id: "129", name: "アルティメットチャージ", cost: 2, type: "charge-boost" },
+        { id: "130", name: "ジャストチャージダッシュ", cost: 2, type: "charge-boost" },
+        { id: "131", name: "テクニカルドリフト", cost: 2, type: "charge-boost" },
+        { id: "132", name: "フリクションドリフト", cost: 2, type: "charge-boost" },
+        { id: "133", name: "切りかえしクイックチャージ", cost: 3, type: "charge-boost" },
+
+        // 5. パラメータ強化 (param-boost)
+        { id: "134", name: "スターター", cost: 1, type: "param-boost" },
+        { id: "135", name: "スーパースターター", cost: 2, type: "param-boost" },
+        { id: "136", name: "スロースターター", cost: 2, type: "param-boost" },
+        { id: "137", name: "スーパースロースターター", cost: 3, type: "param-boost" },
+        { id: "138", name: "スピードチューン1", cost: 1, type: "param-boost" },
+        { id: "139", name: "スピードチューン2", cost: 1, type: "param-boost" },
+        { id: "140", name: "アクセルチューン1", cost: 1, type: "param-boost" },
+        { id: "141", name: "アクセルチューン2", cost: 1, type: "param-boost" },
+        { id: "142", name: "ハンドリングチューン1", cost: 1, type: "param-boost" },
+        { id: "143", name: "ハンドリングチューン2", cost: 1, type: "param-boost" },
+        { id: "144", name: "パワーチューン1", cost: 1, type: "param-boost" },
+        { id: "145", name: "パワーチューン2", cost: 1, type: "param-boost" },
+        { id: "146", name: "ダッシュチューン1", cost: 1, type: "param-boost" },
+        { id: "147", name: "ダッシュチューン2", cost: 1, type: "param-boost" },
+
+        // 6. サポート (support)
+        { id: "148", name: "グリップ力強化", cost: 1, type: "support" },
+        { id: "149", name: "落下時ブーストリカバー", cost: 1, type: "support" },
+        { id: "150", name: "壁リングガード", cost: 1, type: "support" },
+        { id: "151", name: "無敵スタート", cost: 2, type: "support" },
+        { id: "152", name: "アイテムロスト無効化", cost: 2, type: "support" },
+        { id: "153", name: "クイックリカバー", cost: 3, type: "support" },
+        { id: "154", name: "リングガード", cost: 2, type: "support" },
+
+        // 7. アイテムコントロール (item-control)
+        { id: "155", name: "アイテムストックトレード", cost: 3, type: "item-control" },
+        { id: "156", name: "アイテムストックプラス", cost: 2, type: "item-control" },
+        { id: "157", name: "設置アイテム確率アップ", cost: 1, type: "item-control" },
+        { id: "158", name: "攻撃アイテム確率アップ", cost: 1, type: "item-control" },
+        { id: "159", name: "防御アイテム確率アップ", cost: 2, type: "item-control" },
+        { id: "160", name: "加速アイテム確率アップ", cost: 3, type: "item-control" },
+        { id: "161", name: "ウィスプ確率アップ", cost: 1, type: "item-control" },
+
+        // 8. アイテム強化・追加 (item-boost)
+        { id: "162", name: "最初からブースト", cost: 1, type: "item-boost" },
+        { id: "163", name: "ダブルブースト追加", cost: 2, type: "item-boost" },
+        { id: "164", name: "最初からダークチャオ", cost: 1, type: "item-boost" },
+        { id: "165", name: "ワープリング追加", cost: 2, type: "item-boost" },
+        { id: "166", name: "ロケットパンチ巨大化", cost: 1, type: "item-boost" },
+        { id: "167", name: "トゲ鉄球巨大化", cost: 1, type: "item-boost" },
+        { id: "168", name: "ボムクイックチャージ", cost: 1, type: "item-boost" },
+        { id: "169", name: "最初からモンスタートラック", cost: 3, type: "item-boost" },
+
+        // 9. スタンダードキット (standard)
+        { id: "170", name: "ドリフトチャージ短縮キット", cost: 3, type: "standard" },
+        { id: "171", name: "アイテムたくさんキット", cost: 3, type: "standard" },
+        { id: "172", name: "ダメージサポートキット", cost: 3, type: "standard" },
+
+        // 10. マシンタイプキット (machine)
+        { id: "173", name: "スピードマシンキット", cost: 3, type: "machine" },
+        { id: "174", name: "アクセルマシンキット", cost: 3, type: "machine" },
+        { id: "175", name: "ハンドリングマシンキット", cost: 3, type: "machine" },
+        { id: "176", name: "パワーマシンキット", cost: 3, type: "machine" },
+        { id: "177", name: "ダッシュマシンキット", cost: 3, type: "machine" },
+
+        // 11. キャラタイプキット (char)
+        { id: "178", name: "ハンドリングキャラキット", cost: 3, type: "char" },
+        { id: "179", name: "パワーキャラキット", cost: 3, type: "char" },
+        { id: "180", name: "ダッシュキャラキット", cost: 3, type: "char" },
+
+        // 12. アドバンスドキット (advanced)
+        { id: "181", name: "後半追い上げキット", cost: 3, type: "advanced" },
+        { id: "182", name: "水上強化キット", cost: 3, type: "advanced" },
+    ];
+
+    // --- 状態管理 ---
+    const ROW_CAPACITY = 3;
+    let currentSetup = { upper: [], lower: [] };
+    let customGadgets = [];
+    let savedMemos = [];
+
+    window.onload = () => {
+        loadCustomGadgets();
+        loadMemosFromStorage();
+        updateSelectOptions();
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('data')) loadFromUrlV6(params.get('data'));
+        else render();
+    };
+
+    function updateSelectOptions() {
+        const select = document.getElementById('gadgetSelect');
+        const currentVal = select.value;
+        select.innerHTML = '<option value="" disabled selected>ガジェットを選択してください</option>';
+        
+        const createOpt = (g) => {
+            const opt = document.createElement('option');
+            opt.value = g.id;
+            opt.textContent = `${g.name} (コスト${g.cost})`;
+            select.appendChild(opt);
+        };
+        defaultGadgets.forEach(createOpt);
+
+        if(customGadgets.length > 0) {
+            const sep = document.createElement('option');
+            sep.disabled = true; sep.textContent = "--- オリジナル ---";
+            select.appendChild(sep);
+            customGadgets.forEach(createOpt);
+        }
+        if(currentVal) select.value = currentVal;
+    }
+
+    function tryAddGadget() {
+        const gId = document.getElementById('gadgetSelect').value;
+        if (!gId) return;
+        let gadget = defaultGadgets.find(g => g.id === gId) || customGadgets.find(g => g.id === gId);
+        if(!gadget) return;
+        const newItem = { ...gadget, uid: Date.now() + Math.random() };
+
+        if (smartAdd(newItem)) {
+            render();
+            showMessage(`「${gadget.name}」を追加しました`);
+        } else {
+            showMessage("コスト不足で入りません", true);
+        }
+    }
+
+    // 自動整理ロジック
+    function smartAdd(newItem) {
+        const allItems = [...currentSetup.upper, ...currentSetup.lower, newItem];
+        if (allItems.reduce((s, i) => s + i.cost, 0) > ROW_CAPACITY * 2) return false;
+        allItems.sort((a, b) => b.cost - a.cost); 
+        
+        let newUpper = [], newLower = [];
+        for (let item of allItems) {
+            if (getRowCost(newUpper) + item.cost <= ROW_CAPACITY) newUpper.push(item);
+            else if (getRowCost(newLower) + item.cost <= ROW_CAPACITY) newLower.push(item);
+            else return false;
+        }
+        currentSetup.upper = newUpper;
+        currentSetup.lower = newLower;
+        return true;
+    }
+
+    function registerCustomGadget() {
+        const name = document.getElementById('customName').value.trim();
+        const cost = parseInt(document.getElementById('customCost').value);
+        if(!name) return;
+        customGadgets.push({ id: "c_" + Date.now(), name, cost, type: "custom" });
+        localStorage.setItem('sonicCW_customs', JSON.stringify(customGadgets));
+        updateSelectOptions();
+        document.getElementById('customName').value = '';
+    }
+    
+    // 描画関連
+    function render() {
+        renderRow('visualUpper', 'costUpper', currentSetup.upper);
+        renderRow('visualLower', 'costLower', currentSetup.lower);
+    }
+    function renderRow(elId, costId, data) {
+        const el = document.getElementById(elId);
+        el.innerHTML = '';
+        data.forEach(item => {
+            const div = document.createElement('div');
+            div.className = `slot-block type-${item.type || 'custom'}`;
+            div.style.flexGrow = item.cost;
+            div.textContent = item.name;
+            div.onclick = () => { 
+                currentSetup.upper = currentSetup.upper.filter(i => i.uid !== item.uid);
+                currentSetup.lower = currentSetup.lower.filter(i => i.uid !== item.uid);
+                render();
+            };
+            el.appendChild(div);
+        });
+        const cost = getRowCost(data);
+        if(cost < ROW_CAPACITY) {
+            const empty = document.createElement('div');
+            empty.className = 'slot-block block-empty';
+            empty.style.flexGrow = (ROW_CAPACITY - cost);
+            empty.textContent = "Empty";
+            el.appendChild(empty);
+        }
+        document.getElementById(costId).textContent = cost;
+        document.getElementById(costId).style.color = (cost === ROW_CAPACITY) ? '#d32f2f' : 'inherit';
+    }
+
+    function getRowCost(arr) { return arr.reduce((s, i) => s + i.cost, 0); }
+    function loadCustomGadgets() { const j = localStorage.getItem('sonicCW_customs'); if(j) customGadgets = JSON.parse(j); }
+    function loadMemosFromStorage() { const j = localStorage.getItem('sonicCW_memos'); if(j) savedMemos = JSON.parse(j); renderMemoList(); }
+    
+    function saveMemo() {
+        const t = document.getElementById('memoTitle').value.trim() || `無題 ${new Date().toLocaleTimeString()}`;
+        savedMemos.unshift({ id: Date.now(), title: t, data: JSON.parse(JSON.stringify(currentSetup)) });
+        localStorage.setItem('sonicCW_memos', JSON.stringify(savedMemos));
+        renderMemoList();
+    }
+    function renderMemoList() {
+        const l = document.getElementById('memoList'); l.innerHTML = '';
+        savedMemos.forEach(m => {
+            const d = document.createElement('div'); d.className = 'memo-item';
+            d.innerHTML = `<span>${m.title}</span>`;
+            const bg = document.createElement('div'); bg.style.display='flex'; bg.style.gap='5px';
+            const btnL = document.createElement('button'); btnL.textContent='読込'; btnL.className='btn-save'; btnL.style.padding='4px 8px';
+            btnL.onclick=()=>{currentSetup=JSON.parse(JSON.stringify(m.data)); render();};
+            const btnD = document.createElement('button'); btnD.textContent='削除'; btnD.className='btn-delete-memo';
+            btnD.onclick=()=>{if(confirm('削除?')){savedMemos=savedMemos.filter(x=>x.id!==m.id);localStorage.setItem('sonicCW_memos',JSON.stringify(savedMemos));renderMemoList();}};
+            bg.appendChild(btnL); bg.appendChild(btnD); d.appendChild(bg); l.appendChild(d);
+        });
+    }
+    
+        // 共有URL
+    function generateShareUrl() {
+        const ser = i => `${encodeURIComponent(i.name)}:${i.cost}:${i.type||'custom'}`;
+        const data = currentSetup.upper.map(ser).join(',') + '|' + currentSetup.lower.map(ser).join(',');
+        const url = new URL(window.location.href); url.searchParams.set('data', data);
+        document.getElementById('shareArea').style.display = 'block';
+        document.getElementById('shareUrl').value = url.href;
+    }
+
+    function loadFromUrlV6(str) {
+        const [u, l] = str.split('|');
+        const des = s => {
+            if(!s) return [];
+            return s.split(',').map(x => {
+                const [n, c, t] = x.split(':');
+                return { id:"share"+Math.random(), name:decodeURIComponent(n), cost:parseInt(c), type:t, uid:Math.random() };
+            });
+        };
+        currentSetup.upper = des(u); currentSetup.lower = des(l);
+        render();
+    }
+
+    function showMessage(msg, err=false) { 
+        const e=document.getElementById('message'); 
+        e.textContent=msg; 
+        e.style.color=err?'red':'#0055ff'; 
+        setTimeout(()=>e.textContent='',3000); 
+    }
+
+    function resetCurrent() { 
+        if(confirm("リセットしますか？")){
+            currentSetup={upper:[],lower:[]}; 
+            render(); 
+            document.getElementById('shareArea').style.display='none';
+        }
+    }
+</script>
+</body>
+</html>
