@@ -382,7 +382,7 @@
         { id: "md11", type: "ダッシュ", name: "ディーヴァマッキナ", s: 14, a: 18, h: 22, p: 10, d: 26 }
     ];
 
-    // --- ガジェットデータ (★ステータス補正ロジック `calc` 追加版★) ---
+    // --- ガジェットデータ (ステータス補正ロジック付き) ---
     const defaultGadgets = [
         // 1. リングゲット
         { id: "0101", name: "スタート成功ボーナス", cost: 1, type: "ring-get", desc: "スタートダッシュ成功時にリングを30枚入手" },
@@ -425,8 +425,8 @@
         { id: "0407", name: "フリクションドリフト", cost: 2, type: "charge-boost", desc: "減速するがチャージ全段階高速化" },
         { id: "0408", name: "切りかえしクイックチャージ", cost: 3, type: "charge-boost", desc: "切り返し時にチャージ大幅増加" },
 
-        // 5. パラメータ強化 (★ステータス変化実装★)
-        { id: "0501", name: "スターター", cost: 1, type: "param-boost", desc: "LAP1のみ全ステータス+10" }, // 一時効果のため合計値には反映しない
+        // 5. パラメータ強化
+        { id: "0501", name: "スターター", cost: 1, type: "param-boost", desc: "LAP1のみ全ステータス+10" },
         { id: "0502", name: "スーパースターター", cost: 2, type: "param-boost", desc: "LAP1のみ全ステータス+20" },
         { id: "0503", name: "スロースターター", cost: 2, type: "param-boost", desc: "LAP3のみ全ステータス+10" },
         { id: "0504", name: "スーパースロースターター", cost: 3, type: "param-boost", desc: "LAP3のみ全ステータス+20" },
@@ -499,7 +499,7 @@
         { id: "0807", name: "ボムクイックチャージ", cost: 1, type: "item-boost", desc: "ボム強化＆出現率アップ" },
         { id: "0808", name: "最初からモンスタートラック", cost: 3, type: "item-boost", desc: "開始時モンスタートラック所持" },
 
-        // 9. スタンダードキット (★ステータス変化★)
+        // 9. スタンダードキット
         { 
             id: "0901", name: "ドリフトチャージ短縮キット", cost: 3, type: "standard", desc: "チャージ1-2段高速化 / H+3",
             calc: (s) => { s.h+=3; }
@@ -507,7 +507,7 @@
         { id: "0902", name: "アイテムたくさんキット", cost: 3, type: "standard", desc: "アイテム3枠＆LAPアイテム獲得" },
         { id: "0903", name: "ダメージサポートキット", cost: 3, type: "standard", desc: "無敵スタート＆落下リカバー" },
 
-        // 10. マシンタイプキット (★ステータス変化★)
+        // 10. マシンタイプキット
         { 
             id: "1001", name: "スピードマシンキット", cost: 3, type: "machine", desc: "スピードマシンならS+20/A-16",
             calc: (s, ctx) => { if(ctx.mT==="スピード"){ s.s+=20; s.a-=16; } }
@@ -529,7 +529,7 @@
             calc: (s, ctx) => { if(ctx.mT==="ダッシュ"){ s.d+=20; s.p-=16; } }
         },
 
-        // 11. キャラタイプキット (★ステータス変化★)
+        // 11. キャラタイプキット
         { 
             id: "1101", name: "ハンドリングキャラキット", cost: 3, type: "char", desc: "ハンドリングキャラならH+7/S-5",
             calc: (s, ctx) => { if(ctx.cT==="ハンドリング"){ s.h+=7; s.s-=5; } }
@@ -561,6 +561,14 @@
     let isSortedByUsage = false;
 
     window.onload = () => {
+        const checkIds = () => {
+            const all = [...defaultGadgets, ...customGadgets];
+            const ids = all.map(g => g.id);
+            const duplicates = ids.filter((item, index) => ids.indexOf(item) !== index);
+            if (duplicates.length > 0) console.error("Duplicate IDs found:", duplicates);
+        };
+        checkIds();
+
         loadCustomGadgets();
         loadMemosFromStorage();
         initCharSelect();
@@ -616,7 +624,7 @@
         updateCharMachineInfo();
     }
 
-    // --- ★総合ステータス計算 (補正ロジック追加版)★ ---
+    // --- ★総合ステータス計算 (補正・制限・警告追加版)★ ---
     function updateCharMachineInfo() {
         const cId = document.getElementById('charSelect').value;
         const mType = document.getElementById('machineTypeSelect').value;
@@ -679,7 +687,7 @@
             mSpecDiv.textContent = "";
         }
 
-        // 3. 最終合計 (キャラ + マシン + ガジェット補正)
+        // 3. 最終合計 (補正・制限付き)
         const tDiv = document.getElementById('totalStats');
         if(char) {
             // ベース値
@@ -692,21 +700,34 @@
             };
 
             // ガジェット補正計算
-            // 選択中のガジェットを全て集める
             const activeGadgets = [...currentSetup.upper, ...currentSetup.lower];
-            const context = { mT: mType, cT: char.type }; // 計算用コンテキスト
+            const context = { mT: mType, cT: char.type };
 
             activeGadgets.forEach(g => {
                 if (g.calc) {
-                    g.calc(finalS, context); // 補正関数を実行
+                    g.calc(finalS, context);
                 }
             });
+
+            // ★上限下限チェック & 警告★
+            let warnings = [];
+            const clamp = (val, name) => {
+                if(val > 100) { warnings.push(`⚠️ ${name}が100を超えています (${val})`); return 100; }
+                if(val < 0) { warnings.push(`⚠️ ${name}が0を下回っています (${val})`); return 0; }
+                return val;
+            };
+
+            finalS.s = clamp(finalS.s, "スピード");
+            finalS.a = clamp(finalS.a, "アクセル");
+            finalS.h = clamp(finalS.h, "ハンドリング");
+            finalS.p = clamp(finalS.p, "パワー");
+            finalS.d = clamp(finalS.d, "ダッシュ");
 
             const totalLabelStyle = "font-size:0.75rem; color:#666; display:block;";
             const totalValStyle = "font-size:1.1rem; font-weight:bold; color:#0055ff; display:block;";
             const boxStyle = "display:inline-block; width:18%; text-align:center;";
 
-            tDiv.innerHTML = `
+            let html = `
                 <div style="display:flex; justify-content:space-between;">
                     <div style="${boxStyle}"><span style="${totalLabelStyle}">スピード</span><span style="${totalValStyle}">${finalS.s}</span></div>
                     <div style="${boxStyle}"><span style="${totalLabelStyle}">アクセル</span><span style="${totalValStyle}">${finalS.a}</span></div>
@@ -714,6 +735,12 @@
                     <div style="${boxStyle}"><span style="${totalLabelStyle}">パワー</span><span style="${totalValStyle}">${finalS.p}</span></div>
                     <div style="${boxStyle}"><span style="${totalLabelStyle}">ダッシュ</span><span style="${totalValStyle}">${finalS.d}</span></div>
                 </div>`;
+            
+            if(warnings.length > 0) {
+                html += `<div style="margin-top:8px; color:#d32f2f; font-size:0.8rem; font-weight:bold;">${warnings.join("<br>")}</div>`;
+            }
+            tDiv.innerHTML = html;
+
         } else {
             tDiv.innerHTML = `<div style="color:#aaa; text-align:center;">(キャラクターを選択すると合計値が表示されます)</div>`;
         }
@@ -784,7 +811,7 @@
             showMessage("⚠️ 同じガジェットは2つセットできません", true);
             return;
         }
-        const newItem = { ...gadget, uid: Date.now() + Math.random(), calc: gadget.calc }; // calc関数も引き継ぐ
+        const newItem = { ...gadget, uid: Date.now() + Math.random(), calc: gadget.calc };
         if (getRowCost(currentSetup.upper) + newItem.cost <= ROW_CAPACITY) {
             currentSetup.upper.push(newItem); render();
         } else if (getRowCost(currentSetup.lower) + newItem.cost <= ROW_CAPACITY) {
@@ -828,35 +855,28 @@
         showMessage("🎲 ランダム構成を生成しました！");
     }
 
-    // --- ★AI生成機能の強化版（キャラ・マシン自動選出）★ ---
     function setAiOriginalSetup() {
         if(!confirm("現在の構成を破棄して、AIが考案した戦術を展開しますか？")) return;
 
-        // 1. キャラ・マシンが未選択ならランダムに決める
         let charId = document.getElementById('charSelect').value;
         let machType = document.getElementById('machineTypeSelect').value;
 
-        // キャラ自動選出
         if (!charId) {
             const randChar = characterData[Math.floor(Math.random() * characterData.length)];
             charId = randChar.id;
-            // UI反映
             document.getElementById('charSelect').value = charId;
         }
 
-        // マシン自動選出
         if (!machType) {
             const types = ["スピード", "アクセル", "ハンドリング", "パワー", "ダッシュ"];
             machType = types[Math.floor(Math.random() * types.length)];
             document.getElementById('machineTypeSelect').value = machType;
-            changeMachineType(); // パーツリスト生成
+            changeMachineType();
             
-            // パーツもランダムにセット
             const p1Opts = document.getElementById('part1Select').options;
             const p2Opts = document.getElementById('part2Select').options;
             const p3Opts = document.getElementById('part3Select').options;
             
-            // 1番目(インデックス1)以降からランダム
             if(p1Opts.length > 1) document.getElementById('part1Select').selectedIndex = Math.floor(Math.random() * (p1Opts.length - 1)) + 1;
             if(p2Opts.length > 1) document.getElementById('part2Select').selectedIndex = Math.floor(Math.random() * (p2Opts.length - 1)) + 1;
             if(machType !== "ダッシュ" && p3Opts.length > 1) {
@@ -864,10 +884,8 @@
             }
         }
 
-        // 情報更新
         updateCharMachineInfo();
         
-        // 2. 更新された情報でAIロジック実行
         const charInfo = characterData.find(c => c.id === charId);
         const context = {
             charType: charInfo ? charInfo.type : null,
@@ -976,10 +994,15 @@
     }
 
     function render() {
+        if(currentSetup.charId) document.getElementById('charSelect').value = currentSetup.charId;
+        if(currentSetup.machineType) document.getElementById('machineTypeSelect').value = currentSetup.machineType || ""; 
+        
         updateCharMachineInfo();
+
         renderRow('visualUpper', 'costUpper', currentSetup.upper);
         renderRow('visualLower', 'costLower', currentSetup.lower);
     }
+
     function renderRow(elId, costId, data) {
         const el = document.getElementById(elId); el.innerHTML = '';
         data.forEach(item => {
@@ -1017,6 +1040,8 @@
         localStorage.setItem('sonicCW_memos', JSON.stringify(savedMemos));
         renderMemoList();
     }
+
+    // ★修正: メモ読み込み時のパーツ復元ロジックを修正★
     function renderMemoList() {
         const l = document.getElementById('memoList'); l.innerHTML = '';
         savedMemos.forEach(m => {
@@ -1024,28 +1049,41 @@
             d.innerHTML = `<span>${m.title}</span>`;
             const bg = document.createElement('div'); bg.style.display='flex'; bg.style.gap='5px';
             const btnL = document.createElement('button'); btnL.textContent='読込'; btnL.className='btn-save'; btnL.style.padding='4px 8px';
+            
             btnL.onclick=()=>{
-                currentSetup = JSON.parse(JSON.stringify(m.data)); 
-                // 復元時のデータ修復: calc関数はJSON保存で消えるため、IDから再取得して紐付ける
+                // 1. 保存データを一時的に変数に退避
+                const savedData = JSON.parse(JSON.stringify(m.data)); 
+                
+                // 2. まずキャラとマシンタイプをUIにセット
+                document.getElementById('charSelect').value = savedData.charId || "";
+                
+                if(savedData.machineType) {
+                    document.getElementById('machineTypeSelect').value = savedData.machineType;
+                    
+                    // 3. パーツリストを生成 (ここでDOMのパーツ値はリセットされる)
+                    changeMachineType();
+                    
+                    // 4. 退避しておいたデータからパーツ値を復元
+                    if(savedData.part1) document.getElementById('part1Select').value = savedData.part1;
+                    if(savedData.part2) document.getElementById('part2Select').value = savedData.part2;
+                    if(savedData.part3) document.getElementById('part3Select').value = savedData.part3;
+                }
+                
+                // 5. 計算関数を呼び出して currentSetup を更新
+                updateCharMachineInfo();
+
+                // 6. ガジェット計算ロジックの復元
                 const restoreCalc = (list) => list.map(item => {
                     const orig = defaultGadgets.find(d => d.id === item.id);
                     return orig ? { ...item, calc: orig.calc } : item;
                 });
-                currentSetup.upper = restoreCalc(currentSetup.upper);
-                currentSetup.lower = restoreCalc(currentSetup.lower);
+                currentSetup.upper = restoreCalc(savedData.upper);
+                currentSetup.lower = restoreCalc(savedData.lower);
 
-                document.getElementById('charSelect').value = currentSetup.charId || "";
-                if(currentSetup.machineType) {
-                    document.getElementById('machineTypeSelect').value = currentSetup.machineType;
-                    changeMachineType();
-                    document.getElementById('part1Select').value = currentSetup.part1 || "";
-                    document.getElementById('part2Select').value = currentSetup.part2 || "";
-                    document.getElementById('part3Select').value = currentSetup.part3 || "";
-                }
-                updateCharMachineInfo();
                 render();
                 showMessage(`「${m.title}」を読み込みました`);
             };
+
             const btnD = document.createElement('button'); btnD.textContent='削除'; btnD.className='btn-delete-memo';
             btnD.onclick=()=>{if(confirm('削除?')){savedMemos=savedMemos.filter(x=>x.id!==m.id);localStorage.setItem('sonicCW_memos',JSON.stringify(savedMemos));renderMemoList();}};
             bg.appendChild(btnL); bg.appendChild(btnD); d.appendChild(bg); l.appendChild(d);
@@ -1088,7 +1126,6 @@
 
     function loadFromUrlV6(str) {
         const [u, l] = str.split('|');
-        // 復元時にcalc関数を再紐付け
         const des = s => {
             if(!s) return [];
             return s.split(',').map(x => {
