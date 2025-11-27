@@ -322,8 +322,9 @@
     ];
 
     // --- マシンパーツデータ (S,A,H,P,D) ---
+   // --- マシンパーツデータ (S,A,H,P,D) 全種コンプリート・整列済み ---
     const machineParts = [
-        // ▼スピードタイプ
+        // 1. スピードタイプ (パーツ3つ = 3倍)
         { id: "ms01", type: "スピード", name: "スピードスターライトニング", s: 20, a: 5, h: 13, p: 15, d: 7 },
         { id: "ms02", type: "スピード", name: "ダークリーパー", s: 20, a: 6, h: 12, p: 14, d: 8 },
         { id: "ms03", type: "スピード", name: "ミラージュブレイド", s: 19, a: 7, h: 11, p: 14, d: 9 },
@@ -335,10 +336,56 @@
         { id: "ms09", type: "スピード", name: "バスターM", s: 19, a: 5, h: 13, p: 16, d: 7 },
         { id: "ms10", type: "スピード", name: "アルセーヌウィング", s: 17, a: 6, h: 13, p: 15, d: 9 },
 
-        // ▼ダッシュタイプ (パーツ2つ＝合計値は2倍になる)
-        { id: "md01", type: "ダッシュ", name: "タイプ-J イオタ", s: 13, a: 16, h: 21, p: 10, d: 30 }
-    ];
+        // 2. アクセルタイプ (パーツ3つ = 3倍)
+        { id: "ma01", type: "アクセル", name: "ホワールウィンド", s: 15, a: 20, h: 7, p: 13, d: 5 },
+        { id: "ma02", type: "アクセル", name: "ジャンブルレイジ", s: 14, a: 20, h: 8, p: 12, d: 6 },
+        { id: "ma03", type: "アクセル", name: "ハイパースコーピオン", s: 14, a: 19, h: 9, p: 11, d: 7 },
+        { id: "ma04", type: "アクセル", name: "サイバースピアー", s: 15, a: 18, h: 9, p: 12, d: 6 },
+        { id: "ma05", type: "アクセル", name: "ポーンキャリバー", s: 13, a: 20, h: 9, p: 11, d: 7 },
+        { id: "ma06", type: "アクセル", name: "ロングノーズビー", s: 16, a: 19, h: 7, p: 13, d: 5 },
+        { id: "ma07", type: "アクセル", name: "ラジカルフォース", s: 16, a: 18, h: 8, p: 13, d: 5 },
+        { id: "ma08", type: "アクセル", name: "レーシングバギー", s: 14, a: 18, h: 10, p: 11, d: 7 },
+        { id: "ma09", type: "アクセル", name: "ギガントライナー", s: 15, a: 19, h: 8, p: 12, d: 6 },
 
+        // 3. ハンドリングタイプ (パーツ3つ = 3倍)
+        { id: "mh01", type: "ハンドリング", name: "ピンクカブリオレ", s: 5, a: 15, h: 20, p: 7, d: 13 },
+        { id: "mh02", type: "ハンドリング", name: "リップスパイダー", s: 6, a: 14, h: 20, p: 8, d: 12 },
+        { id: "mh03", type: "ハンドリング", name: "ヴィクトリアキャリッジ", s: 7, a: 14, h: 19, p: 9, d: 11 },
+        { id: "mh04", type: "ハンドリング", name: "モトビートル", s: 7, a: 14, h: 18, p: 10, d: 11 },
+        { id: "mh05", type: "ハンドリング", name: "エンシェントスローン", s: 5, a: 16, h: 17, p: 8, d: 14 },
+        { id: "mh06", type: "ハンドリング", name: "リトルレディー", s: 5, a: 16, h: 19, p: 7, d: 13 },
+        { id: "mh07", type: "ハンドリング", name: "ホットハッチ", s: 6, a: 15, h: 19, p: 8, d: 12 },
+        { id: "mh08", type: "ハンドリング", name: "フォシルロック", s: 5, a: 16, h: 18, p: 8, d: 13 },
+        { id: "mh09", type: "ハンドリング", name: "ネオサイクロン", s: 7, a: 13, h: 20, p: 9, d: 11 },
+        { id: "mh10", type: "ハンドリング", name: "マインカート", s: 7, a: 14, h: 16, p: 10, d: 13 },
+        { id: "mh11", type: "ハンドリング", name: "パティワゴン", s: 7, a: 14, h: 17, p: 10, d: 12 },
+
+        // 4. パワータイプ (パーツ3つ = 3倍)
+        { id: "mp01", type: "パワー", name: "ランドスマッシャー", s: 13, a: 7, h: 5, p: 20, d: 15 },
+        { id: "mp02", type: "パワー", name: "ロードドラグーン", s: 12, a: 8, h: 6, p: 20, d: 14 },
+        { id: "mp03", type: "パワー", name: "ナイトタンク", s: 12, a: 9, h: 6, p: 18, d: 15 },
+        { id: "mp04", type: "パワー", name: "ファングローダー", s: 11, a: 10, h: 7, p: 18, d: 14 },
+        { id: "mp05", type: "パワー", name: "ビートゲーター", s: 11, a: 9, h: 7, p: 20, d: 13 },
+        { id: "mp06", type: "パワー", name: "フロッグクルーザー", s: 13, a: 7, h: 5, p: 19, d: 16 },
+        { id: "mp07", type: "パワー", name: "クロスドーザー", s: 12, a: 8, h: 6, p: 19, d: 15 },
+        { id: "mp08", type: "パワー", name: "トレイルランナー", s: 14, a: 8, h: 5, p: 17, d: 16 },
+        { id: "mp09", type: "パワー", name: "エッグドリルスターMK2", s: 11, a: 9, h: 7, p: 19, d: 14 },
+        { id: "mp10", type: "パワー", name: "ビーストスパイク", s: 12, a: 11, h: 8, p: 16, d: 13 },
+        { id: "mp11", type: "パワー", name: "ドラゴンブレイブ", s: 13, a: 9, h: 6, p: 17, d: 15 },
+
+        // 5. ダッシュタイプ (パーツ2つ = 2倍 / タイヤなし)
+        { id: "md01", type: "ダッシュ", name: "タイプ-J イオタ", s: 13, a: 16, h: 21, p: 10, d: 30 },
+        { id: "md02", type: "ダッシュ", name: "タイプ-S ストリーム", s: 12, a: 17, h: 22, p: 9, d: 30 },
+        { id: "md03", type: "ダッシュ", name: "サクラボード", s: 12, a: 18, h: 22, p: 9, d: 29 },
+        { id: "md04", type: "ダッシュ", name: "トリプルファン", s: 14, a: 17, h: 21, p: 10, d: 28 },
+        { id: "md05", type: "ダッシュ", name: "ポップロード", s: 13, a: 18, h: 22, p: 9, d: 28 },
+        { id: "md06", type: "ダッシュ", name: "タイプ-W ウィンディ", s: 11, a: 18, h: 23, p: 8, d: 30 },
+        { id: "md07", type: "ダッシュ", name: "ウィスポンブースター", s: 13, a: 17, h: 21, p: 10, d: 29 },
+        { id: "md08", type: "ダッシュ", name: "クワッドコプター", s: 11, a: 19, h: 23, p: 8, d: 29 },
+        { id: "md09", type: "ダッシュ", name: "ジョーズロケット", s: 12, a: 19, h: 23, p: 8, d: 28 },
+        { id: "md10", type: "ダッシュ", name: "ブルースター", s: 14, a: 17, h: 22, p: 10, d: 27 },
+        { id: "md11", type: "ダッシュ", name: "ディーヴァマッキナ", s: 14, a: 18, h: 22, p: 10, d: 26 }
+    ];
     // --- ガジェットデータ (ID0101形式・詳細説明付き) ---
     const defaultGadgets = [
         // 1. リングゲット (0101～)
@@ -553,7 +600,7 @@
         updateCharMachineInfo();
     }
 
-    // --- 総合ステータス計算・表示 ---
+    // 総合ステータス計算・表示（アイコン廃止・日本語ラベル版）
     function updateCharMachineInfo() {
         const cId = document.getElementById('charSelect').value;
         const mType = document.getElementById('machineTypeSelect').value;
@@ -561,7 +608,6 @@
         const p2Id = document.getElementById('part2Select').value;
         const p3Id = document.getElementById('part3Select').value;
 
-        // 状態保存
         currentSetup.charId = cId;
         currentSetup.machineType = mType;
         currentSetup.part1 = p1Id;
@@ -573,29 +619,48 @@
         const p2 = machineParts.find(p => p.id === p2Id);
         const p3 = machineParts.find(p => p.id === p3Id);
 
+        // 表示用のスタイル定義（共通）
+        const labelStyle = "display:inline-block; width:60px; font-weight:bold; color:#555;";
+        const valStyle = "display:inline-block; width:30px; text-align:right; margin-right:10px;";
+
         // 1. キャラスペック
         const cSpecDiv = document.getElementById('charSpec');
         if(char) {
-            cSpecDiv.innerHTML = `[${char.type}] 🚀${char.speed} ⚡${char.accel} 🌀${char.handling} 💪${char.power} ⏩${char.dash}`;
+            cSpecDiv.innerHTML = `
+                <div style="margin-bottom:2px;"><strong>${char.name}</strong> [${char.type}]</div>
+                <div style="font-size:0.8rem; color:#333; line-height:1.4;">
+                    <span style="${labelStyle}">スピード</span><span style="${valStyle}">${char.speed}</span>
+                    <span style="${labelStyle}">アクセル</span><span style="${valStyle}">${char.accel}</span>
+                    <span style="${labelStyle}">ハンドリング</span><span style="${valStyle}">${char.handling}</span><br>
+                    <span style="${labelStyle}">パワー</span><span style="${valStyle}">${char.power}</span>
+                    <span style="${labelStyle}">ダッシュ</span><span style="${valStyle}">${char.dash}</span>
+                </div>`;
         } else {
             cSpecDiv.textContent = "";
         }
 
-        // 2. マシン合計
+        // 2. マシン合計計算
         let mStats = { s:0, a:0, h:0, p:0, d:0 };
         let partsList = [];
         if(p1) partsList.push(p1);
         if(p2) partsList.push(p2);
-        // ダッシュタイプ以外なら3つ目も加算
         if(mType !== "ダッシュ" && p3) partsList.push(p3);
 
         partsList.forEach(part => {
             mStats.s += part.s; mStats.a += part.a; mStats.h += part.h; mStats.p += part.p; mStats.d += part.d;
         });
 
+        // マシンスペック表示
         const mSpecDiv = document.getElementById('machineSpec');
         if(partsList.length > 0) {
-            mSpecDiv.innerHTML = `合計: 🚀${mStats.s} ⚡${mStats.a} 🌀${mStats.h} 💪${mStats.p} ⏩${mStats.d}`;
+            mSpecDiv.innerHTML = `
+                <div style="font-size:0.8rem; color:#d32f2f; line-height:1.4;">
+                    <span style="${labelStyle}">スピード</span><span style="${valStyle}">+${mStats.s}</span>
+                    <span style="${labelStyle}">アクセル</span><span style="${valStyle}">+${mStats.a}</span>
+                    <span style="${labelStyle}">ハンドリング</span><span style="${valStyle}">+${mStats.h}</span><br>
+                    <span style="${labelStyle}">パワー</span><span style="${valStyle}">+${mStats.p}</span>
+                    <span style="${labelStyle}">ダッシュ</span><span style="${valStyle}">+${mStats.d}</span>
+                </div>`;
         } else {
             mSpecDiv.textContent = "";
         }
@@ -608,9 +673,22 @@
             const totalH = char.handling + mStats.h;
             const totalP = char.power + mStats.p;
             const totalD = char.dash + mStats.d;
-            tDiv.innerHTML = `🚀${totalS} &nbsp; ⚡${totalA} &nbsp; 🌀${totalH} &nbsp; 💪${totalP} &nbsp; ⏩${totalD}`;
+            
+            // 最終ステータスは少し大きく表示
+            const totalLabelStyle = "font-size:0.75rem; color:#666; display:block;";
+            const totalValStyle = "font-size:1.1rem; font-weight:bold; color:#0055ff; display:block;";
+            const boxStyle = "display:inline-block; width:18%; text-align:center;";
+
+            tDiv.innerHTML = `
+                <div style="display:flex; justify-content:space-between;">
+                    <div style="${boxStyle}"><span style="${totalLabelStyle}">スピード</span><span style="${totalValStyle}">${totalS}</span></div>
+                    <div style="${boxStyle}"><span style="${totalLabelStyle}">アクセル</span><span style="${totalValStyle}">${totalA}</span></div>
+                    <div style="${boxStyle}"><span style="${totalLabelStyle}">ハンドリング</span><span style="${totalValStyle}">${totalH}</span></div>
+                    <div style="${boxStyle}"><span style="${totalLabelStyle}">パワー</span><span style="${totalValStyle}">${totalP}</span></div>
+                    <div style="${boxStyle}"><span style="${totalLabelStyle}">ダッシュ</span><span style="${totalValStyle}">${totalD}</span></div>
+                </div>`;
         } else {
-            tDiv.innerHTML = "🚀 - &nbsp; ⚡ - &nbsp; 🌀 - &nbsp; 💪 - &nbsp; ⏩ -";
+            tDiv.innerHTML = `<div style="color:#aaa; text-align:center;">(キャラクターを選択すると合計値が表示されます)</div>`;
         }
     }
 
