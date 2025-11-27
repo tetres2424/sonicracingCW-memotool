@@ -398,8 +398,8 @@
         { id: "0101", name: "スタート成功ボーナス", cost: 1, type: "ring-get", desc: "スタートダッシュ成功時にリングを30枚入手" },
         { id: "0102", name: "エアトリックボーナス", cost: 1, type: "ring-get", desc: "エアトリック1回につきリングを2枚入手" },
         { id: "0103", name: "アイテム攻撃リングボーナス", cost: 1, type: "ring-get", desc: "アイテム攻撃ヒット時にリング10枚獲得" },
-        { id: "0104", name: "ランオフボーナス", cost: 1, type: "ring-get", desc: "減速エリア走行中にリングを獲得し続ける" },
-        { id: "0105", name: "スリップストリームボーナス", cost: 1, type: "ring-get", desc: "スリップストリーム中にリングを獲得し続ける" },
+        { id: "0104", name: "ランオフボーナス", cost: 1, type: "ring-get", desc: "加速アイテムで減速エリア走行中にリングを5枚ずつ獲得し続ける" },
+        { id: "0105", name: "スリップストリームボーナス", cost: 1, type: "ring-get", desc: "スリップストリーム中にリングを0.5秒で1枚ずつ獲得し続ける" },
         { id: "0106", name: "トラベルリングボーナス", cost: 1, type: "ring-get", desc: "トラベルリング通過時にリング15枚獲得" },
         { id: "0107", name: "変形時アクションボーナス", cost: 1, type: "ring-get", desc: "水上・空中チャージアクションでリング4枚獲得" },
         { id: "0108", name: "ジャストチャージボーナス", cost: 2, type: "ring-get", desc: "ジャストチャージダッシュでリング獲得" },
@@ -412,8 +412,8 @@
         { id: "0202", name: "リング上限200", cost: 2, type: "ring-ability", desc: "所持上限200枚" },
         { id: "0203", name: "リングスティールミニ", cost: 1, type: "ring-ability", desc: "接触時リング2枚奪取" },
         { id: "0204", name: "リングスティール", cost: 2, type: "ring-ability", desc: "接触時リング5枚奪取" },
-        { id: "0205", name: "リングゲットダッシュミニ", cost: 1, type: "ring-ability", desc: "リング獲得時少し加速" },
-        { id: "0206", name: "リングゲットダッシュ", cost: 2, type: "ring-ability", desc: "リング獲得時大きく加速" },
+        { id: "0205", name: "リングゲットダッシュミニ", cost: 1, type: "ring-ability", desc: "リング獲得時約7km/h加速" },
+        { id: "0206", name: "リングゲットダッシュ", cost: 2, type: "ring-ability", desc: "リング獲得時約14km/h加速" },
         { id: "0207", name: "リング獲得範囲アップ", cost: 1, type: "ring-ability", desc: "リング吸い寄せ範囲拡大" },
 
         // 3. テクニック強化
@@ -423,7 +423,7 @@
         { id: "0304", name: "高速エアトリック", cost: 1, type: "tech-boost", desc: "エアトリック所要時間短縮" },
         { id: "0305", name: "超高速エアトリック", cost: 2, type: "tech-boost", desc: "エアトリック所要時間大幅短縮" },
         { id: "0306", name: "ぶつかりダッシュ", cost: 2, type: "tech-boost", desc: "接触時にダッシュ" },
-        { id: "0307", name: "スピンドリフト", cost: 2, type: "tech-boost", desc: "ドリフト中回転して攻撃判定を持つ" },
+        { id: "0307", name: "スピンドリフト", cost: 2, type: "tech-boost", desc: "ドリフト中回転して触れた相手を弾き飛ばす" },
 
         // 4. チャージ強化
         { id: "0401", name: "ファーストファストチャージ", cost: 2, type: "charge-boost", desc: "チャージ1段階目高速化" },
@@ -485,19 +485,19 @@
         { id: "0601", name: "グリップ力強化", cost: 1, type: "support", desc: "滑る路面でグリップ力アップ" },
         { id: "0602", name: "落下時ブーストリカバー", cost: 1, type: "support", desc: "落下復帰時にブースト獲得" },
         { id: "0603", name: "壁リングガード", cost: 1, type: "support", desc: "壁衝突時のリング減少を防ぐ" },
-        { id: "0604", name: "無敵スタート", cost: 2, type: "support", desc: "スタート直後無敵" },
+        { id: "0604", name: "無敵スタート", cost: 2, type: "support", desc: "スタート直後約40秒無敵" },
         { id: "0605", name: "アイテムロスト無効化", cost: 2, type: "support", desc: "被弾時のアイテムロストを防ぐ" },
         { id: "0606", name: "クイックリカバー", cost: 3, type: "support", desc: "復帰速度アップ" },
         { id: "0607", name: "リングガード", cost: 2, type: "support", desc: "被弾時のリング減少を半減" },
 
         // 7. アイテムコントロール
         { id: "0701", name: "アイテムストックトレード", cost: 3, type: "item-control", desc: "アイテム順序入れ替え可能" },
-        { id: "0702", name: "アイテムストックプラス", cost: 2, type: "item-control", desc: "アイテム所持数+1" },
-        { id: "0703", name: "設置アイテム確率アップ", cost: 1, type: "item-control", desc: "設置アイテム出現率アップ" },
-        { id: "0704", name: "攻撃アイテム確率アップ", cost: 1, type: "item-control", desc: "攻撃アイテム出現率アップ" },
-        { id: "0705", name: "防御アイテム確率アップ", cost: 2, type: "item-control", desc: "防御アイテム出現率アップ" },
-        { id: "0706", name: "加速アイテム確率アップ", cost: 3, type: "item-control", desc: "加速アイテム出現率アップ" },
-        { id: "0707", name: "ウィスプ確率アップ", cost: 1, type: "item-control", desc: "特定ウィスプ出現率アップ" },
+        { id: "0702", name: "アイテムストックプラス", cost: 2, type: "item-control", desc: "アイテム所持可能数+1" },
+        { id: "0703", name: "設置アイテム確率アップ", cost: 1, type: "item-control", desc: "設置アイテムが出やすくなる" },
+        { id: "0704", name: "攻撃アイテム確率アップ", cost: 1, type: "item-control", desc: "攻撃アイテムが出やすくなる" },
+        { id: "0705", name: "防御アイテム確率アップ", cost: 2, type: "item-control", desc: "防御アイテムが出やすくなる" },
+        { id: "0706", name: "加速アイテム確率アップ", cost: 3, type: "item-control", desc: "加速アイテムが出やすくなる" },
+        { id: "0707", name: "ウィスプ確率アップ", cost: 1, type: "item-control", desc: "ブースト・レーザー・ドリル・ボム・ヴォイドの5種が出現率アップ" },
 
         // 8. アイテム強化・追加
         { id: "0801", name: "最初からブースト", cost: 1, type: "item-boost", desc: "開始時ブースト所持" },
@@ -514,48 +514,48 @@
             id: "0901", name: "ドリフトチャージ短縮キット", cost: 3, type: "standard", desc: "チャージ1-2段高速化 / H+3",
             calc: (s) => { s.h+=3; }
         },
-        { id: "0902", name: "アイテムたくさんキット", cost: 3, type: "standard", desc: "アイテム3枠＆LAPアイテム獲得" },
+        { id: "0902", name: "アイテムたくさんキット", cost: 3, type: "standard", desc: "アイテム3枠＆LAP2,3にアイテム獲得" },
         { id: "0903", name: "ダメージサポートキット", cost: 3, type: "standard", desc: "無敵スタート＆落下リカバー" },
 
         // 10. マシンタイプキット
         { 
-            id: "1001", name: "スピードマシンキット", cost: 3, type: "machine", desc: "スピードマシンならS+20/A-16",
+            id: "1001", name: "スピードマシンキット", cost: 3, type: "machine", desc: "リング獲得範囲アップ+リングゲットダッシュミニを内包 スピードマシンならS+20/A-16",
             calc: (s, ctx) => { if(ctx.mT==="スピード"){ s.s+=20; s.a-=16; } }
         },
         { 
-            id: "1002", name: "アクセルマシンキット", cost: 3, type: "machine", desc: "アクセルマシンならA+20/D-16",
+            id: "1002", name: "アクセルマシンキット", cost: 3, type: "machine", desc: "クイックリカバー（弱）を内包 アクセルマシンならA+20/D-16",
             calc: (s, ctx) => { if(ctx.mT==="アクセル"){ s.a+=20; s.d-=16; } }
         },
         { 
-            id: "1003", name: "ハンドリングマシンキット", cost: 3, type: "machine", desc: "ハンドリングマシンならH+20/S-16",
+            id: "1003", name: "ハンドリングマシンキット", cost: 3, type: "machine", desc: "アルティメットチャージを内包 ハンドリングマシンならH+20/S-16",
             calc: (s, ctx) => { if(ctx.mT==="ハンドリング"){ s.h+=20; s.s-=16; } }
         },
         { 
-            id: "1004", name: "パワーマシンキット", cost: 3, type: "machine", desc: "パワーマシンならP+20/H-16",
+            id: "1004", name: "パワーマシンキット", cost: 3, type: "machine", desc: "ぶつかりダッシュを内包 パワーマシンならP+20/H-16",
             calc: (s, ctx) => { if(ctx.mT==="パワー"){ s.p+=20; s.h-=16; } }
         },
         { 
-            id: "1005", name: "ダッシュマシンキット", cost: 3, type: "machine", desc: "ダッシュマシンならD+20/P-16",
+            id: "1005", name: "ダッシュマシンキット", cost: 3, type: "machine", desc: "チャージダッシュ時にリングを2枚獲得 ダッシュマシンならD+20/P-16",
             calc: (s, ctx) => { if(ctx.mT==="ダッシュ"){ s.d+=20; s.p-=16; } }
         },
 
         // 11. キャラタイプキット
         { 
-            id: "1101", name: "ハンドリングキャラキット", cost: 3, type: "char", desc: "ハンドリングキャラならH+7/S-5",
+            id: "1101", name: "ハンドリングキャラキット", cost: 3, type: "char", desc: "リングスティール、リングスティールミニを内包 ハンドリングキャラならH+7/S-5",
             calc: (s, ctx) => { if(ctx.cT==="ハンドリング"){ s.h+=7; s.s-=5; } }
         },
         { 
-            id: "1102", name: "パワーキャラキット", cost: 3, type: "char", desc: "パワーキャラならP+7/H-5",
+            id: "1102", name: "パワーキャラキット", cost: 3, type: "char", desc: "ぶつかりダッシュ、ロングスリップストリームを内包 パワーキャラならP+7/H-5",
             calc: (s, ctx) => { if(ctx.cT==="パワー"){ s.p+=7; s.h-=5; } }
         },
         { 
-            id: "1103", name: "ダッシュキャラキット", cost: 3, type: "char", desc: "ダッシュキャラならD+7/P-5",
+            id: "1103", name: "ダッシュキャラキット", cost: 3, type: "char", desc: "超高速エアトリック、エアトリックボーナスを内包 ダッシュキャラならD+7/P-5",
             calc: (s, ctx) => { if(ctx.cT==="ダッシュ"){ s.d+=7; s.p-=5; } }
         },
 
         // 12. アドバンスドキット
-        { id: "1201", name: "後半追い上げキット", cost: 3, type: "advanced", desc: "リング上限110枚＆LAP3アイテム" },
-        { id: "1202", name: "水上強化キット", cost: 3, type: "advanced", desc: "水上・空中・チャージ性能アップ" }
+        { id: "1201", name: "後半追い上げキット", cost: 3, type: "advanced", desc: "リング上限110枚＆LAP3アイテム2つ獲得" },
+        { id: "1202", name: "水上強化キット", cost: 3, type: "advanced", desc: "チャージジャンプ自由度アップ、超高速エアトリックを内包" }
     ];
 
     const usageStats = { "0402":34, "0404":33, "0403":32, "0406":31, "0901":9, "0702":9, "0707":7, "0701":6, "0102":6, "0305":4, "0401":3, "0108":2, "0513":2, "0606":1, "0514":1, "0301":1, "0105":1, "0205":1 };
