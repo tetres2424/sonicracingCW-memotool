@@ -116,10 +116,11 @@
             <div id="message"></div>
 
             <div class="controls" style="margin-top: 20px;">
-                <select id="gadgetSelect"><option value="" disabled selected>ガジェットを選択してください</option></select>
-                <button class="btn-add" onclick="tryAddGadget()">追加</button>
-                <button class="btn-random" onclick="setRandomSetup()">🎲ランダム</button>
-                <button class="btn-reset" onclick="resetCurrent()">リセット</button>
+    <select id="gadgetSelect"><option value="" disabled selected>ガジェットを選択してください</option></select>
+    <button class="btn-add" onclick="tryAddGadget()">追加</button>
+    <button class="btn-random" onclick="setRandomSetup()">🎲ランダム</button>
+    <button class="btn-random" style="background-color: #009688;" onclick="setSynergySetup()">🤖シナジー</button>
+    <button class="btn-reset" onclick="resetCurrent()">リセット</button>
             </div>
         </div>
 
@@ -370,6 +371,58 @@
         
         render();
         showMessage("🎲 ランダム構成を生成しました！");
+    }
+
+    // ★シナジー（テーマ別）構成生成ロジック★
+    function setSynergySetup() {
+        if(!confirm("現在の構成を破棄して、テーマ統一された構成を生成しますか？")) return;
+
+        // シナジーの定義：相性の良いタイプの組み合わせ
+        const themes = [
+            { name: "リング長者セット", types: ["ring-get", "ring-ability"] },
+            { name: "テクニック特化", types: ["tech-boost", "charge-boost"] },
+            { name: "パラメータ・マシン強化", types: ["param-boost", "machine", "char"] },
+            { name: "アイテム攻防セット", types: ["item-control", "item-boost"] },
+            { name: "サポート・標準セット", types: ["support", "standard", "advanced"] }
+        ];
+
+        // ランダムに1つのテーマを決める
+        const theme = themes[Math.floor(Math.random() * themes.length)];
+        
+        // そのテーマに合致するガジェットだけを抽出
+        const pool = [...defaultGadgets, ...customGadgets].filter(g => theme.types.includes(g.type));
+
+        // もし候補が少なすぎる場合は、汎用的な「サポート(support)」や「標準(standard)」も混ぜる
+        const backupPool = [...defaultGadgets].filter(g => ["support", "standard"].includes(g.type));
+
+        const fillRow = () => {
+            let row = [];
+            let cost = 0;
+            let safety = 0;
+            while(cost < ROW_CAPACITY && safety < 100) {
+                // 80%の確率でテーマ一致、20%で汎用、なければテーマ一致のみ
+                let source = (Math.random() < 0.8 && pool.length > 0) ? pool : (backupPool.length > 0 ? backupPool : pool);
+                
+                if(source.length === 0) break; // 候補なし
+
+                const g = source[Math.floor(Math.random() * source.length)];
+                
+                // 重複チェック（同じガジェットを積みすぎないように名前でチェック）
+                const isDuplicate = row.some(r => r.id === g.id);
+                if (!isDuplicate && cost + g.cost <= ROW_CAPACITY) {
+                    row.push({ ...g, uid: Date.now() + Math.random() });
+                    cost += g.cost;
+                }
+                safety++;
+            }
+            return row;
+        };
+
+        currentSetup.upper = fillRow();
+        currentSetup.lower = fillRow();
+        
+        render();
+        showMessage(`🤖 テーマ「${theme.name}」で生成しました！`);
     }
 
     function registerCustomGadget() {
