@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ソニックレーシングCW 構成ツール v19</title>
+    <title>ソニックレーシングCW 構成ツール v20</title>
     <style>
         :root {
             --bg-color: #f4f4f9;
@@ -131,19 +131,23 @@
 </head>
 <body>
 
-    <h1>Sonic Racing CW 構成ツール v19</h1>
+    <h1>Sonic Racing CW 構成ツール v20</h1>
 
     <div class="container">
         
         <div class="container">
         
-        <div class="alert-box">
+       <div class="alert-box">
             <h4 style="margin-top:0; margin-bottom:10px; color:#856404; font-size:1rem;">ℹ️ ツールからのお知らせ</h4>
             <ul style="margin:0; padding-left:20px;">
                 <li style="margin-bottom: 5px;">
-                    <strong>AI生成・ランダム機能について:</strong><br>
-                    ランダム生成やAI生成機能の使用時、効果が重複しないガジェットが選ばれることがあります。<br>
-                    （ゲーム内の仕様や相性を完全に保証するものではありません）
+                    <strong>ランキングデータについて:</strong><br>
+                    使用率データは <span style="color:#d32f2f; font-weight:bold;">2025/11/11 20:00 時点</span> のTop100プレイヤーを集計したものです。<br>
+                    現在のランキングとは状況が異なる可能性があります。
+                </li>
+                <li style="margin-bottom: 5px;">
+                    <strong>AI生成・ランダム機能:</strong><br>
+                    ゲーム内の仕様上、効果が重複しないガジェットが選ばれることがあります。
                 </li>
                 <li style="margin-bottom: 5px;">
                     <strong>「○○チューン」系ガジェット:</strong><br>
@@ -151,7 +155,7 @@
                 </li>
                 <li>
                     <strong>詳細データ:</strong><br>
-                    各ガジェットの詳しい数値や仕様は <a href="https://w.atwiki.jp/sonicracingcw/" target="_blank" style="color:#d32f2f; text-decoration:underline;">ソニックレーシング CW @ ウィキ</a> をご確認ください。
+                    詳しい数値や仕様は <a href="https://w.atwiki.jp/sonicracingcw/" target="_blank" style="color:#d32f2f; text-decoration:underline;">ソニックレーシング CW @ ウィキ</a> をご確認ください。
                 </li>
             </ul>
         </div>
@@ -167,13 +171,25 @@
             
             <div id="message"></div>
 
-            <div class="controls" style="margin-top: 20px; display: block;"> <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px; flex-wrap: wrap;">
-                    <select id="gadgetSelect" onchange="showGadgetDescription()" style="flex-grow: 1; min-width: 200px;">
-                        <option value="" disabled selected>ガジェットを選択してください</option>
-                    </select>
+           <div class="controls" style="margin-top: 20px; display: block;">
+                
+                <div style="display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; flex-wrap: wrap;">
+                    <div style="flex-grow: 1; min-width: 200px; display:flex; gap:5px; flex-direction:column;">
+                        
+                        <div style="text-align:right;">
+                            <button id="btnSort" onclick="toggleSort()" style="
+                                background-color: #607d8b; 
+                                font-size: 0.75rem; 
+                                padding: 4px 8px; 
+                                border-radius: 15px;
+                            ">📊 使用率順に並べ替え</button>
+                        </div>
+                        <select id="gadgetSelect" onchange="showGadgetDescription()" style="width: 100%;">
+                            <option value="" disabled selected>ガジェットを選択してください</option>
+                        </select>
+                    </div>
                     
-                    <div style="display: flex; gap: 5px; flex-shrink: 0;">
-                        <button class="btn-add" onclick="tryAddGadget()">追加</button>
+                    <div style="display: flex; gap: 5px; flex-shrink: 0; margin-top: 24px;"> <button class="btn-add" onclick="tryAddGadget()">追加</button>
                         <button class="btn-reset" onclick="resetCurrent()">リセット</button>
                     </div>
                 </div>
@@ -193,9 +209,7 @@
                 ">
                     （ここにガジェットの効果が表示されます）
                 </div>
-
             </div>
-
             <div class="controls" style="margin-top: 15px;">
                 <button class="btn-random" onclick="setRandomSetup()">🎲ランダム</button>
                 <button class="btn-random" style="background-color: #673ab7;" onclick="setAiOriginalSetup()">🧠AI生成</button>
@@ -352,6 +366,24 @@
         { id: "1201", name: "後半追い上げキット", cost: 3, type: "advanced", desc: "リング上限が110枚になり、LAP3突入時にアイテムを2個獲得する" },
         { id: "1202", name: "水上強化キット", cost: 3, type: "advanced", desc: "「超高速エアトリック」「チャージジャンプ自由度アップ」を組み合わせたキット" },
     ];
+    // ★Top30 ランカー使用数データ (自動集計)★
+    const usageStats = {
+        "0404": 20, // アルティメットチャージ
+        "0402": 19, // セカンドファストチャージ
+        "0403": 19, // サードファストチャージ
+        "0406": 18, // テクニカルドリフト
+        "0901": 7,  // ドリフトチャージ短縮キット
+        "0702": 5,  // アイテムストックプラス
+        "0102": 4,  // エアトリックボーナス
+        "0707": 4,  // ウィスプ確率アップ
+        "0305": 3,  // 超高速エアトリック
+        "0701": 3,  // アイテムストックトレード
+        "0401": 2,  // ファーストファストチャージ
+        "0513": 2,  // ダッシュチューン1
+        "0902": 1,  // アイテムたくさんキット
+        "0514": 1,  // ダッシュチューン2
+        "0108": 1   // ジャストチャージボーナス
+    };
 // --- 状態管理 ---
     const ROW_CAPACITY = 3;
     let currentSetup = { upper: [], lower: [] };
@@ -367,32 +399,79 @@
         else render();
     };
 
-    // リストの選択肢を更新する関数
+    // --- ▼▼▼ 並び替え機能の追加 ▼▼▼ ---
+    let isSortedByUsage = false; // 並び替え状態管理フラグ
+
+    function toggleSort() {
+        isSortedByUsage = !isSortedByUsage; // フラグを反転
+        
+        const btn = document.getElementById('btnSort');
+        if (isSortedByUsage) {
+            btn.textContent = "↩️ 分類順に戻す";
+            btn.style.backgroundColor = "#e91e63"; // 色を変えて状態をわかりやすく
+        } else {
+            btn.textContent = "📊 使用率順に並べ替え";
+            btn.style.backgroundColor = "#607d8b";
+        }
+        
+        updateSelectOptions(); // リストを再描画
+    }
+
+    // リスト更新関数（ソート対応版）
     function updateSelectOptions() {
         const select = document.getElementById('gadgetSelect');
         const currentVal = select.value;
         select.innerHTML = '<option value="" disabled selected>ガジェットを選択してください</option>';
         
+        // 表示用リストの作成（元データは壊さずコピーして使う）
+        let listToRender = [...defaultGadgets];
+
+        if (isSortedByUsage) {
+            // 使用率順（降順）にソート
+            listToRender.sort((a, b) => {
+                const countA = usageStats[a.id] || 0;
+                const countB = usageStats[b.id] || 0;
+                // 回数が多い順 -> 同じならID順
+                return countB - countA || a.id.localeCompare(b.id);
+            });
+        } 
+        // else: デフォルトの場合は何もしない（ID順/カテゴリ順のまま）
+
         const createOpt = (g) => {
             const opt = document.createElement('option');
             opt.value = g.id;
-            // ★変更点: ここでは説明文(desc)を入れず、シンプルにする
-            opt.textContent = `${g.name} (コスト${g.cost})`;
+            
+            const count = usageStats[g.id] || 0;
+            const countText = count > 0 ? `【Top30:${count}】` : "";
+            
+            // 人気順ソート時は、件数を先頭に表示して目立たせる
+            if (isSortedByUsage && count > 0) {
+                opt.textContent = `${countText} ${g.name} (コスト${g.cost})`;
+                opt.style.fontWeight = "bold";
+                opt.style.color = "#d32f2f";
+            } else {
+                // 通常時はシンプルに
+                opt.textContent = `${g.name} (コスト${g.cost}) ${countText}`;
+                opt.style.color = "#333";
+            }
+            
             select.appendChild(opt);
         };
-        defaultGadgets.forEach(createOpt);
 
+        listToRender.forEach(createOpt);
+
+        // カスタムガジェットは常に最後に追加
         if(customGadgets.length > 0) {
             const sep = document.createElement('option');
             sep.disabled = true; sep.textContent = "--- オリジナル ---";
             select.appendChild(sep);
             customGadgets.forEach(createOpt);
         }
-        if(currentVal) select.value = currentVal;
         
-        renderCustomList(); 
+        // 選択状態を維持しようとするが、ソートで位置が変わるためリセットされてもよい
+        // if(currentVal) select.value = currentVal; 
     }
-
+    // --- ▲▲▲ ここまで ▲▲▲ ---
     // ★追加: 選択されたガジェットの説明文を表示する関数
     function showGadgetDescription() {
         const select = document.getElementById('gadgetSelect');
