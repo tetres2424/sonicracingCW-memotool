@@ -913,33 +913,66 @@
         localStorage.setItem('sonicCW_memos', JSON.stringify(savedMemos));
         renderMemoList();
     }
+    // メモリストの描画関数（読み込みバグ修正版）
     function renderMemoList() {
-        const l = document.getElementById('memoList'); l.innerHTML = '';
+        const l = document.getElementById('memoList');
+        l.innerHTML = '';
         savedMemos.forEach(m => {
-            const d = document.createElement('div'); d.className = 'memo-item';
+            const d = document.createElement('div');
+            d.className = 'memo-item';
             d.innerHTML = `<span>${m.title}</span>`;
-            const bg = document.createElement('div'); bg.style.display='flex'; bg.style.gap='5px';
-            const btnL = document.createElement('button'); btnL.textContent='読込'; btnL.className='btn-save'; btnL.style.padding='4px 8px';
-            btnL.onclick=()=>{
-                currentSetup = JSON.parse(JSON.stringify(m.data)); 
-                // 復元処理
-                document.getElementById('charSelect').value = currentSetup.charId || "";
-                if(currentSetup.machineType) {
-                    document.getElementById('machineTypeSelect').value = currentSetup.machineType;
+            const bg = document.createElement('div');
+            bg.style.display='flex';
+            bg.style.gap='5px';
+            
+            const btnL = document.createElement('button');
+            btnL.textContent='読込';
+            btnL.className='btn-save';
+            btnL.style.padding='4px 8px';
+            
+            // ★修正ポイント: 読み込みロジックの順序を変更★
+            btnL.onclick = () => {
+                // 1. 保存データを一時変数に退避（currentSetupに直接入れない）
+                const savedData = JSON.parse(JSON.stringify(m.data));
+                
+                // 2. まずキャラとマシンタイプをDOMにセット
+                document.getElementById('charSelect').value = savedData.charId || "";
+                
+                if (savedData.machineType) {
+                    document.getElementById('machineTypeSelect').value = savedData.machineType;
+                    
+                    // 3. パーツリストを生成（この瞬間、DOMのパーツ値はリセットされる）
                     changeMachineType();
-                    document.getElementById('part1Select').value = currentSetup.part1 || "";
-                    document.getElementById('part2Select').value = currentSetup.part2 || "";
-                    document.getElementById('part3Select').value = currentSetup.part3 || "";
+                    
+                    // 4. 退避しておいたデータから、パーツの値をDOMに再セット
+                    if(savedData.part1) document.getElementById('part1Select').value = savedData.part1;
+                    if(savedData.part2) document.getElementById('part2Select').value = savedData.part2;
+                    if(savedData.part3) document.getElementById('part3Select').value = savedData.part3;
                 }
+                
+                // 5. 最後に現在のDOMの状態を正として currentSetup を更新し、計算・描画
                 updateCharMachineInfo();
                 render();
+                
+                showMessage(`「${m.title}」を読み込みました`);
             };
-            const btnD = document.createElement('button'); btnD.textContent='削除'; btnD.className='btn-delete-memo';
-            btnD.onclick=()=>{if(confirm('削除?')){savedMemos=savedMemos.filter(x=>x.id!==m.id);localStorage.setItem('sonicCW_memos',JSON.stringify(savedMemos));renderMemoList();}};
-            bg.appendChild(btnL); bg.appendChild(btnD); d.appendChild(bg); l.appendChild(d);
+            
+            const btnD = document.createElement('button');
+            btnD.textContent='削除';
+            btnD.className='btn-delete-memo';
+            btnD.onclick=()=>{
+                if(confirm('削除しますか？')){
+                    savedMemos=savedMemos.filter(x=>x.id!==m.id);
+                    localStorage.setItem('sonicCW_memos',JSON.stringify(savedMemos));
+                    renderMemoList();
+                }
+            };
+            bg.appendChild(btnL);
+            bg.appendChild(btnD);
+            d.appendChild(bg);
+            l.appendChild(d);
         });
-    }
-    
+    }    
     // --- 共有URL (新パラメータ s 対応) ---
     function generateShareUrl() {
         const ser = i => `${encodeURIComponent(i.name)}:${i.cost}:${i.type||'custom'}`;
