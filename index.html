@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ソニックレーシングCW 構成ツール v11</title>
+    <title>ソニックレーシングCW 構成ツール v12</title>
     <style>
         :root {
             --bg-color: #f4f4f9;
@@ -116,14 +116,16 @@
             <div id="message"></div>
 
             <div class="controls" style="margin-top: 20px;">
-    <select id="gadgetSelect"><option value="" disabled selected>ガジェットを選択してください</option></select>
-    <button class="btn-add" onclick="tryAddGadget()">追加</button>
-    <button class="btn-random" onclick="setRandomSetup()">🎲ランダム</button>
-    <button class="btn-random" style="background-color: #009688;" onclick="setSynergySetup()">🤖シナジー</button>
-    <button class="btn-reset" onclick="resetCurrent()">リセット</button>
+                <select id="gadgetSelect"><option value="" disabled selected>ガジェットを選択してください</option></select>
+                <button class="btn-add" onclick="tryAddGadget()">追加</button>
+                <button class="btn-reset" onclick="resetCurrent()">リセット</button>
+            </div>
+
+            <div class="controls" style="margin-top: 10px;">
+                <button class="btn-random" onclick="setRandomSetup()">🎲ランダム</button>
+                <button class="btn-random" style="background-color: #673ab7;" onclick="setAiOriginalSetup()">🧠AI生成</button>
             </div>
         </div>
-
         <div class="card">
             <h4>オリジナルガジェット登録</h4>
             <div class="custom-area">
@@ -373,67 +375,84 @@
         showMessage("🎲 ランダム構成を生成しました！");
     }
 
-    // ★シナジー構成生成ロジック (v2: キーワード検索強化版) ★
-    function setSynergySetup() {
-        if(!confirm("現在の構成を破棄して、テーマ統一された構成を生成しますか？")) return;
+    // ★AIによるオリジナル戦術構築ロジック★
+    function setAiOriginalSetup() {
+        if(!confirm("現在の構成を破棄して、AIが考案した戦術を展開しますか？")) return;
 
-        // テーマ定義：タイプだけでなく「名前に含まれる文字」で絞り込む
-        const themes = [
-            // 既存のタイプベース
-            { name: "💰リング長者セット", filter: g => ["ring-get", "ring-ability"].includes(g.type) },
-            { name: "🏎️スピード＆アクセル", filter: g => ["machine", "param-boost"].includes(g.type) && (g.name.includes("スピード") || g.name.includes("アクセル")) },
-            
-            // 名前検索による精密シナジー
-            { name: "🌀ドリフト特化", filter: g => g.name.includes("ドリフト") || g.type === "charge-boost" },
-            { name: "🚀スタートダッシュ特化", filter: g => g.name.includes("スタート") || g.name.includes("スターター") || g.name.includes("最初から") },
-            { name: "💣アイテム攻撃特化", filter: g => g.name.includes("攻撃") || g.type === "item-boost" },
-            { name: "🛡️鉄壁の防御セット", filter: g => g.name.includes("ガード") || g.name.includes("防御") || g.name.includes("無敵") },
-            
-            // マニアックな組み合わせ
-            { name: "⚡ブースト＆ダッシュ", filter: g => g.name.includes("ブースト") || g.name.includes("ダッシュ") },
-            { name: "🎪エアトリック芸人", filter: g => g.name.includes("エアトリック") || g.name.includes("ジャンプ") }
+        // 戦術（コンセプト）の定義
+        // 色にとらわれず、「何がしたいか」で複数の条件を組み合わせる
+        const tactics = [
+            { 
+                name: "暴走特急 (Speed & Crash)", 
+                desc: "速さと攻撃こそ正義。防御を捨てて突っ込む構成。",
+                priority: g => (g.name.includes("スピード") || g.name.includes("ダッシュ") || g.name.includes("ぶつかり") || g.name.includes("攻撃")) && !g.name.includes("防御")
+            },
+            { 
+                name: "不沈艦 (Iron Wall)", 
+                desc: "絶対に倒れない。ガードとリカバーで完走を目指す構成。",
+                priority: g => g.name.includes("ガード") || g.name.includes("リカバー") || g.name.includes("防御") || g.name.includes("無敵")
+            },
+            { 
+                name: "ハイリスク・ギャンブラー (Jackpot)", 
+                desc: "確率アップ系を積みまくり、運ゲーで勝利をもぎ取る構成。",
+                priority: g => g.name.includes("確率") || g.name.includes("ボーナス") || g.name.includes("獲得")
+            },
+            { 
+                name: "テクニカル・ダンサー (Air Master)", 
+                desc: "空中で華麗に舞い、着地で加速する玄人向け構成。",
+                priority: g => g.name.includes("エアトリック") || g.name.includes("ジャンプ") || g.name.includes("チャージ")
+            },
+            { 
+                name: "スタートダッシュ逃げ切り (Rocket Start)", 
+                desc: "開始直後のリードを死守する短期決戦型構成。",
+                priority: g => g.name.includes("スタート") || g.name.includes("最初から") || g.name.includes("先行")
+            }
         ];
 
-        // 1. テーマをランダムに決定
-        const theme = themes[Math.floor(Math.random() * themes.length)];
+        // 1. 戦術をランダムに決定
+        const tactic = tactics[Math.floor(Math.random() * tactics.length)];
         
-        // 2. そのテーマに合致するガジェット(pool)を抽出
-        // ※カスタムガジェットも含める
+        // 2. 全ガジェットから、戦術に合うもの(High Priority)と、埋め合わせ用(Fillers)を分ける
         const allGadgets = [...defaultGadgets, ...customGadgets];
-        let pool = allGadgets.filter(theme.filter);
+        const highPriority = allGadgets.filter(tactic.priority);
+        // 優先候補が足りない時のために、汎用的なもの(コスト1の便利系)を予備にする
+        const fillers = allGadgets.filter(g => g.cost === 1 && !tactic.priority(g));
 
-        // ※もし候補が少なすぎて6枠埋まらない可能性がある場合、汎用系(standard/support)をバックアップに追加
-        if (pool.length < 5) {
-            const backup = allGadgets.filter(g => ["standard", "support"].includes(g.type));
-            pool = [...pool, ...backup];
-        }
-
-        const fillRow = () => {
+        // 構成作成関数
+        const createStrategicRow = () => {
             let row = [];
             let cost = 0;
             let safety = 0;
             
             while(cost < ROW_CAPACITY && safety < 100) {
-                // プールからランダム選出
-                const g = pool[Math.floor(Math.random() * pool.length)];
+                // 90%の確率で戦術優先、なければフィラー
+                let source = (Math.random() < 0.9 && highPriority.length > 0) ? highPriority : fillers;
                 
-                // 重複チェック (名前で判定)
-                const isDuplicate = row.some(r => r.name === g.name); // IDではなく名前で重複排除
-                
-                if (!isDuplicate && cost + g.cost <= ROW_CAPACITY) {
-                    row.push({ ...g, uid: Date.now() + Math.random() });
-                    cost += g.cost;
+                if(source.length > 0) {
+                    const g = source[Math.floor(Math.random() * source.length)];
+                    
+                    // 重複チェック
+                    const isDuplicate = row.some(r => r.name === g.name);
+                    
+                    if (!isDuplicate && cost + g.cost <= ROW_CAPACITY) {
+                        row.push({ ...g, uid: Date.now() + Math.random() });
+                        cost += g.cost;
+                    }
                 }
                 safety++;
             }
             return row;
         };
 
-        currentSetup.upper = fillRow();
-        currentSetup.lower = fillRow();
+        // 上段・下段を作成
+        currentSetup.upper = createStrategicRow();
+        currentSetup.lower = createStrategicRow();
         
         render();
-        showMessage(`🤖 テーマ「${theme.name}」で生成しました！`);
+        
+        // AIの思考結果を表示
+        alert(`🧠 AI戦術構築完了\n\nコードネーム: 「${tactic.name}」\nコンセプト: ${tactic.desc}`);
+        showMessage(`戦術「${tactic.name}」を展開中...`);
     }
     function registerCustomGadget() {
         const name = document.getElementById('customName').value.trim();
