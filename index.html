@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ソニックレーシングCW 構成ツール v18</title>
+    <title>ソニックレーシングCW 構成ツール v19</title>
     <style>
         :root {
             --bg-color: #f4f4f9;
@@ -131,7 +131,7 @@
 </head>
 <body>
 
-    <h1>Sonic Racing CW 構成ツール v18</h1>
+    <h1>Sonic Racing CW 構成ツール v19</h1>
 
     <div class="container">
         
@@ -412,15 +412,17 @@
         }
     }
 
+    // ★追加ロジックの修正版★
     function tryAddGadget() {
-        const gId = document.getElementById('gadgetSelect').value;
+        const select = document.getElementById('gadgetSelect');
+        const gId = select.value;
         if (!gId) return;
+
         let gadget = defaultGadgets.find(g => g.id === gId) || customGadgets.find(g => g.id === gId);
         if(!gadget) return;
 
-        // ★重複チェック機能を追加★
+        // 重複チェック
         const allCurrent = [...currentSetup.upper, ...currentSetup.lower];
-        // IDで判定（同じIDのガジェットが既にあったら弾く）
         if (allCurrent.some(item => item.id === gadget.id)) {
             showMessage("⚠️ 同じガジェットは2つセットできません", true);
             return;
@@ -428,14 +430,32 @@
 
         const newItem = { ...gadget, uid: Date.now() + Math.random() };
 
+        // --- 修正: まずはソートせずに空きスペースに入れてみる ---
+
+        // 1. 上段にそのまま入るなら入れる
+        if (getRowCost(currentSetup.upper) + newItem.cost <= ROW_CAPACITY) {
+            currentSetup.upper.push(newItem);
+            render();
+            showMessage(`「${gadget.name}」を上段に追加しました`);
+            return;
+        }
+
+        // 2. 上段が無理で、下段に入るなら入れる
+        if (getRowCost(currentSetup.lower) + newItem.cost <= ROW_CAPACITY) {
+            currentSetup.lower.push(newItem);
+            render();
+            showMessage(`「${gadget.name}」を下段に追加しました`);
+            return;
+        }
+
+        // 3. どちらも無理な場合のみ、自動整理(Smart Add)を発動
         if (smartAdd(newItem)) {
             render();
-            showMessage(`「${gadget.name}」を追加しました`);
+            showMessage(`自動整理して「${gadget.name}」を追加しました`);
         } else {
             showMessage("コスト不足で入りません", true);
         }
     }
-
     // スマート追加 (既存＋新規1つ を並べ替え)
     function smartAdd(newItem) {
         const allItems = [...currentSetup.upper, ...currentSetup.lower, newItem];
