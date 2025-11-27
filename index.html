@@ -281,7 +281,7 @@
     //  1. データ定義エリア
     // ==========================================
 
-    // --- キャラクターデータ (ステータス完備・並び替え済み) ---
+    // --- キャラクターデータ ---
     const characterData = [
         { id: "c01", name: "ソニック", type: "スピード", speed: 20, accel: 5, handling: 13, power: 15, dash: 7 },
         { id: "c02", name: "テイルス", type: "アクセル", speed: 15, accel: 20, handling: 7, power: 13, dash: 5 },
@@ -321,10 +321,9 @@
         { id: "c49", name: "パトリック", type: "パワー", speed: 13, accel: 9, handling: 6, power: 17, dash: 15 }
     ];
 
-    // --- マシンパーツデータ (S,A,H,P,D) ---
-   // --- マシンパーツデータ (S,A,H,P,D) 全種コンプリート・整列済み ---
+    // --- マシンパーツデータ ---
     const machineParts = [
-        // 1. スピードタイプ (パーツ3つ = 3倍)
+        // 1. スピードタイプ
         { id: "ms01", type: "スピード", name: "スピードスターライトニング", s: 20, a: 5, h: 13, p: 15, d: 7 },
         { id: "ms02", type: "スピード", name: "ダークリーパー", s: 20, a: 6, h: 12, p: 14, d: 8 },
         { id: "ms03", type: "スピード", name: "ミラージュブレイド", s: 19, a: 7, h: 11, p: 14, d: 9 },
@@ -335,8 +334,7 @@
         { id: "ms08", type: "スピード", name: "ワイルドGT", s: 19, a: 5, h: 13, p: 16, d: 7 },
         { id: "ms09", type: "スピード", name: "バスターM", s: 19, a: 5, h: 13, p: 16, d: 7 },
         { id: "ms10", type: "スピード", name: "アルセーヌウィング", s: 17, a: 6, h: 13, p: 15, d: 9 },
-
-        // 2. アクセルタイプ (パーツ3つ = 3倍)
+        // 2. アクセルタイプ
         { id: "ma01", type: "アクセル", name: "ホワールウィンド", s: 15, a: 20, h: 7, p: 13, d: 5 },
         { id: "ma02", type: "アクセル", name: "ジャンブルレイジ", s: 14, a: 20, h: 8, p: 12, d: 6 },
         { id: "ma03", type: "アクセル", name: "ハイパースコーピオン", s: 14, a: 19, h: 9, p: 11, d: 7 },
@@ -346,8 +344,7 @@
         { id: "ma07", type: "アクセル", name: "ラジカルフォース", s: 16, a: 18, h: 8, p: 13, d: 5 },
         { id: "ma08", type: "アクセル", name: "レーシングバギー", s: 14, a: 18, h: 10, p: 11, d: 7 },
         { id: "ma09", type: "アクセル", name: "ギガントライナー", s: 15, a: 19, h: 8, p: 12, d: 6 },
-
-        // 3. ハンドリングタイプ (パーツ3つ = 3倍)
+        // 3. ハンドリングタイプ
         { id: "mh01", type: "ハンドリング", name: "ピンクカブリオレ", s: 5, a: 15, h: 20, p: 7, d: 13 },
         { id: "mh02", type: "ハンドリング", name: "リップスパイダー", s: 6, a: 14, h: 20, p: 8, d: 12 },
         { id: "mh03", type: "ハンドリング", name: "ヴィクトリアキャリッジ", s: 7, a: 14, h: 19, p: 9, d: 11 },
@@ -359,8 +356,7 @@
         { id: "mh09", type: "ハンドリング", name: "ネオサイクロン", s: 7, a: 13, h: 20, p: 9, d: 11 },
         { id: "mh10", type: "ハンドリング", name: "マインカート", s: 7, a: 14, h: 16, p: 10, d: 13 },
         { id: "mh11", type: "ハンドリング", name: "パティワゴン", s: 7, a: 14, h: 17, p: 10, d: 12 },
-
-        // 4. パワータイプ (パーツ3つ = 3倍)
+        // 4. パワータイプ
         { id: "mp01", type: "パワー", name: "ランドスマッシャー", s: 13, a: 7, h: 5, p: 20, d: 15 },
         { id: "mp02", type: "パワー", name: "ロードドラグーン", s: 12, a: 8, h: 6, p: 20, d: 14 },
         { id: "mp03", type: "パワー", name: "ナイトタンク", s: 12, a: 9, h: 6, p: 18, d: 15 },
@@ -372,8 +368,7 @@
         { id: "mp09", type: "パワー", name: "エッグドリルスターMK2", s: 11, a: 9, h: 7, p: 19, d: 14 },
         { id: "mp10", type: "パワー", name: "ビーストスパイク", s: 12, a: 11, h: 8, p: 16, d: 13 },
         { id: "mp11", type: "パワー", name: "ドラゴンブレイブ", s: 13, a: 9, h: 6, p: 17, d: 15 },
-
-        // 5. ダッシュタイプ (パーツ2つ = 2倍 / タイヤなし)
+        // 5. ダッシュタイプ
         { id: "md01", type: "ダッシュ", name: "タイプ-J イオタ", s: 13, a: 16, h: 21, p: 10, d: 30 },
         { id: "md02", type: "ダッシュ", name: "タイプ-S ストリーム", s: 12, a: 17, h: 22, p: 9, d: 30 },
         { id: "md03", type: "ダッシュ", name: "サクラボード", s: 12, a: 18, h: 22, p: 9, d: 29 },
@@ -386,195 +381,218 @@
         { id: "md10", type: "ダッシュ", name: "ブルースター", s: 14, a: 17, h: 22, p: 10, d: 27 },
         { id: "md11", type: "ダッシュ", name: "ディーヴァマッキナ", s: 14, a: 18, h: 22, p: 10, d: 26 }
     ];
-    // --- ガジェットデータ (ID0101形式・詳細説明付き) ---
+
+    // --- ガジェットデータ (★ステータス補正ロジック `calc` 追加版★) ---
     const defaultGadgets = [
-        // 1. リングゲット (0101～)
-        { id: "0101", name: "スタート成功ボーナス", cost: 1, type: "ring-get", desc: "スタートダッシュ成功時にリングを30枚入手する" },
-        { id: "0102", name: "エアトリックボーナス", cost: 1, type: "ring-get", desc: "エアトリック1回につきリングを2枚入手する" },
-        { id: "0103", name: "アイテム攻撃リングボーナス", cost: 1, type: "ring-get", desc: "他のレーサーにアイテムがヒットするとリングを10枚獲得する" },
-        { id: "0104", name: "ランオフボーナス", cost: 1, type: "ring-get", desc: "加速アイテムで減速エリアを通っている間、リングを5枚ずつ獲得し続ける" },
-        { id: "0105", name: "スリップストリームボーナス", cost: 1, type: "ring-get", desc: "スリップストリーム発動中、約0.5秒毎にリングを1枚ずつ獲得し続ける" },
-        { id: "0106", name: "トラベルリングボーナス", cost: 1, type: "ring-get", desc: "トラベルリング(LAP2開始時とLAP3開始時)を通った時、リングを15枚獲得する" },
-        { id: "0107", name: "変形時アクションボーナス", cost: 1, type: "ring-get", desc: "水上、空中でチャージアクションをするとリングを4枚獲得する" },
-        { id: "0108", name: "ジャストチャージボーナス", cost: 2, type: "ring-get", desc: "チャージが溜まり切ったタイミングでダッシュすることでリングを獲得できるようになる" },
-        { id: "0109", name: "ダッシュパネルボーナス", cost: 2, type: "ring-get", desc: "ダッシュパネルに乗るとリングを5枚獲得できる" },
-        { id: "0110", name: "ダッシュパネルボーナスミニ", cost: 1, type: "ring-get", desc: "ダッシュパネルに乗るとリングを2枚獲得できる" },
-        { id: "0111", name: "ダッシュパネルボーナスコンボ", cost: 2, type: "ring-get", desc: "ダッシュパネルに乗るとリングを3枚獲得でき、連続で乗ると増えていく" },
+        // 1. リングゲット
+        { id: "0101", name: "スタート成功ボーナス", cost: 1, type: "ring-get", desc: "スタートダッシュ成功時にリングを30枚入手" },
+        { id: "0102", name: "エアトリックボーナス", cost: 1, type: "ring-get", desc: "エアトリック1回につきリングを2枚入手" },
+        { id: "0103", name: "アイテム攻撃リングボーナス", cost: 1, type: "ring-get", desc: "アイテム攻撃ヒット時にリング10枚獲得" },
+        { id: "0104", name: "ランオフボーナス", cost: 1, type: "ring-get", desc: "減速エリア走行中にリングを獲得し続ける" },
+        { id: "0105", name: "スリップストリームボーナス", cost: 1, type: "ring-get", desc: "スリップストリーム中にリングを獲得し続ける" },
+        { id: "0106", name: "トラベルリングボーナス", cost: 1, type: "ring-get", desc: "トラベルリング通過時にリング15枚獲得" },
+        { id: "0107", name: "変形時アクションボーナス", cost: 1, type: "ring-get", desc: "水上・空中チャージアクションでリング4枚獲得" },
+        { id: "0108", name: "ジャストチャージボーナス", cost: 2, type: "ring-get", desc: "ジャストチャージダッシュでリング獲得" },
+        { id: "0109", name: "ダッシュパネルボーナス", cost: 2, type: "ring-get", desc: "ダッシュパネルでリング5枚獲得" },
+        { id: "0110", name: "ダッシュパネルボーナスミニ", cost: 1, type: "ring-get", desc: "ダッシュパネルでリング2枚獲得" },
+        { id: "0111", name: "ダッシュパネルボーナスコンボ", cost: 2, type: "ring-get", desc: "ダッシュパネル連続通過で獲得量アップ" },
 
-        // 2. リングアビリティ (0201～)
-        { id: "0201", name: "リング上限130", cost: 1, type: "ring-ability", desc: "リングの所持上限を130枚にする" },
-        { id: "0202", name: "リング上限200", cost: 2, type: "ring-ability", desc: "リングの所持上限を200枚にする" },
-        { id: "0203", name: "リングスティールミニ", cost: 1, type: "ring-ability", desc: "他のレーサーに接触した時、リングを2枚奪う" },
-        { id: "0204", name: "リングスティール", cost: 2, type: "ring-ability", desc: "他のレーサーにぶつかった時、リングを5枚奪う" },
-        { id: "0205", name: "リングゲットダッシュミニ", cost: 1, type: "ring-ability", desc: "リング獲得時、約7km/hほど加速する" },
-        { id: "0206", name: "リングゲットダッシュ", cost: 2, type: "ring-ability", desc: "リング獲得時に約14km/hほど加速する" },
-        { id: "0207", name: "リング獲得範囲アップ", cost: 1, type: "ring-ability", desc: "リング獲得判定を拡大する" },
+        // 2. リングアビリティ
+        { id: "0201", name: "リング上限130", cost: 1, type: "ring-ability", desc: "所持上限130枚" },
+        { id: "0202", name: "リング上限200", cost: 2, type: "ring-ability", desc: "所持上限200枚" },
+        { id: "0203", name: "リングスティールミニ", cost: 1, type: "ring-ability", desc: "接触時リング2枚奪取" },
+        { id: "0204", name: "リングスティール", cost: 2, type: "ring-ability", desc: "接触時リング5枚奪取" },
+        { id: "0205", name: "リングゲットダッシュミニ", cost: 1, type: "ring-ability", desc: "リング獲得時少し加速" },
+        { id: "0206", name: "リングゲットダッシュ", cost: 2, type: "ring-ability", desc: "リング獲得時大きく加速" },
+        { id: "0207", name: "リング獲得範囲アップ", cost: 1, type: "ring-ability", desc: "リング吸い寄せ範囲拡大" },
 
-        // 3. テクニック強化 (0301～)
-        { id: "0301", name: "ロングスリップストリーム", cost: 1, type: "tech-boost", desc: "スリップストリームの発生距離を延長し、前車との距離が少し遠くてもスリップストリームが発動するようになる" },
-        { id: "0302", name: "空中ドリフト自由度アップ", cost: 1, type: "tech-boost", desc: "空中でドリフトをすると「すごく曲がるようになる」" },
-        { id: "0303", name: "チャージジャンプ自由度アップ", cost: 1, type: "tech-boost", desc: "水上でチャージジャンプした時、左右入力でエアトリックを行うとその方向へ少し移動する" },
-        { id: "0304", name: "高速エアトリック", cost: 1, type: "tech-boost", desc: "エアトリックにかかる時間を短縮する" },
-        { id: "0305", name: "超高速エアトリック", cost: 2, type: "tech-boost", desc: "エアトリックにかかる時間を大きく短縮する" },
-        { id: "0306", name: "ぶつかりダッシュ", cost: 2, type: "tech-boost", desc: "他のレーサーとぶつかった時、短時間ダッシュする" },
-        { id: "0307", name: "スピンドリフト", cost: 2, type: "tech-boost", desc: "ドリフト中に高速回転し、触れたレーサーを弾き飛ばす" },
+        // 3. テクニック強化
+        { id: "0301", name: "ロングスリップストリーム", cost: 1, type: "tech-boost", desc: "スリップストリーム距離延長" },
+        { id: "0302", name: "空中ドリフト自由度アップ", cost: 1, type: "tech-boost", desc: "空中での旋回性能アップ" },
+        { id: "0303", name: "チャージジャンプ自由度アップ", cost: 1, type: "tech-boost", desc: "水上チャージジャンプ時の移動制御アップ" },
+        { id: "0304", name: "高速エアトリック", cost: 1, type: "tech-boost", desc: "エアトリック所要時間短縮" },
+        { id: "0305", name: "超高速エアトリック", cost: 2, type: "tech-boost", desc: "エアトリック所要時間大幅短縮" },
+        { id: "0306", name: "ぶつかりダッシュ", cost: 2, type: "tech-boost", desc: "接触時にダッシュ" },
+        { id: "0307", name: "スピンドリフト", cost: 2, type: "tech-boost", desc: "ドリフト中回転して攻撃判定を持つ" },
 
-        // 4. チャージ強化 (0401～)
-        { id: "0401", name: "ファーストファストチャージ", cost: 2, type: "charge-boost", desc: "ドリフト時のチャージ1段階目を高速化する" },
-        { id: "0402", name: "セカンドファストチャージ", cost: 1, type: "charge-boost", desc: "ドリフト時のチャージ2段階目を高速化する" },
-        { id: "0403", name: "サードファストチャージ", cost: 1, type: "charge-boost", desc: "ドリフト時のチャージ3段階目を高速化する" },
-        { id: "0404", name: "アルティメットチャージ", cost: 2, type: "charge-boost", desc: "ドリフト時のチャージ4段階目を解禁する" },
-        { id: "0405", name: "ジャストチャージダッシュ", cost: 2, type: "charge-boost", desc: "チャージが1～3段階目まで溜まった瞬間にダッシュするとダッシュの性能が上がるようになる" },
-        { id: "0406", name: "テクニカルドリフト", cost: 2, type: "charge-boost", desc: "ドリフトが滑るようになる代わりにレベル1～3全て、アルティメットチャージがあればレベル4も含めて全ての段階でチャージ速度が上がる。各種ファストチャージと重複する。" },
-        { id: "0407", name: "フリクションドリフト", cost: 2, type: "charge-boost", desc: "ドリフト中に減速してしまう代わりにレベル1～3全て、アルティメットチャージがあればレベル4も含めて全ての段階でチャージ速度が上がる。各種ファストチャージと重複する。" },
-        { id: "0408", name: "切りかえしクイックチャージ", cost: 3, type: "charge-boost", desc: "ドリフトを切り返すとチャージが大きく溜まるようになるガジェット" },
+        // 4. チャージ強化
+        { id: "0401", name: "ファーストファストチャージ", cost: 2, type: "charge-boost", desc: "チャージ1段階目高速化" },
+        { id: "0402", name: "セカンドファストチャージ", cost: 1, type: "charge-boost", desc: "チャージ2段階目高速化" },
+        { id: "0403", name: "サードファストチャージ", cost: 1, type: "charge-boost", desc: "チャージ3段階目高速化" },
+        { id: "0404", name: "アルティメットチャージ", cost: 2, type: "charge-boost", desc: "チャージ4段階目解禁" },
+        { id: "0405", name: "ジャストチャージダッシュ", cost: 2, type: "charge-boost", desc: "ジャストタイミングでダッシュ性能アップ" },
+        { id: "0406", name: "テクニカルドリフト", cost: 2, type: "charge-boost", desc: "滑りやすくなるがチャージ全段階高速化" },
+        { id: "0407", name: "フリクションドリフト", cost: 2, type: "charge-boost", desc: "減速するがチャージ全段階高速化" },
+        { id: "0408", name: "切りかえしクイックチャージ", cost: 3, type: "charge-boost", desc: "切り返し時にチャージ大幅増加" },
 
-        // 5. パラメータ強化 (0501～)
-        { id: "0501", name: "スターター", cost: 1, type: "param-boost", desc: "LAP1の間、すべてのパラメータを+10" },
-        { id: "0502", name: "スーパースターター", cost: 2, type: "param-boost", desc: "LAP1の間、すべてのパラメータを+20" },
-        { id: "0503", name: "スロースターター", cost: 2, type: "param-boost", desc: "LAP3の間、すべてのパラメータを+10" },
-        { id: "0504", name: "スーパースロースターター", cost: 3, type: "param-boost", desc: "LAP3の間、すべてのパラメータを+20" },
-        { id: "0505", name: "スピードチューン1", cost: 1, type: "param-boost", desc: "スピード+10、アクセル-4" },
-        { id: "0506", name: "スピードチューン2", cost: 1, type: "param-boost", desc: "スピード+10、アクセル-2、ダッシュ-2" },
-        { id: "0507", name: "アクセルチューン1", cost: 1, type: "param-boost", desc: "アクセル+10、ハンドリング-4" },
-        { id: "0508", name: "アクセルチューン2", cost: 1, type: "param-boost", desc: "アクセル+10、ハンドリング-2、ダッシュ-2" },
-        { id: "0509", name: "ハンドリングチューン1", cost: 1, type: "param-boost", desc: "ハンドリング+10、パワー-4" },
-        { id: "0510", name: "ハンドリングチューン2", cost: 1, type: "param-boost", desc: "ハンドリング+10、パワー-2、スピード-2" },
-        { id: "0511", name: "パワーチューン1", cost: 1, type: "param-boost", desc: "パワー+10、アクセル-4" },
-        { id: "0512", name: "パワーチューン2", cost: 1, type: "param-boost", desc: "パワー+10、アクセル-2、ハンドリング-2" },
-        { id: "0513", name: "ダッシュチューン1", cost: 1, type: "param-boost", desc: "ダッシュ+10、スピード-4" },
-        { id: "0514", name: "ダッシュチューン2", cost: 1, type: "param-boost", desc: "ダッシュ+10、スピード-2、パワー-2" },
+        // 5. パラメータ強化 (★ステータス変化実装★)
+        { id: "0501", name: "スターター", cost: 1, type: "param-boost", desc: "LAP1のみ全ステータス+10" }, // 一時効果のため合計値には反映しない
+        { id: "0502", name: "スーパースターター", cost: 2, type: "param-boost", desc: "LAP1のみ全ステータス+20" },
+        { id: "0503", name: "スロースターター", cost: 2, type: "param-boost", desc: "LAP3のみ全ステータス+10" },
+        { id: "0504", name: "スーパースロースターター", cost: 3, type: "param-boost", desc: "LAP3のみ全ステータス+20" },
+        { 
+            id: "0505", name: "スピードチューン1", cost: 1, type: "param-boost", desc: "スピードマシンならS+10/A-4、それ以外はS+4",
+            calc: (s, ctx) => { if(ctx.mT==="スピード"){ s.s+=10; s.a-=4; } else { s.s+=4; } }
+        },
+        { 
+            id: "0506", name: "スピードチューン2", cost: 1, type: "param-boost", desc: "スピードマシンならS+10/A-2/D-2、それ以外はS+4",
+            calc: (s, ctx) => { if(ctx.mT==="スピード"){ s.s+=10; s.a-=2; s.d-=2; } else { s.s+=4; } }
+        },
+        { 
+            id: "0507", name: "アクセルチューン1", cost: 1, type: "param-boost", desc: "アクセルマシンならA+10/H-4、それ以外はA+4",
+            calc: (s, ctx) => { if(ctx.mT==="アクセル"){ s.a+=10; s.h-=4; } else { s.a+=4; } }
+        },
+        { 
+            id: "0508", name: "アクセルチューン2", cost: 1, type: "param-boost", desc: "アクセルマシンならA+10/H-2/D-2、それ以外はA+4",
+            calc: (s, ctx) => { if(ctx.mT==="アクセル"){ s.a+=10; s.h-=2; s.d-=2; } else { s.a+=4; } }
+        },
+        { 
+            id: "0509", name: "ハンドリングチューン1", cost: 1, type: "param-boost", desc: "ハンドリングマシンならH+10/P-4、それ以外はH+4",
+            calc: (s, ctx) => { if(ctx.mT==="ハンドリング"){ s.h+=10; s.p-=4; } else { s.h+=4; } }
+        },
+        { 
+            id: "0510", name: "ハンドリングチューン2", cost: 1, type: "param-boost", desc: "ハンドリングマシンならH+10/P-2/S-2、それ以外はH+4",
+            calc: (s, ctx) => { if(ctx.mT==="ハンドリング"){ s.h+=10; s.p-=2; s.s-=2; } else { s.h+=4; } }
+        },
+        { 
+            id: "0511", name: "パワーチューン1", cost: 1, type: "param-boost", desc: "パワーマシンならP+10/A-4、それ以外はP+4",
+            calc: (s, ctx) => { if(ctx.mT==="パワー"){ s.p+=10; s.a-=4; } else { s.p+=4; } }
+        },
+        { 
+            id: "0512", name: "パワーチューン2", cost: 1, type: "param-boost", desc: "パワーマシンならP+10/A-2/H-2、それ以外はP+4",
+            calc: (s, ctx) => { if(ctx.mT==="パワー"){ s.p+=10; s.a-=2; s.h-=2; } else { s.p+=4; } }
+        },
+        { 
+            id: "0513", name: "ダッシュチューン1", cost: 1, type: "param-boost", desc: "ダッシュマシンならD+10/S-4、それ以外はD+4",
+            calc: (s, ctx) => { if(ctx.mT==="ダッシュ"){ s.d+=10; s.s-=4; } else { s.d+=4; } }
+        },
+        { 
+            id: "0514", name: "ダッシュチューン2", cost: 1, type: "param-boost", desc: "ダッシュマシンならD+10/S-2/P-2、それ以外はD+4",
+            calc: (s, ctx) => { if(ctx.mT==="ダッシュ"){ s.d+=10; s.s-=2; s.p-=2; } else { s.d+=4; } }
+        },
 
-        // 6. サポート (0601～)
-        { id: "0601", name: "グリップ力強化", cost: 1, type: "support", desc: "氷や砂などの滑るコースで滑らなくなる" },
-        { id: "0602", name: "落下時ブーストリカバー", cost: 1, type: "support", desc: "穴のあるコースで落下してしまった際、ブーストを1つ獲得できる" },
-        { id: "0603", name: "壁リングガード", cost: 1, type: "support", desc: "壁に当たると数枚リングを失ってしまうが、それを防ぐことができるガジェット" },
-        { id: "0604", name: "無敵スタート", cost: 2, type: "support", desc: "スタート直後、一定時間無敵になる" },
-        { id: "0605", name: "アイテムロスト無効化", cost: 2, type: "support", desc: "攻撃を受けてもアイテムを落とさない" },
-        { id: "0606", name: "クイックリカバー", cost: 3, type: "support", desc: "被弾時からの復帰速度が上昇する" },
-        { id: "0607", name: "リングガード", cost: 2, type: "support", desc: "ほとんどのリング減少を半減する" },
+        // 6. サポート
+        { id: "0601", name: "グリップ力強化", cost: 1, type: "support", desc: "滑る路面でグリップ力アップ" },
+        { id: "0602", name: "落下時ブーストリカバー", cost: 1, type: "support", desc: "落下復帰時にブースト獲得" },
+        { id: "0603", name: "壁リングガード", cost: 1, type: "support", desc: "壁衝突時のリング減少を防ぐ" },
+        { id: "0604", name: "無敵スタート", cost: 2, type: "support", desc: "スタート直後無敵" },
+        { id: "0605", name: "アイテムロスト無効化", cost: 2, type: "support", desc: "被弾時のアイテムロストを防ぐ" },
+        { id: "0606", name: "クイックリカバー", cost: 3, type: "support", desc: "復帰速度アップ" },
+        { id: "0607", name: "リングガード", cost: 2, type: "support", desc: "被弾時のリング減少を半減" },
 
-        // 7. アイテムコントロール (0701～)
-        { id: "0701", name: "アイテムストックトレード", cost: 3, type: "item-control", desc: "持っているアイテムの順番を入れ替えられるようになる" },
-        { id: "0702", name: "アイテムストックプラス", cost: 2, type: "item-control", desc: "アイテムを1度に3つ持てるようになる" },
-        { id: "0703", name: "設置アイテム確率アップ", cost: 1, type: "item-control", desc: "アイテムボックスから設置アイテムが出現する確率が上がる" },
-        { id: "0704", name: "攻撃アイテム確率アップ", cost: 1, type: "item-control", desc: "アイテムボックスから攻撃アイテムが出現する確率が上がる" },
-        { id: "0705", name: "防御アイテム確率アップ", cost: 2, type: "item-control", desc: "アイテムボックスから防御アイテムが出現する確率が上がる" },
-        { id: "0706", name: "加速アイテム確率アップ", cost: 3, type: "item-control", desc: "アイテムボックスから加速アイテムが出現する確率が上がる" },
-        { id: "0707", name: "ウィスプ確率アップ", cost: 1, type: "item-control", desc: "ブースト・レーザー・ドリル・ボム・ヴォイドの5種が入手しやすくなるガジェット" },
+        // 7. アイテムコントロール
+        { id: "0701", name: "アイテムストックトレード", cost: 3, type: "item-control", desc: "アイテム順序入れ替え可能" },
+        { id: "0702", name: "アイテムストックプラス", cost: 2, type: "item-control", desc: "アイテム所持数+1" },
+        { id: "0703", name: "設置アイテム確率アップ", cost: 1, type: "item-control", desc: "設置アイテム出現率アップ" },
+        { id: "0704", name: "攻撃アイテム確率アップ", cost: 1, type: "item-control", desc: "攻撃アイテム出現率アップ" },
+        { id: "0705", name: "防御アイテム確率アップ", cost: 2, type: "item-control", desc: "防御アイテム出現率アップ" },
+        { id: "0706", name: "加速アイテム確率アップ", cost: 3, type: "item-control", desc: "加速アイテム出現率アップ" },
+        { id: "0707", name: "ウィスプ確率アップ", cost: 1, type: "item-control", desc: "特定ウィスプ出現率アップ" },
 
-        // 8. アイテム強化・追加 (0801～)
-        { id: "0801", name: "最初からブースト", cost: 1, type: "item-boost", desc: "名前の通りレース開始時からブーストを持てる" },
-        { id: "0802", name: "ダブルブースト追加", cost: 2, type: "item-boost", desc: "最初からブーストのダブル版。最初からダブルブーストを持てる" },
-        { id: "0803", name: "最初からダークチャオ", cost: 1, type: "item-boost", desc: "スタート時にダークチャオを持つ" },
-        { id: "0804", name: "ワープリング追加", cost: 2, type: "item-boost", desc: "自分より上位のレーサーの元へワープできるアイテム「ワープリング」を開幕に入手する" },
-        { id: "0805", name: "ロケットパンチ巨大化", cost: 1, type: "item-boost", desc: "ロケットパンチが大きくなり、当てやすくなる" },
-        { id: "0806", name: "トゲ鉄球巨大化", cost: 1, type: "item-boost", desc: "トゲ鉄球が巨大化、さらにアイテムボックスからトゲ鉄球が出やすくなる" },
-        { id: "0807", name: "ボムクイックチャージ", cost: 1, type: "item-boost", desc: "ボムのチャージ速度が上昇、さらにアイテムボックスからボムが出やすくなる" },
-        { id: "0808", name: "最初からモンスタートラック", cost: 3, type: "item-boost", desc: "レース開始時からモンスタートラックを持った状態でレースを始められるようになる" },
+        // 8. アイテム強化・追加
+        { id: "0801", name: "最初からブースト", cost: 1, type: "item-boost", desc: "開始時ブースト所持" },
+        { id: "0802", name: "ダブルブースト追加", cost: 2, type: "item-boost", desc: "開始時ダブルブースト所持" },
+        { id: "0803", name: "最初からダークチャオ", cost: 1, type: "item-boost", desc: "開始時ダークチャオ所持" },
+        { id: "0804", name: "ワープリング追加", cost: 2, type: "item-boost", desc: "開始時ワープリング所持" },
+        { id: "0805", name: "ロケットパンチ巨大化", cost: 1, type: "item-boost", desc: "ロケットパンチ強化" },
+        { id: "0806", name: "トゲ鉄球巨大化", cost: 1, type: "item-boost", desc: "トゲ鉄球強化＆出現率アップ" },
+        { id: "0807", name: "ボムクイックチャージ", cost: 1, type: "item-boost", desc: "ボム強化＆出現率アップ" },
+        { id: "0808", name: "最初からモンスタートラック", cost: 3, type: "item-boost", desc: "開始時モンスタートラック所持" },
 
-        // 9. スタンダードキット (0901～)
-        { id: "0901", name: "ドリフトチャージ短縮キット", cost: 3, type: "standard", desc: "チャージ1〜2段目を高速化し、ハンドリングを+3" },
-        { id: "0902", name: "アイテムたくさんキット", cost: 3, type: "standard", desc: "アイテムが3つ持てるようになり、さらにLAPが上がった際(=2周目と3周目開始時)にアイテムを1つ獲得する" },
-        { id: "0903", name: "ダメージサポートキット", cost: 3, type: "standard", desc: "スタートからしばらく無敵になり、落下した際にブーストを獲得する" },
+        // 9. スタンダードキット (★ステータス変化★)
+        { 
+            id: "0901", name: "ドリフトチャージ短縮キット", cost: 3, type: "standard", desc: "チャージ1-2段高速化 / H+3",
+            calc: (s) => { s.h+=3; }
+        },
+        { id: "0902", name: "アイテムたくさんキット", cost: 3, type: "standard", desc: "アイテム3枠＆LAPアイテム獲得" },
+        { id: "0903", name: "ダメージサポートキット", cost: 3, type: "standard", desc: "無敵スタート＆落下リカバー" },
 
-        // 10. マシンタイプキット (1001～)
-        { id: "1001", name: "スピードマシンキット", cost: 3, type: "machine", desc: "リング獲得範囲アップ+リングゲットダッシュミニを内包する。スピードマシンだとスピード+20、アクセル-16" },
-        { id: "1002", name: "アクセルマシンキット", cost: 3, type: "machine", desc: "クイックリカバー（弱）を内包する。アクセルマシンだとアクセル+20、ダッシュ-16" },
-        { id: "1003", name: "ハンドリングマシンキット", cost: 3, type: "machine", desc: "アルティメットチャージを内包する。ハンドリングマシンだとハンドリング+20、スピード-16" },
-        { id: "1004", name: "パワーマシンキット", cost: 3, type: "machine", desc: "ぶつかりダッシュを内包する。パワーマシンだとパワー+20、ハンドリング-16" },
-        { id: "1005", name: "ダッシュマシンキット", cost: 3, type: "machine", desc: "チャージダッシュ時にリングを2枚獲得する。ダッシュマシンだとダッシュ+20、パワー-16" },
+        // 10. マシンタイプキット (★ステータス変化★)
+        { 
+            id: "1001", name: "スピードマシンキット", cost: 3, type: "machine", desc: "スピードマシンならS+20/A-16",
+            calc: (s, ctx) => { if(ctx.mT==="スピード"){ s.s+=20; s.a-=16; } }
+        },
+        { 
+            id: "1002", name: "アクセルマシンキット", cost: 3, type: "machine", desc: "アクセルマシンならA+20/D-16",
+            calc: (s, ctx) => { if(ctx.mT==="アクセル"){ s.a+=20; s.d-=16; } }
+        },
+        { 
+            id: "1003", name: "ハンドリングマシンキット", cost: 3, type: "machine", desc: "ハンドリングマシンならH+20/S-16",
+            calc: (s, ctx) => { if(ctx.mT==="ハンドリング"){ s.h+=20; s.s-=16; } }
+        },
+        { 
+            id: "1004", name: "パワーマシンキット", cost: 3, type: "machine", desc: "パワーマシンならP+20/H-16",
+            calc: (s, ctx) => { if(ctx.mT==="パワー"){ s.p+=20; s.h-=16; } }
+        },
+        { 
+            id: "1005", name: "ダッシュマシンキット", cost: 3, type: "machine", desc: "ダッシュマシンならD+20/P-16",
+            calc: (s, ctx) => { if(ctx.mT==="ダッシュ"){ s.d+=20; s.p-=16; } }
+        },
 
-        // 11. キャラタイプキット (1101～)
-        { id: "1101", name: "ハンドリングキャラキット", cost: 3, type: "char", desc: "「リングスティール」「リングスティールミニ」「ハンドリングタイプのキャラクター時にハンドリング+7とスピード-5」が合わさった性能" },
-        { id: "1102", name: "パワーキャラキット", cost: 3, type: "char", desc: "「ぶつかりダッシュ」「ロングスリップストリーム」*1「パワータイプのキャラクター時にパワー+7とハンドリング-5」が合わさった性能" },
-        { id: "1103", name: "ダッシュキャラキット", cost: 3, type: "char", desc: "「超高速エアトリック」「エアトリックボーナス」「ダッシュタイプのキャラクター時にダッシュ+7とパワー-5」が合わさった性能" },
+        // 11. キャラタイプキット (★ステータス変化★)
+        { 
+            id: "1101", name: "ハンドリングキャラキット", cost: 3, type: "char", desc: "ハンドリングキャラならH+7/S-5",
+            calc: (s, ctx) => { if(ctx.cT==="ハンドリング"){ s.h+=7; s.s-=5; } }
+        },
+        { 
+            id: "1102", name: "パワーキャラキット", cost: 3, type: "char", desc: "パワーキャラならP+7/H-5",
+            calc: (s, ctx) => { if(ctx.cT==="パワー"){ s.p+=7; s.h-=5; } }
+        },
+        { 
+            id: "1103", name: "ダッシュキャラキット", cost: 3, type: "char", desc: "ダッシュキャラならD+7/P-5",
+            calc: (s, ctx) => { if(ctx.cT==="ダッシュ"){ s.d+=7; s.p-=5; } }
+        },
 
-        // 12. アドバンスドキット (1201～)
-        { id: "1201", name: "後半追い上げキット", cost: 3, type: "advanced", desc: "リング上限が110枚になり、LAP3突入時にアイテムを2個獲得する" },
-        { id: "1202", name: "水上強化キット", cost: 3, type: "advanced", desc: "「超高速エアトリック」「チャージジャンプ自由度アップ」を組み合わせたキット" }
+        // 12. アドバンスドキット
+        { id: "1201", name: "後半追い上げキット", cost: 3, type: "advanced", desc: "リング上限110枚＆LAP3アイテム" },
+        { id: "1202", name: "水上強化キット", cost: 3, type: "advanced", desc: "水上・空中・チャージ性能アップ" }
     ];
 
-    // --- Top50 ランカー使用数データ (11/11集計) ---
-    const usageStats = {
-        "0402": 34, "0404": 33, "0403": 32, "0406": 31,
-        "0901": 9,  "0702": 9,  "0707": 7,  "0701": 6,
-        "0102": 6,  "0305": 4,  "0401": 3,  "0108": 2,
-        "0513": 2,  "0606": 1,  "0514": 1,  "0301": 1,
-        "0105": 1,  "0205": 1
-    };
+    const usageStats = { "0402":34, "0404":33, "0403":32, "0406":31, "0901":9, "0702":9, "0707":7, "0701":6, "0102":6, "0305":4, "0401":3, "0108":2, "0513":2, "0606":1, "0514":1, "0301":1, "0105":1, "0205":1 };
 
     // ==========================================
-    //  2. 状態管理・ロジック
+    //  2. ロジック・状態管理
     // ==========================================
 
     const ROW_CAPACITY = 3;
-    let currentSetup = { 
-        upper: [], lower: [], 
-        charId: "", machineType: "", 
-        part1: "", part2: "", part3: "" 
-    };
+    let currentSetup = { upper: [], lower: [], charId: "", machineType: "", part1: "", part2: "", part3: "" };
     let customGadgets = [];
     let savedMemos = [];
     let isSortedByUsage = false;
 
-    // --- 初期化処理 ---
     window.onload = () => {
-        // 重複IDチェック(開発用)
-        const checkIds = () => {
-            const all = [...defaultGadgets, ...customGadgets];
-            const ids = all.map(g => g.id);
-            const duplicates = ids.filter((item, index) => ids.indexOf(item) !== index);
-            if (duplicates.length > 0) console.error("Duplicate IDs found:", duplicates);
-        };
-        checkIds();
-
         loadCustomGadgets();
         loadMemosFromStorage();
         initCharSelect();
         updateSelectOptions();
         
         const params = new URLSearchParams(window.location.search);
-        // 新形式URL (キャラマシン対応)
-        if (params.has('s')) {
-            loadFromUrlNew(params.get('s'));
-        } 
-        // 旧形式URL (ガジェットのみ)
-        else if (params.has('data')) {
-            loadFromUrlV6(params.get('data'));
-        } 
-        else {
-            render();
-        }
+        if (params.has('s')) loadFromUrlNew(params.get('s'));
+        else if (params.has('data')) loadFromUrlV6(params.get('data'));
+        else render();
     };
 
-    // --- キャラクター選択肢の生成 ---
     function initCharSelect() {
         const cSelect = document.getElementById('charSelect');
         characterData.forEach(c => {
             const opt = document.createElement('option');
             opt.value = c.id;
-            // 要望: 名前だけでなくタイプも表示
             opt.textContent = `${c.name} [${c.type}]`;
             cSelect.appendChild(opt);
         });
     }
 
-    // --- マシンタイプ変更時の処理 ---
     function changeMachineType() {
         const type = document.getElementById('machineTypeSelect').value;
         const p1 = document.getElementById('part1Select');
         const p2 = document.getElementById('part2Select');
         const p3 = document.getElementById('part3Select');
 
-        // 一旦リセットして有効化
         p1.innerHTML = '<option value="">フロント</option>'; p1.disabled = false;
         p2.innerHTML = '<option value="">リア</option>';     p2.disabled = false;
         p3.innerHTML = '<option value="">タイヤ</option>';   p3.disabled = false;
 
-        // 選択されたタイプのパーツを抽出
         const parts = machineParts.filter(m => m.type === type);
-        
         const addOpts = (sel) => {
             parts.forEach(p => {
                 const opt = document.createElement('option');
@@ -587,7 +605,6 @@
         addOpts(p1);
         addOpts(p2);
 
-        // ダッシュタイプはタイヤなし (2パーツ構成)
         if (type === "ダッシュ") {
             p3.innerHTML = '<option value="">(なし)</option>';
             p3.disabled = true;
@@ -596,11 +613,10 @@
             addOpts(p3);
             p3.style.backgroundColor = "#fff";
         }
-        
         updateCharMachineInfo();
     }
 
-   // 総合ステータス計算・表示（ラベル幅修正版）
+    // --- ★総合ステータス計算 (補正ロジック追加版)★ ---
     function updateCharMachineInfo() {
         const cId = document.getElementById('charSelect').value;
         const mType = document.getElementById('machineTypeSelect').value;
@@ -619,7 +635,6 @@
         const p2 = machineParts.find(p => p.id === p2Id);
         const p3 = machineParts.find(p => p.id === p3Id);
 
-        // ★修正: ラベルの幅を60pxから80pxに広げました
         const labelStyle = "display:inline-block; width:80px; font-weight:bold; color:#555;";
         const valStyle = "display:inline-block; width:30px; text-align:right; margin-right:10px;";
 
@@ -639,7 +654,7 @@
             cSpecDiv.textContent = "";
         }
 
-        // 2. マシン合計計算
+        // 2. マシン合計
         let mStats = { s:0, a:0, h:0, p:0, d:0 };
         let partsList = [];
         if(p1) partsList.push(p1);
@@ -650,7 +665,6 @@
             mStats.s += part.s; mStats.a += part.a; mStats.h += part.h; mStats.p += part.p; mStats.d += part.d;
         });
 
-        // マシンスペック表示
         const mSpecDiv = document.getElementById('machineSpec');
         if(partsList.length > 0) {
             mSpecDiv.innerHTML = `
@@ -665,84 +679,83 @@
             mSpecDiv.textContent = "";
         }
 
-        // 3. 最終合計 (キャラ + マシン)
+        // 3. 最終合計 (キャラ + マシン + ガジェット補正)
         const tDiv = document.getElementById('totalStats');
         if(char) {
-            const totalS = char.speed + mStats.s;
-            const totalA = char.accel + mStats.a;
-            const totalH = char.handling + mStats.h;
-            const totalP = char.power + mStats.p;
-            const totalD = char.dash + mStats.d;
-            
-            // 最終ステータスは少し大きく表示
+            // ベース値
+            let finalS = { 
+                s: char.speed + mStats.s, 
+                a: char.accel + mStats.a, 
+                h: char.handling + mStats.h, 
+                p: char.power + mStats.p, 
+                d: char.dash + mStats.d 
+            };
+
+            // ガジェット補正計算
+            // 選択中のガジェットを全て集める
+            const activeGadgets = [...currentSetup.upper, ...currentSetup.lower];
+            const context = { mT: mType, cT: char.type }; // 計算用コンテキスト
+
+            activeGadgets.forEach(g => {
+                if (g.calc) {
+                    g.calc(finalS, context); // 補正関数を実行
+                }
+            });
+
             const totalLabelStyle = "font-size:0.75rem; color:#666; display:block;";
             const totalValStyle = "font-size:1.1rem; font-weight:bold; color:#0055ff; display:block;";
             const boxStyle = "display:inline-block; width:18%; text-align:center;";
 
             tDiv.innerHTML = `
                 <div style="display:flex; justify-content:space-between;">
-                    <div style="${boxStyle}"><span style="${totalLabelStyle}">スピード</span><span style="${totalValStyle}">${totalS}</span></div>
-                    <div style="${boxStyle}"><span style="${totalLabelStyle}">アクセル</span><span style="${totalValStyle}">${totalA}</span></div>
-                    <div style="${boxStyle}"><span style="${totalLabelStyle}">ハンドリング</span><span style="${totalValStyle}">${totalH}</span></div>
-                    <div style="${boxStyle}"><span style="${totalLabelStyle}">パワー</span><span style="${totalValStyle}">${totalP}</span></div>
-                    <div style="${boxStyle}"><span style="${totalLabelStyle}">ダッシュ</span><span style="${totalValStyle}">${totalD}</span></div>
+                    <div style="${boxStyle}"><span style="${totalLabelStyle}">スピード</span><span style="${totalValStyle}">${finalS.s}</span></div>
+                    <div style="${boxStyle}"><span style="${totalLabelStyle}">アクセル</span><span style="${totalValStyle}">${finalS.a}</span></div>
+                    <div style="${boxStyle}"><span style="${totalLabelStyle}">ハンドリング</span><span style="${totalValStyle}">${finalS.h}</span></div>
+                    <div style="${boxStyle}"><span style="${totalLabelStyle}">パワー</span><span style="${totalValStyle}">${finalS.p}</span></div>
+                    <div style="${boxStyle}"><span style="${totalLabelStyle}">ダッシュ</span><span style="${totalValStyle}">${finalS.d}</span></div>
                 </div>`;
         } else {
             tDiv.innerHTML = `<div style="color:#aaa; text-align:center;">(キャラクターを選択すると合計値が表示されます)</div>`;
         }
     }
-    // --- 並び替え切り替え ---
+
     function toggleSort() {
         isSortedByUsage = !isSortedByUsage;
         const btn = document.getElementById('btnSort');
         if (isSortedByUsage) {
-            btn.textContent = "↩️ 分類順に戻す";
-            btn.style.backgroundColor = "#e91e63";
+            btn.textContent = "↩️ 分類順に戻す"; btn.style.backgroundColor = "#e91e63";
         } else {
-            btn.textContent = "📊 使用率順に並べ替え";
-            btn.style.backgroundColor = "#607d8b";
+            btn.textContent = "📊 使用率順に並べ替え"; btn.style.backgroundColor = "#607d8b";
         }
         updateSelectOptions();
     }
 
-    // --- リスト更新 ---
     function updateSelectOptions() {
         const select = document.getElementById('gadgetSelect');
         const currentVal = select.value;
         select.innerHTML = '<option value="" disabled selected>ガジェットを選択してください</option>';
-        
         let listToRender = [...defaultGadgets];
-        
-        // 使用率順ソート
         if (isSortedByUsage) {
             listToRender.sort((a, b) => {
                 const countA = usageStats[a.id] || 0;
                 const countB = usageStats[b.id] || 0;
-                // 数が多い順 -> 同じならID順
                 return countB - countA || a.id.localeCompare(b.id);
             });
         } 
-
-        // 項目生成
         const createOpt = (g) => {
             const opt = document.createElement('option');
             opt.value = g.id;
             const count = usageStats[g.id] || 0;
             const countText = count > 0 ? `【Top50:${count}】` : "";
-            
             if (isSortedByUsage && count > 0) {
                 opt.textContent = `${countText} ${g.name} (コスト${g.cost})`;
-                opt.style.fontWeight = "bold";
-                opt.style.color = "#d32f2f";
+                opt.style.fontWeight = "bold"; opt.style.color = "#d32f2f";
             } else {
                 opt.textContent = `${g.name} (コスト${g.cost}) ${countText}`;
             }
             select.appendChild(opt);
         };
-
         listToRender.forEach(createOpt);
-
-        // カスタムガジェット
         if(customGadgets.length > 0) {
             const sep = document.createElement('option');
             sep.disabled = true; sep.textContent = "--- オリジナル ---";
@@ -752,31 +765,26 @@
         renderCustomList();
     }
 
-    // --- 説明文表示 ---
     function showGadgetDescription() {
         const select = document.getElementById('gadgetSelect');
         const preview = document.getElementById('gadgetDescPreview');
         const gId = select.value;
         if (!gId) { preview.textContent = "（ここにガジェットの効果が表示されます）"; return; }
-        
         const g = defaultGadgets.find(item => item.id === gId) || customGadgets.find(item => item.id === gId);
         if (g) preview.textContent = g.desc ? g.desc : "（説明文が登録されていません）";
     }
 
-    // --- 追加ロジック (重複チェック & SmartAdd) ---
     function tryAddGadget() {
         const gId = document.getElementById('gadgetSelect').value;
         if (!gId) return;
         let gadget = defaultGadgets.find(g => g.id === gId) || customGadgets.find(g => g.id === gId);
         if(!gadget) return;
-
         const allCurrent = [...currentSetup.upper, ...currentSetup.lower];
         if (allCurrent.some(item => item.id === gadget.id)) {
             showMessage("⚠️ 同じガジェットは2つセットできません", true);
             return;
         }
-        const newItem = { ...gadget, uid: Date.now() + Math.random() };
-
+        const newItem = { ...gadget, uid: Date.now() + Math.random(), calc: gadget.calc }; // calc関数も引き継ぐ
         if (getRowCost(currentSetup.upper) + newItem.cost <= ROW_CAPACITY) {
             currentSetup.upper.push(newItem); render();
         } else if (getRowCost(currentSetup.lower) + newItem.cost <= ROW_CAPACITY) {
@@ -789,13 +797,10 @@
         }
     }
 
-    // 自動整理: 大きい順に詰め直す
     function smartAdd(newItem) {
         const allItems = [...currentSetup.upper, ...currentSetup.lower, newItem];
         if (allItems.reduce((s, i) => s + i.cost, 0) > ROW_CAPACITY * 2) return false;
-        
         allItems.sort((a, b) => b.cost - a.cost); 
-        
         let newUpper = [], newLower = [];
         for (let item of allItems) {
             if (getRowCost(newUpper) + item.cost <= ROW_CAPACITY) newUpper.push(item);
@@ -806,7 +811,6 @@
         return true;
     }
 
-    // --- ランダム生成 ---
     function setRandomSetup() {
         if(!confirm("現在の構成を破棄して、ランダムな構成を生成しますか？")) return;
         const pool = [...defaultGadgets, ...customGadgets];
@@ -816,7 +820,7 @@
             while(c < ROW_CAPACITY && s<200) {
                 const g = pool[Math.floor(Math.random()*pool.length)];
                 if(!usedIds.has(g.id) && c+g.cost<=ROW_CAPACITY) {
-                    r.push({...g, uid:Date.now()}); c+=g.cost; usedIds.add(g.id);
+                    r.push({...g, uid:Date.now(), calc:g.calc}); c+=g.cost; usedIds.add(g.id);
                 } s++;
             } return r;
         };
@@ -824,18 +828,50 @@
         showMessage("🎲 ランダム構成を生成しました！");
     }
 
-    // --- AI戦術構築 (キャラ・マシン連動強化) ---
+    // --- ★AI生成機能の強化版（キャラ・マシン自動選出）★ ---
     function setAiOriginalSetup() {
         if(!confirm("現在の構成を破棄して、AIが考案した戦術を展開しますか？")) return;
 
-        const charId = document.getElementById('charSelect').value;
-        const machId = document.getElementById('machineTypeSelect').value; // マシンタイプを取得
-        const charInfo = characterData.find(c => c.id === charId);
+        // 1. キャラ・マシンが未選択ならランダムに決める
+        let charId = document.getElementById('charSelect').value;
+        let machType = document.getElementById('machineTypeSelect').value;
+
+        // キャラ自動選出
+        if (!charId) {
+            const randChar = characterData[Math.floor(Math.random() * characterData.length)];
+            charId = randChar.id;
+            // UI反映
+            document.getElementById('charSelect').value = charId;
+        }
+
+        // マシン自動選出
+        if (!machType) {
+            const types = ["スピード", "アクセル", "ハンドリング", "パワー", "ダッシュ"];
+            machType = types[Math.floor(Math.random() * types.length)];
+            document.getElementById('machineTypeSelect').value = machType;
+            changeMachineType(); // パーツリスト生成
+            
+            // パーツもランダムにセット
+            const p1Opts = document.getElementById('part1Select').options;
+            const p2Opts = document.getElementById('part2Select').options;
+            const p3Opts = document.getElementById('part3Select').options;
+            
+            // 1番目(インデックス1)以降からランダム
+            if(p1Opts.length > 1) document.getElementById('part1Select').selectedIndex = Math.floor(Math.random() * (p1Opts.length - 1)) + 1;
+            if(p2Opts.length > 1) document.getElementById('part2Select').selectedIndex = Math.floor(Math.random() * (p2Opts.length - 1)) + 1;
+            if(machType !== "ダッシュ" && p3Opts.length > 1) {
+                document.getElementById('part3Select').selectedIndex = Math.floor(Math.random() * (p3Opts.length - 1)) + 1;
+            }
+        }
+
+        // 情報更新
+        updateCharMachineInfo();
         
-        // 文脈作成
+        // 2. 更新された情報でAIロジック実行
+        const charInfo = characterData.find(c => c.id === charId);
         const context = {
             charType: charInfo ? charInfo.type : null,
-            isDashMachine: machId === "ダッシュ"
+            isDashMachine: machType === "ダッシュ"
         };
 
         const check = (g, keywords) => {
@@ -843,7 +879,6 @@
             return keywords.some(k => text.includes(k));
         };
 
-        // 戦術定義
         const tactics = [
             { 
                 name: "暴走特急 (Speed & Crash)", 
@@ -893,7 +928,7 @@
                 if(source.length > 0) {
                     const g = source[Math.floor(Math.random() * source.length)];
                     if (!usedIds.has(g.id) && cost + g.cost <= ROW_CAPACITY) {
-                        row.push({ ...g, uid: Date.now() + Math.random() });
+                        row.push({ ...g, uid: Date.now() + Math.random(), calc: g.calc });
                         cost += g.cost;
                         usedIds.add(g.id);
                     }
@@ -908,7 +943,6 @@
         alert(`🧠 AI戦術構築完了\n\nキャラ: ${charInfo ? charInfo.name : "未選択"}\n戦術: 「${tactic.name}」\n${tactic.desc}`);
     }
 
-    // --- カスタムガジェット管理 ---
     function registerCustomGadget() {
         const name = document.getElementById('customName').value.trim();
         const cost = parseInt(document.getElementById('customCost').value);
@@ -941,18 +975,11 @@
         });
     }
 
-    // --- 描画・保存・読込 ---
     function render() {
-        if(currentSetup.charId) document.getElementById('charSelect').value = currentSetup.charId;
-        if(currentSetup.machineType) document.getElementById('machineTypeSelect').value = currentSetup.machineType || ""; 
-        
-        // キャラ・マシン情報更新
         updateCharMachineInfo();
-
         renderRow('visualUpper', 'costUpper', currentSetup.upper);
         renderRow('visualLower', 'costLower', currentSetup.lower);
     }
-
     function renderRow(elId, costId, data) {
         const el = document.getElementById(elId); el.innerHTML = '';
         data.forEach(item => {
@@ -990,78 +1017,48 @@
         localStorage.setItem('sonicCW_memos', JSON.stringify(savedMemos));
         renderMemoList();
     }
-    // メモリストの描画関数（読み込みバグ修正版）
     function renderMemoList() {
-        const l = document.getElementById('memoList');
-        l.innerHTML = '';
+        const l = document.getElementById('memoList'); l.innerHTML = '';
         savedMemos.forEach(m => {
-            const d = document.createElement('div');
-            d.className = 'memo-item';
+            const d = document.createElement('div'); d.className = 'memo-item';
             d.innerHTML = `<span>${m.title}</span>`;
-            const bg = document.createElement('div');
-            bg.style.display='flex';
-            bg.style.gap='5px';
-            
-            const btnL = document.createElement('button');
-            btnL.textContent='読込';
-            btnL.className='btn-save';
-            btnL.style.padding='4px 8px';
-            
-            // ★修正ポイント: 読み込みロジックの順序を変更★
-            btnL.onclick = () => {
-                // 1. 保存データを一時変数に退避（currentSetupに直接入れない）
-                const savedData = JSON.parse(JSON.stringify(m.data));
-                
-                // 2. まずキャラとマシンタイプをDOMにセット
-                document.getElementById('charSelect').value = savedData.charId || "";
-                
-                if (savedData.machineType) {
-                    document.getElementById('machineTypeSelect').value = savedData.machineType;
-                    
-                    // 3. パーツリストを生成（この瞬間、DOMのパーツ値はリセットされる）
+            const bg = document.createElement('div'); bg.style.display='flex'; bg.style.gap='5px';
+            const btnL = document.createElement('button'); btnL.textContent='読込'; btnL.className='btn-save'; btnL.style.padding='4px 8px';
+            btnL.onclick=()=>{
+                currentSetup = JSON.parse(JSON.stringify(m.data)); 
+                // 復元時のデータ修復: calc関数はJSON保存で消えるため、IDから再取得して紐付ける
+                const restoreCalc = (list) => list.map(item => {
+                    const orig = defaultGadgets.find(d => d.id === item.id);
+                    return orig ? { ...item, calc: orig.calc } : item;
+                });
+                currentSetup.upper = restoreCalc(currentSetup.upper);
+                currentSetup.lower = restoreCalc(currentSetup.lower);
+
+                document.getElementById('charSelect').value = currentSetup.charId || "";
+                if(currentSetup.machineType) {
+                    document.getElementById('machineTypeSelect').value = currentSetup.machineType;
                     changeMachineType();
-                    
-                    // 4. 退避しておいたデータから、パーツの値をDOMに再セット
-                    if(savedData.part1) document.getElementById('part1Select').value = savedData.part1;
-                    if(savedData.part2) document.getElementById('part2Select').value = savedData.part2;
-                    if(savedData.part3) document.getElementById('part3Select').value = savedData.part3;
+                    document.getElementById('part1Select').value = currentSetup.part1 || "";
+                    document.getElementById('part2Select').value = currentSetup.part2 || "";
+                    document.getElementById('part3Select').value = currentSetup.part3 || "";
                 }
-                
-                // 5. 最後に現在のDOMの状態を正として currentSetup を更新し、計算・描画
                 updateCharMachineInfo();
                 render();
-                
                 showMessage(`「${m.title}」を読み込みました`);
             };
-            
-            const btnD = document.createElement('button');
-            btnD.textContent='削除';
-            btnD.className='btn-delete-memo';
-            btnD.onclick=()=>{
-                if(confirm('削除しますか？')){
-                    savedMemos=savedMemos.filter(x=>x.id!==m.id);
-                    localStorage.setItem('sonicCW_memos',JSON.stringify(savedMemos));
-                    renderMemoList();
-                }
-            };
-            bg.appendChild(btnL);
-            bg.appendChild(btnD);
-            d.appendChild(bg);
-            l.appendChild(d);
+            const btnD = document.createElement('button'); btnD.textContent='削除'; btnD.className='btn-delete-memo';
+            btnD.onclick=()=>{if(confirm('削除?')){savedMemos=savedMemos.filter(x=>x.id!==m.id);localStorage.setItem('sonicCW_memos',JSON.stringify(savedMemos));renderMemoList();}};
+            bg.appendChild(btnL); bg.appendChild(btnD); d.appendChild(bg); l.appendChild(d);
         });
-    }    
-    // --- 共有URL (新パラメータ s 対応) ---
+    }
+    
     function generateShareUrl() {
         const ser = i => `${encodeURIComponent(i.name)}:${i.cost}:${i.type||'custom'}`;
         const data = currentSetup.upper.map(ser).join(',') + '|' + currentSetup.lower.map(ser).join(',');
         const pStr = `${currentSetup.part1||''},${currentSetup.part2||''},${currentSetup.part3||''}`;
-        
         const url = new URL(window.location.href);
-        url.searchParams.set('s', 
-            `c=${currentSetup.charId||''}&mt=${currentSetup.machineType||''}&p=${pStr}&d=${encodeURIComponent(data)}`
-        );
+        url.searchParams.set('s', `c=${currentSetup.charId||''}&mt=${currentSetup.machineType||''}&p=${pStr}&d=${encodeURIComponent(data)}`);
         url.searchParams.delete('data');
-        
         document.getElementById('shareArea').style.display = 'block';
         document.getElementById('shareUrl').value = url.href;
     }
@@ -1077,9 +1074,7 @@
                 changeMachineType();
                 if(params.has('p')) {
                     const parts = params.get('p').split(',');
-                    currentSetup.part1 = parts[0]; 
-                    currentSetup.part2 = parts[1]; 
-                    currentSetup.part3 = parts[2];
+                    currentSetup.part1 = parts[0]; currentSetup.part2 = parts[1]; currentSetup.part3 = parts[2];
                     if(parts[0]) document.getElementById('part1Select').value = parts[0];
                     if(parts[1]) document.getElementById('part2Select').value = parts[1];
                     if(parts[2]) document.getElementById('part3Select').value = parts[2];
@@ -1091,35 +1086,38 @@
         else render();
     }
 
-    // 旧形式互換
     function loadFromUrlV6(str) {
         const [u, l] = str.split('|');
+        // 復元時にcalc関数を再紐付け
         const des = s => {
             if(!s) return [];
             return s.split(',').map(x => {
                 const [n, c, t] = x.split(':');
-                return { id:"share"+Math.random(), name:decodeURIComponent(n), cost:parseInt(c), type:t, uid:Math.random() };
+                const found = defaultGadgets.find(d => d.name === decodeURIComponent(n));
+                return { 
+                    id: found ? found.id : "share"+Math.random(), 
+                    name: decodeURIComponent(n), 
+                    cost: parseInt(c), 
+                    type: t, 
+                    uid: Math.random(),
+                    calc: found ? found.calc : null 
+                };
             });
         };
         currentSetup.upper = des(u); currentSetup.lower = des(l);
         render();
     }
-
     function showMessage(msg, err=false) { const e=document.getElementById('message'); e.textContent=msg; e.style.color=err?'red':'#0055ff'; setTimeout(()=>e.textContent='',3000); }
-    
-    function resetCurrent() { 
-        if(confirm("リセットしますか？")){
-            currentSetup={upper:[],lower:[],charId:"",machineType:"",part1:"",part2:"",part3:""}; 
-            document.getElementById('charSelect').value = "";
-            document.getElementById('machineTypeSelect').value = "";
-            changeMachineType(); 
-            document.getElementById('charSpec').textContent = "";
-            document.getElementById('machineSpec').textContent = "";
-            document.getElementById('totalStats').innerHTML = "🚀 - &nbsp; ⚡ - &nbsp; 🌀 - &nbsp; 💪 - &nbsp; ⏩ -";
-            render(); 
-            document.getElementById('shareArea').style.display='none';
-        }
-    }
+    function resetCurrent() { if(confirm("リセットしますか？")){
+        currentSetup={upper:[],lower:[],charId:"",machineType:"",part1:"",part2:"",part3:""}; 
+        document.getElementById('charSelect').value = "";
+        document.getElementById('machineTypeSelect').value = "";
+        changeMachineType();
+        document.getElementById('charSpec').textContent = "";
+        document.getElementById('machineSpec').textContent = "";
+        document.getElementById('totalStats').innerHTML = "🚀 - &nbsp; ⚡ - &nbsp; 🌀 - &nbsp; 💪 - &nbsp; ⏩ -";
+        render(); document.getElementById('shareArea').style.display='none';
+    }}
 </script>
 </body>
 </html>
