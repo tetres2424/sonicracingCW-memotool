@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ソニックレーシングCW 構成ツール v17</title>
+    <title>ソニックレーシングCW 構成ツール v18</title>
     <style>
         :root {
             --bg-color: #f4f4f9;
@@ -131,7 +131,7 @@
 </head>
 <body>
 
-    <h1>Sonic Racing CW 構成ツール v17</h1>
+    <h1>Sonic Racing CW 構成ツール v18</h1>
 
     <div class="container">
         
@@ -160,7 +160,6 @@
                 <div class="row-label"><span>上段 (Upper)</span><span>Cost: <span id="costUpper">0</span>/3</span></div>
                 <div class="visual-row" id="visualUpper"></div>
             </div>
-            
             <div class="row-container">
                 <div class="row-label"><span>下段 (Lower)</span><span>Cost: <span id="costLower">0</span>/3</span></div>
                 <div class="visual-row" id="visualLower"></div>
@@ -168,34 +167,36 @@
             
             <div id="message"></div>
 
-            <div class="controls" style="margin-top: 20px; align-items: flex-start;">
-                <div style="flex-grow: 1; min-width: 200px;">
-                    <select id="gadgetSelect" onchange="showGadgetDescription()" style="width: 100%;">
+            <div class="controls" style="margin-top: 20px; display: block;"> <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px; flex-wrap: wrap;">
+                    <select id="gadgetSelect" onchange="showGadgetDescription()" style="flex-grow: 1; min-width: 200px;">
                         <option value="" disabled selected>ガジェットを選択してください</option>
                     </select>
                     
-                    <div id="gadgetDescPreview" style="
-                        margin-top: 5px; 
-                        padding: 8px; 
-                        background: #f1f8ff; 
-                        border: 1px solid #c8e1ff; 
-                        border-radius: 4px; 
-                        font-size: 0.85rem; 
-                        color: #444;
-                        height: 4.5em; 
-                        overflow-y: auto;
-                    ">
-                        ここにガジェットの効果が表示されます
+                    <div style="display: flex; gap: 5px; flex-shrink: 0;">
+                        <button class="btn-add" onclick="tryAddGadget()">追加</button>
+                        <button class="btn-reset" onclick="resetCurrent()">リセット</button>
                     </div>
                 </div>
 
-                <div style="display:flex; flex-direction:column; gap:5px;">
-                    <button class="btn-add" onclick="tryAddGadget()">追加</button>
-                    <button class="btn-reset" onclick="resetCurrent()">リセット</button>
+                <div id="gadgetDescPreview" style="
+                    width: 100%;
+                    height: 60px; 
+                    padding: 10px; 
+                    background: #f1f8ff; 
+                    border: 1px solid #c8e1ff; 
+                    border-radius: 4px; 
+                    font-size: 0.85rem; 
+                    color: #444;
+                    overflow-y: auto;
+                    box-sizing: border-box;
+                    line-height: 1.4;
+                ">
+                    （ここにガジェットの効果が表示されます）
                 </div>
+
             </div>
 
-            <div class="controls" style="margin-top: 10px;">
+            <div class="controls" style="margin-top: 15px;">
                 <button class="btn-random" onclick="setRandomSetup()">🎲ランダム</button>
                 <button class="btn-random" style="background-color: #673ab7;" onclick="setAiOriginalSetup()">🧠AI生成</button>
             </div>
