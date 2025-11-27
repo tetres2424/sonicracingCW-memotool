@@ -600,7 +600,7 @@
         updateCharMachineInfo();
     }
 
-    // 総合ステータス計算・表示（アイコン廃止・日本語ラベル版）
+   // 総合ステータス計算・表示（ラベル幅修正版）
     function updateCharMachineInfo() {
         const cId = document.getElementById('charSelect').value;
         const mType = document.getElementById('machineTypeSelect').value;
@@ -619,8 +619,8 @@
         const p2 = machineParts.find(p => p.id === p2Id);
         const p3 = machineParts.find(p => p.id === p3Id);
 
-        // 表示用のスタイル定義（共通）
-        const labelStyle = "display:inline-block; width:60px; font-weight:bold; color:#555;";
+        // ★修正: ラベルの幅を60pxから80pxに広げました
+        const labelStyle = "display:inline-block; width:80px; font-weight:bold; color:#555;";
         const valStyle = "display:inline-block; width:30px; text-align:right; margin-right:10px;";
 
         // 1. キャラスペック
@@ -691,7 +691,6 @@
             tDiv.innerHTML = `<div style="color:#aaa; text-align:center;">(キャラクターを選択すると合計値が表示されます)</div>`;
         }
     }
-
     // --- 並び替え切り替え ---
     function toggleSort() {
         isSortedByUsage = !isSortedByUsage;
