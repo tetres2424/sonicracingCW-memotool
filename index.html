@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ソニックレーシングCW 構成ツール v21</title>
+    <title>ソニックレーシングCW 構成ツール v22</title>
     <style>
         :root {
             --bg-color: #f4f4f9;
@@ -131,7 +131,7 @@
 </head>
 <body>
 
-    <h1>Sonic Racing CW 構成ツール v21</h1>
+    <h1>Sonic Racing CW 構成ツール v22</h1>
 
     <div class="container">
         
@@ -160,6 +160,55 @@
             </ul>
         </div>
        <div class="card">
+            <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee;">
+                <h4 style="margin: 0 0 10px 0; color:#555;">基本構成 (Character & Machine Custom)</h4>
+                
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="font-size:0.8rem; color:#666; font-weight:bold;">1. キャラクター</label>
+                        <select id="charSelect" onchange="updateCharMachineInfo()" style="width:100%; padding:8px; border-radius:4px; border:1px solid #ccc; background:#fff;">
+                            <option value="" disabled selected>選択してください</option>
+                        </select>
+                        <div id="charSpec" style="margin-top:5px; font-size:0.8rem; color:#0055ff; min-height:1.2em;"></div>
+                    </div>
+
+                    <div style="flex: 2; min-width: 300px; background:#f9f9f9; padding:10px; border-radius:6px;">
+                        <label style="font-size:0.8rem; color:#666; font-weight:bold;">2. マシンタイプ & パーツ</label>
+                        
+                        <select id="machineTypeSelect" onchange="changeMachineType()" style="width:100%; padding:8px; margin-bottom:10px; border-radius:4px; border:1px solid #ccc;">
+                            <option value="" disabled selected>マシンのタイプを選択</option>
+                            <option value="スピード">スピード (3パーツ)</option>
+                            <option value="アクセル">アクセル (3パーツ)</option>
+                            <option value="ハンドリング">ハンドリング (3パーツ)</option>
+                            <option value="パワー">パワー (3パーツ)</option>
+                            <option value="ダッシュ">ダッシュ (2パーツ/タイヤなし)</option>
+                        </select>
+
+                        <div style="display: flex; gap: 5px;">
+                            <select id="part1Select" onchange="updateCharMachineInfo()" style="flex:1; padding:6px; font-size:0.85rem;" disabled>
+                                <option value="">フロント</option>
+                            </select>
+                            <select id="part2Select" onchange="updateCharMachineInfo()" style="flex:1; padding:6px; font-size:0.85rem;" disabled>
+                                <option value="">リア</option>
+                            </select>
+                            <select id="part3Select" onchange="updateCharMachineInfo()" style="flex:1; padding:6px; font-size:0.85rem;" disabled>
+                                <option value="">タイヤ</option>
+                            </select>
+                        </div>
+                        
+                        <div id="machineSpec" style="margin-top:5px; font-size:0.8rem; color:#d32f2f; min-height:1.2em;"></div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 15px; background: #e3f2fd; padding: 10px; border-radius: 4px; text-align: center;">
+                    <strong style="color:#333; font-size:0.9rem;">🏁 最終ステータス (キャラ + マシン)</strong>
+                    <div id="totalStats" style="font-weight:bold; font-size:1.1rem; color:#0055ff; margin-top:5px;">
+                        🚀 - &nbsp; ⚡ - &nbsp; 🌀 - &nbsp; 💪 - &nbsp; ⏩ -
+                    </div>
+                </div>
+            </div>
+                <div id="cmInfo" style="margin-top:5px; font-size:0.85rem; color:#0055ff; min-height:1.2em;"></div>
+            </div>
             <div class="row-container">
                 <div class="row-label"><span>上段 (Upper)</span><span>Cost: <span id="costUpper">0</span>/3</span></div>
                 <div class="visual-row" id="visualUpper"></div>
@@ -171,29 +220,36 @@
             
             <div id="message"></div>
 
-           <div class="controls" style="margin-top: 20px; display: block;">
-                
-                <div style="display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; flex-wrap: wrap;">
+            <div class="controls" style="margin-top: 20px; display: block;"> 
+                <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px; flex-wrap: wrap;">
                     <div style="flex-grow: 1; min-width: 200px; display:flex; gap:5px; flex-direction:column;">
-                        
                         <div style="text-align:right;">
-                            <button id="btnSort" onclick="toggleSort()" style="
-                                background-color: #607d8b; 
-                                font-size: 0.75rem; 
-                                padding: 4px 8px; 
-                                border-radius: 15px;
-                            ">📊 使用率順に並べ替え</button>
+                            <button id="btnSort" onclick="toggleSort()" style="background-color: #607d8b; font-size: 0.75rem; padding: 4px 8px; border-radius: 15px;">📊 使用率順に並べ替え</button>
                         </div>
                         <select id="gadgetSelect" onchange="showGadgetDescription()" style="width: 100%;">
                             <option value="" disabled selected>ガジェットを選択してください</option>
                         </select>
                     </div>
                     
-                    <div style="display: flex; gap: 5px; flex-shrink: 0; margin-top: 24px;"> <button class="btn-add" onclick="tryAddGadget()">追加</button>
+                    <div style="display: flex; gap: 5px; flex-shrink: 0; margin-top: 24px;">
+                        <button class="btn-add" onclick="tryAddGadget()">追加</button>
                         <button class="btn-reset" onclick="resetCurrent()">リセット</button>
                     </div>
                 </div>
 
+                <div id="gadgetDescPreview" style="
+                    width: 100%; height: 60px; padding: 10px; background: #f1f8ff; 
+                    border: 1px solid #c8e1ff; border-radius: 4px; font-size: 0.85rem; 
+                    color: #444; overflow-y: auto; box-sizing: border-box; line-height: 1.4;">
+                    （ここにガジェットの効果が表示されます）
+                </div>
+            </div>
+
+            <div class="controls" style="margin-top: 15px;">
+                <button class="btn-random" onclick="setRandomSetup()">🎲ランダム</button>
+                <button class="btn-random" style="background-color: #673ab7;" onclick="setAiOriginalSetup()">🧠AI生成</button>
+            </div>
+        </div>
                 <div id="gadgetDescPreview" style="
                     width: 100%;
                     height: 60px; 
@@ -258,8 +314,69 @@
         <p>Created with respect for Sonic Racing CW community.</p>
     </footer>
 <script>
-    // ★全データ完備 (ID体系変更版: 0101形式 + 詳細説明文)★
-    const defaultGadgets = [
+    // --- キャラクターデータ (前回と同じ) ---
+    const characterData = [
+        { id: "c01", name: "ソニック", type: "スピード", speed: 20, accel: 5, handling: 13, power: 15, dash: 7 },
+        { id: "c02", name: "テイルス", type: "アクセル", speed: 15, accel: 20, handling: 7, power: 13, dash: 5 },
+        { id: "c03", name: "ナックルズ", type: "パワー", speed: 13, accel: 8, handling: 5, power: 18, dash: 16 },
+        { id: "c04", name: "エミー", type: "ハンドリング", speed: 5, accel: 15, handling: 20, power: 7, dash: 13 },
+        { id: "c05", name: "クリーム＆チーズ", type: "ハンドリング", speed: 7, accel: 14, handling: 19, power: 9, dash: 11 },
+        { id: "c06", name: "ビッグ", type: "パワー", speed: 12, accel: 10, handling: 7, power: 17, dash: 14 },
+        { id: "c07", name: "シルバー", type: "ハンドリング", speed: 7, accel: 13, handling: 20, power: 9, dash: 11 },
+        { id: "c08", name: "ブレイズ", type: "スピード", speed: 20, accel: 7, handling: 11, power: 13, dash: 9 },
+        { id: "c09", name: "シャドウ", type: "スピード", speed: 20, accel: 7, handling: 11, power: 13, dash: 9 },
+        { id: "c10", name: "ルージュ", type: "ハンドリング", speed: 5, accel: 16, handling: 19, power: 7, dash: 13 },
+        { id: "c11", name: "オメガ", type: "パワー", speed: 11, accel: 9, handling: 7, power: 20, dash: 13 },
+        { id: "c12", name: "ベクター", type: "パワー", speed: 13, accel: 7, handling: 5, power: 19, dash: 16 },
+        { id: "c13", name: "エスピオ", type: "スピード", speed: 17, accel: 5, handling: 14, power: 16, dash: 8 },
+        { id: "c14", name: "チャーミー", type: "アクセル", speed: 14, accel: 18, handling: 10, power: 11, dash: 7 },
+        { id: "c15", name: "ザボック", type: "パワー", speed: 13, accel: 7, handling: 5, power: 20, dash: 15 },
+        { id: "c16", name: "ザズ", type: "アクセル", speed: 16, accel: 18, handling: 8, power: 13, dash: 5 },
+        { id: "c17", name: "エッグマン", type: "パワー", speed: 14, accel: 8, handling: 5, power: 17, dash: 16 },
+        { id: "c18", name: "メタルソニック", type: "スピード", speed: 19, accel: 5, handling: 13, power: 16, dash: 7 },
+        { id: "c19", name: "エッグポーン", type: "アクセル", speed: 16, accel: 17, handling: 8, power: 14, dash: 5 },
+        { id: "c20", name: "セージ", type: "アクセル", speed: 14, accel: 17, handling: 10, power: 12, dash: 7 },
+        { id: "c21", name: "ジェット", type: "スピード", speed: 19, accel: 7, handling: 11, power: 14, dash: 9 },
+        { id: "c22", name: "ウェーブ", type: "アクセル", speed: 16, accel: 19, handling: 7, power: 13, dash: 5 },
+        { id: "c23", name: "ストーム", type: "パワー", speed: 11, accel: 9, handling: 7, power: 19, dash: 14 },
+        { id: "c24", name: "スーパーソニック", type: "スピード", speed: 20, accel: 20, handling: 20, power: 20, dash: 20 },
+        { id: "c28", name: "ウェアホッグ", type: "パワー", speed: 14, accel: 9, handling: 6, power: 16, dash: 15 },
+        { id: "c30", name: "ナイン", type: "アクセル", speed: 15, accel: 20, handling: 7, power: 13, dash: 5 },
+        { id: "c32", name: "ドレッド", type: "パワー", speed: 13, accel: 7, handling: 5, power: 20, dash: 15 },
+        { id: "c34", name: "ラスティ", type: "ハンドリング", speed: 5, accel: 15, handling: 20, power: 7, dash: 13 },
+        { id: "c38", name: "ジョーカー", type: "ハンドリング", speed: 7, accel: 14, handling: 18, power: 10, dash: 11 },
+        { id: "c40", name: "春日一番", type: "パワー", speed: 12, accel: 11, handling: 8, power: 16, dash: 13 },
+        { id: "c36", name: "初音ミク", type: "ダッシュ", speed: 9, accel: 14, handling: 15, power: 6, dash: 16 },
+        { id: "c41", name: "スティーブ", type: "パワー", speed: 12, accel: 9, handling: 6, power: 18, dash: 15 },
+        { id: "c43", name: "アレックス", type: "パワー", speed: 11, accel: 10, handling: 7, power: 18, dash: 14 },
+        { id: "c45", name: "クリーパー", type: "アクセル", speed: 14, accel: 19, handling: 9, power: 11, dash: 7 },
+        { id: "c47", name: "スポンジ・ボブ", type: "ハンドリング", speed: 7, accel: 14, handling: 16, power: 10, dash: 13 },
+        { id: "c49", name: "パトリック", type: "パワー", speed: 13, accel: 9, handling: 6, power: 17, dash: 15 }
+    ];
+
+    // --- マシンパーツデータ (S,A,H,P,D) ---
+    // ※ここに他のタイプのデータも追加してください
+    // --- マシンパーツデータ (S,A,H,P,D) ---
+    const machineParts = [
+        // ▼スピードタイプ
+        { id: "ms01", type: "スピード", name: "スピードスターライトニング", s: 20, a: 5, h: 13, p: 15, d: 7 },
+        { id: "ms02", type: "スピード", name: "ダークリーパー", s: 20, a: 6, h: 12, p: 14, d: 8 },
+        { id: "ms03", type: "スピード", name: "ミラージュブレイド", s: 19, a: 7, h: 11, p: 14, d: 9 },
+        { id: "ms04", type: "スピード", name: "スーパーシャイニング", s: 18, a: 5, h: 13, p: 16, d: 8 },
+        { id: "ms05", type: "スピード", name: "ロイヤルチャリオット", s: 20, a: 7, h: 11, p: 13, d: 9 },
+        { id: "ms06", type: "スピード", name: "スティルスチェイサー", s: 19, a: 6, h: 12, p: 15, d: 8 },
+        { id: "ms07", type: "スピード", name: "レトロフューチャー", s: 18, a: 7, h: 11, p: 14, d: 10 },
+        { id: "ms08", type: "スピード", name: "ワイルドGT", s: 19, a: 5, h: 13, p: 16, d: 7 },
+        { id: "ms09", type: "スピード", name: "バスターM", s: 19, a: 5, h: 13, p: 16, d: 7 },
+        { id: "ms10", type: "スピード", name: "アルセーヌウィング", s: 17, a: 6, h: 13, p: 15, d: 9 },
+
+        // ▼ダッシュタイプ (パーツ2つ＝合計値は2倍になる)
+        // ※タイヤパーツがないため、3枠目は選択不可になります
+        { id: "md01", type: "ダッシュ", name: "タイプ-J イオタ", s: 13, a: 16, h: 21, p: 10, d: 30 }
+    ];
+    // --- ガジェットデータ (前回と同じ) ---
+    // ★★★ 重要: ここに前回の「4桁ID版 defaultGadgets」を貼り付けてください ★★★
+     const defaultGadgets = [
         // 1. リングゲット (ring-get)
         { id: "0101", name: "スタート成功ボーナス", cost: 1, type: "ring-get", desc: "スタートダッシュ成功時にリングを30枚入手する" },
         { id: "0102", name: "エアトリックボーナス", cost: 1, type: "ring-get", desc: "エアトリック1回につきリングを2枚入手する" },
@@ -366,426 +483,197 @@
         { id: "1201", name: "後半追い上げキット", cost: 3, type: "advanced", desc: "リング上限が110枚になり、LAP3突入時にアイテムを2個獲得する" },
         { id: "1202", name: "水上強化キット", cost: 3, type: "advanced", desc: "「超高速エアトリック」「チャージジャンプ自由度アップ」を組み合わせたキット" },
     ];
-    // ★Top50 ランカー使用数データ (11/11集計)★
-    const usageStats = {
-        "0402": 34, // セカンドファストチャージ
-        "0404": 33, // アルティメットチャージ
-        "0403": 32, // サードファストチャージ
-        "0406": 31, // テクニカルドリフト
-        "0901": 9,  // ドリフトチャージ短縮キット
-        "0702": 9,  // アイテムストックプラス
-        "0707": 7,  // ウィスプ確率アップ
-        "0701": 6,  // アイテムストックトレード
-        "0102": 6,  // エアトリックボーナス
-        "0305": 4,  // 超高速エアトリック
-        "0401": 3,  // ファーストファストチャージ
-        "0108": 2,  // ジャストチャージボーナス
-        "0513": 2,  // ダッシュチューン1
-        "0606": 1,  // クイックリカバー
-        "0514": 1,  // ダッシュチューン2
-        "0301": 1,  // ロングスリップストリーム
-        "0105": 1,  // スリップストリームボーナス
-        "0205": 1   // リングゲットダッシュミニ
-    };
-// --- 状態管理 ---
+
+    // --- Top50データ (前回と同じ) ---
+    const usageStats = { "0402":34, "0404":33, "0403":32, "0406":31, "0901":9, "0702":9, "0707":7, "0701":6, "0102":6, "0305":4, "0401":3, "0108":2, "0513":2, "0606":1, "0514":1, "0301":1, "0105":1, "0205":1 };
+
+    // --- 状態管理 ---
     const ROW_CAPACITY = 3;
-    let currentSetup = { upper: [], lower: [] };
+    // 状態にマシンタイプとパーツIDを追加
+    let currentSetup = { upper: [], lower: [], charId: "", machineType: "", part1: "", part2: "", part3: "" };
     let customGadgets = [];
     let savedMemos = [];
+    let isSortedByUsage = false;
 
     window.onload = () => {
         loadCustomGadgets();
         loadMemosFromStorage();
+        initCharSelect();
         updateSelectOptions();
+        
         const params = new URLSearchParams(window.location.search);
-        if (params.has('data')) loadFromUrlV6(params.get('data'));
+        if (params.has('s')) loadFromUrlNew(params.get('s'));
         else render();
     };
 
-    // --- ▼▼▼ 並び替え機能の追加 ▼▼▼ ---
-    let isSortedByUsage = false; // 並び替え状態管理フラグ
-
-    function toggleSort() {
-        isSortedByUsage = !isSortedByUsage; // フラグを反転
-        
-        const btn = document.getElementById('btnSort');
-        if (isSortedByUsage) {
-            btn.textContent = "↩️ 分類順に戻す";
-            btn.style.backgroundColor = "#e91e63"; // 色を変えて状態をわかりやすく
-        } else {
-            btn.textContent = "📊 使用率順に並べ替え";
-            btn.style.backgroundColor = "#607d8b";
-        }
-        
-        updateSelectOptions(); // リストを再描画
-    }
-
-    // リスト更新関数（ソート対応版）
-    function updateSelectOptions() {
-        const select = document.getElementById('gadgetSelect');
-        const currentVal = select.value;
-        select.innerHTML = '<option value="" disabled selected>ガジェットを選択してください</option>';
-        
-        // 表示用リストの作成（元データは壊さずコピーして使う）
-        let listToRender = [...defaultGadgets];
-
-        if (isSortedByUsage) {
-            // 使用率順（降順）にソート
-            listToRender.sort((a, b) => {
-                const countA = usageStats[a.id] || 0;
-                const countB = usageStats[b.id] || 0;
-                // 回数が多い順 -> 同じならID順
-                return countB - countA || a.id.localeCompare(b.id);
-            });
-        } 
-        // else: デフォルトの場合は何もしない（ID順/カテゴリ順のまま）
-
-        const createOpt = (g) => {
+    function initCharSelect() {
+        const cSelect = document.getElementById('charSelect');
+        characterData.forEach(c => {
             const opt = document.createElement('option');
-            opt.value = g.id;
-            
-            const count = usageStats[g.id] || 0;
-            const countText = count > 0 ? `【Top30:${count}】` : "";
-            
-            // 人気順ソート時は、件数を先頭に表示して目立たせる
-            if (isSortedByUsage && count > 0) {
-                opt.textContent = `${countText} ${g.name} (コスト${g.cost})`;
-                opt.style.fontWeight = "bold";
-                opt.style.color = "#d32f2f";
-            } else {
-                // 通常時はシンプルに
-                opt.textContent = `${g.name} (コスト${g.cost}) ${countText}`;
-                opt.style.color = "#333";
-            }
-            
-            select.appendChild(opt);
+            opt.value = c.id;
+            opt.textContent = `${c.name}`;
+            cSelect.appendChild(opt);
+        });
+    }
+
+    // マシンタイプ変更時の処理 (パーツ名対応版)
+    function changeMachineType() {
+        const type = document.getElementById('machineTypeSelect').value;
+        const p1 = document.getElementById('part1Select');
+        const p2 = document.getElementById('part2Select');
+        const p3 = document.getElementById('part3Select');
+
+        // 一旦リセット（名称を反映）
+        p1.innerHTML = '<option value="">フロント</option>'; p1.disabled = false;
+        p2.innerHTML = '<option value="">リア</option>';     p2.disabled = false;
+        p3.innerHTML = '<option value="">タイヤ</option>';   p3.disabled = false;
+
+        // そのタイプのパーツを抽出
+        const parts = machineParts.filter(m => m.type === type);
+        
+        // リスト生成ヘルパー
+        const addOpts = (sel) => {
+            parts.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.id;
+                opt.textContent = p.name;
+                sel.appendChild(opt);
+            });
         };
 
-        listToRender.forEach(createOpt);
+        addOpts(p1);
+        addOpts(p2);
 
-        // カスタムガジェットは常に最後に追加
-        if(customGadgets.length > 0) {
-            const sep = document.createElement('option');
-            sep.disabled = true; sep.textContent = "--- オリジナル ---";
-            select.appendChild(sep);
-            customGadgets.forEach(createOpt);
-        }
-        
-        // 選択状態を維持しようとするが、ソートで位置が変わるためリセットされてもよい
-        // if(currentVal) select.value = currentVal; 
-    }
-    // --- ▲▲▲ ここまで ▲▲▲ ---
-    // ★追加: 選択されたガジェットの説明文を表示する関数
-    function showGadgetDescription() {
-        const select = document.getElementById('gadgetSelect');
-        const preview = document.getElementById('gadgetDescPreview');
-        const gId = select.value;
-
-        if (!gId) {
-            preview.textContent = "ここにガジェットの効果が表示されます";
-            return;
-        }
-
-        const g = defaultGadgets.find(item => item.id === gId) || customGadgets.find(item => item.id === gId);
-        
-        if (g) {
-            // 説明文があれば表示、なければ「説明なし」
-            preview.textContent = g.desc ? g.desc : "（説明文が登録されていません）";
-        }
-    }
-
-    // ★追加ロジックの修正版★
-    function tryAddGadget() {
-        const select = document.getElementById('gadgetSelect');
-        const gId = select.value;
-        if (!gId) return;
-
-        let gadget = defaultGadgets.find(g => g.id === gId) || customGadgets.find(g => g.id === gId);
-        if(!gadget) return;
-
-        // 重複チェック
-        const allCurrent = [...currentSetup.upper, ...currentSetup.lower];
-        if (allCurrent.some(item => item.id === gadget.id)) {
-            showMessage("⚠️ 同じガジェットは2つセットできません", true);
-            return;
-        }
-
-        const newItem = { ...gadget, uid: Date.now() + Math.random() };
-
-        // --- 修正: まずはソートせずに空きスペースに入れてみる ---
-
-        // 1. 上段にそのまま入るなら入れる
-        if (getRowCost(currentSetup.upper) + newItem.cost <= ROW_CAPACITY) {
-            currentSetup.upper.push(newItem);
-            render();
-            showMessage(`「${gadget.name}」を上段に追加しました`);
-            return;
-        }
-
-        // 2. 上段が無理で、下段に入るなら入れる
-        if (getRowCost(currentSetup.lower) + newItem.cost <= ROW_CAPACITY) {
-            currentSetup.lower.push(newItem);
-            render();
-            showMessage(`「${gadget.name}」を下段に追加しました`);
-            return;
-        }
-
-        // 3. どちらも無理な場合のみ、自動整理(Smart Add)を発動
-        if (smartAdd(newItem)) {
-            render();
-            showMessage(`自動整理して「${gadget.name}」を追加しました`);
+        // ダッシュタイプはタイヤなし（2枠）
+        if (type === "ダッシュ") {
+            p3.innerHTML = '<option value="">(なし)</option>';
+            p3.disabled = true;
+            p3.style.backgroundColor = "#eee";
         } else {
-            showMessage("コスト不足で入りません", true);
+            addOpts(p3);
+            p3.style.backgroundColor = "#fff";
         }
-    }
-    // スマート追加 (既存＋新規1つ を並べ替え)
-    function smartAdd(newItem) {
-        const allItems = [...currentSetup.upper, ...currentSetup.lower, newItem];
-        if (allItems.reduce((s, i) => s + i.cost, 0) > ROW_CAPACITY * 2) return false;
-        allItems.sort((a, b) => b.cost - a.cost); 
         
-        let newUpper = [], newLower = [];
-        for (let item of allItems) {
-            if (getRowCost(newUpper) + item.cost <= ROW_CAPACITY) newUpper.push(item);
-            else if (getRowCost(newLower) + item.cost <= ROW_CAPACITY) newLower.push(item);
-            else return false;
+        updateCharMachineInfo();
+    }
+    // 総合ステータス計算・表示
+    function updateCharMachineInfo() {
+        // 値取得
+        const cId = document.getElementById('charSelect').value;
+        const mType = document.getElementById('machineTypeSelect').value;
+        const p1Id = document.getElementById('part1Select').value;
+        const p2Id = document.getElementById('part2Select').value;
+        const p3Id = document.getElementById('part3Select').value;
+
+        // 状態保存
+        currentSetup.charId = cId;
+        currentSetup.machineType = mType;
+        currentSetup.part1 = p1Id;
+        currentSetup.part2 = p2Id;
+        currentSetup.part3 = p3Id;
+
+        // データ検索
+        const char = characterData.find(c => c.id === cId);
+        const p1 = machineParts.find(p => p.id === p1Id);
+        const p2 = machineParts.find(p => p.id === p2Id);
+        const p3 = machineParts.find(p => p.id === p3Id);
+
+        // 1. キャラスペック表示
+        const cSpecDiv = document.getElementById('charSpec');
+        if(char) {
+            cSpecDiv.innerHTML = `[${char.type}] 🚀${char.speed} ⚡${char.accel} 🌀${char.handling} 💪${char.power} ⏩${char.dash}`;
+        } else {
+            cSpecDiv.textContent = "";
         }
-        currentSetup.upper = newUpper;
-        currentSetup.lower = newLower;
-        return true;
-    }
 
-    // ★ランダム構成 (重複なし版)★
-    function setRandomSetup() {
-        if(!confirm("現在の構成を破棄して、ランダムな構成を生成しますか？")) return;
-        
-        const pool = [...defaultGadgets, ...customGadgets];
-        const usedIds = new Set(); // 使用済み管理
+        // 2. マシン合計計算
+        let mStats = { s:0, a:0, h:0, p:0, d:0 };
+        let partsList = [];
+        if(p1) partsList.push(p1);
+        if(p2) partsList.push(p2);
+        if(mType !== "ダッシュ" && p3) partsList.push(p3);
 
-        const fillRow = () => {
-            let row = [];
-            let cost = 0;
-            let safety = 0;
-            while(cost < ROW_CAPACITY && safety < 200) {
-                const g = pool[Math.floor(Math.random() * pool.length)];
-                
-                // コストが入り、かつ「まだ使っていない」なら採用
-                if (!usedIds.has(g.id) && cost + g.cost <= ROW_CAPACITY) {
-                    row.push({ ...g, uid: Date.now() + Math.random() });
-                    cost += g.cost;
-                    usedIds.add(g.id); // 使用済みに登録
-                }
-                safety++;
-            }
-            return row;
-        };
-        
-        currentSetup.upper = fillRow();
-        currentSetup.lower = fillRow();
-        render();
-        showMessage("🎲 重複なしでランダム生成しました！");
-    }
-
-    // ★AI戦術構築 (重複なし版)★
-    function setAiOriginalSetup() {
-        if(!confirm("現在の構成を破棄して、AIが考案した戦術を展開しますか？")) return;
-
-        const check = (g, keywords) => {
-            const text = (g.name + (g.desc || "")).toLowerCase();
-            return keywords.some(k => text.includes(k));
-        };
-
-        const tactics = [
-            { 
-                name: "暴走特急 (Speed & Crash)", 
-                desc: "速さと攻撃こそ正義。防御を捨てて突っ込む構成。",
-                priority: g => check(g, ["スピード", "ダッシュ", "ぶつかり", "攻撃", "加速", "速度"]) && !check(g, ["防御", "ガード"])
-            },
-            { 
-                name: "不沈艦 (Iron Wall)", 
-                desc: "絶対に倒れない。ガードとリカバーで完走を目指す構成。",
-                priority: g => check(g, ["ガード", "リカバー", "防御", "無敵", "復帰", "失わない"])
-            },
-            { 
-                name: "ハイリスク・ギャンブラー (Jackpot)", 
-                desc: "確率アップ系を積みまくり、運ゲーで勝利をもぎ取る構成。",
-                priority: g => check(g, ["確率", "ボーナス", "獲得", "出現", "運"])
-            },
-            { 
-                name: "テクニカル・ダンサー (Air Master)", 
-                desc: "空中で華麗に舞い、着地で加速する玄人向け構成。",
-                priority: g => check(g, ["エアトリック", "ジャンプ", "チャージ", "空中", "スリップストリーム"])
-            },
-            { 
-                name: "スタートダッシュ逃げ切り (Rocket Start)", 
-                desc: "開始直後のリードを死守する短期決戦型構成。",
-                priority: g => check(g, ["スタート", "最初から", "先行", "開始時"])
-            },
-            { 
-                name: "リングコレクター (Ring Rich)", 
-                desc: "リングをかき集め、常にブースト状態で走り続ける構成。",
-                priority: g => check(g, ["リング", "奪う", "上限"])
-            }
-        ];
-
-        const tactic = tactics[Math.floor(Math.random() * tactics.length)];
-        const allGadgets = [...defaultGadgets, ...customGadgets];
-        const usedIds = new Set(); // 使用済み管理
-
-        const highPriority = allGadgets.filter(tactic.priority);
-        const fillers = allGadgets.filter(g => g.cost === 1 && !tactic.priority(g));
-
-        const createStrategicRow = () => {
-            let row = [];
-            let cost = 0;
-            let safety = 0;
-            while(cost < ROW_CAPACITY && safety < 200) {
-                // まだ使っていない候補だけに絞る
-                const validHigh = highPriority.filter(g => !usedIds.has(g.id));
-                const validFill = fillers.filter(g => !usedIds.has(g.id));
-
-                // 優先候補があれば90%で採用
-                let source = (Math.random() < 0.9 && validHigh.length > 0) ? validHigh : validFill;
-                
-                if(source.length > 0) {
-                    const g = source[Math.floor(Math.random() * source.length)];
-                    
-                    if (!usedIds.has(g.id) && cost + g.cost <= ROW_CAPACITY) {
-                        row.push({ ...g, uid: Date.now() + Math.random() });
-                        cost += g.cost;
-                        usedIds.add(g.id); // 使用済みに登録
-                    }
-                }
-                safety++;
-            }
-            return row;
-        };
-
-        currentSetup.upper = createStrategicRow();
-        currentSetup.lower = createStrategicRow();
-        render();
-        
-        alert(`🧠 AI戦術構築完了\n\nコードネーム: 「${tactic.name}」\nコンセプト: ${tactic.desc}`);
-        showMessage(`戦術「${tactic.name}」を展開中...`);
-    }
-
-    function registerCustomGadget() {
-        const name = document.getElementById('customName').value.trim();
-        const cost = parseInt(document.getElementById('customCost').value);
-        if(!name) return;
-        customGadgets.push({ id: "c_" + Date.now(), name, cost, type: "custom", desc: "" });
-        localStorage.setItem('sonicCW_customs', JSON.stringify(customGadgets));
-        updateSelectOptions();
-        document.getElementById('customName').value = '';
-    }
-    
-    function deleteCustomGadget(id) {
-        if(!confirm("削除しますか？")) return;
-        customGadgets = customGadgets.filter(g => g.id !== id);
-        localStorage.setItem('sonicCW_customs', JSON.stringify(customGadgets));
-        updateSelectOptions();
-    }
-
-    function renderCustomList() {
-        const container = document.getElementById('customListContainer');
-        container.innerHTML = '';
-        if(customGadgets.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:#999; margin:5px;">登録なし</p>';
-            return;
-        }
-        customGadgets.forEach(g => {
-            const div = document.createElement('div');
-            div.className = 'custom-item';
-            div.innerHTML = `<span>${g.name} <small>(コスト${g.cost})</small></span>`;
-            const btn = document.createElement('button');
-            btn.textContent = '削除';
-            btn.className = 'btn-delete-custom';
-            btn.onclick = () => deleteCustomGadget(g.id);
-            div.appendChild(btn);
-            container.appendChild(div);
+        partsList.forEach(part => {
+            mStats.s += part.s; mStats.a += part.a; mStats.h += part.h; mStats.p += part.p; mStats.d += part.d;
         });
-    }
-    
-    // 描画関連
-    function render() {
-        renderRow('visualUpper', 'costUpper', currentSetup.upper);
-        renderRow('visualLower', 'costLower', currentSetup.lower);
-    }
-    function renderRow(elId, costId, data) {
-        const el = document.getElementById(elId);
-        el.innerHTML = '';
-        data.forEach(item => {
-            const div = document.createElement('div');
-            div.className = `slot-block type-${item.type || 'custom'}`;
-            div.style.flexGrow = item.cost;
-            div.textContent = item.name;
-            div.title = item.desc ? `${item.name}\n${item.desc}` : item.name;
-            
-            div.onclick = () => { 
-                currentSetup.upper = currentSetup.upper.filter(i => i.uid !== item.uid);
-                currentSetup.lower = currentSetup.lower.filter(i => i.uid !== item.uid);
-                render();
-            };
-            el.appendChild(div);
-        });
-        const cost = getRowCost(data);
-        if(cost < ROW_CAPACITY) {
-            const empty = document.createElement('div');
-            empty.className = 'slot-block block-empty';
-            empty.style.flexGrow = (ROW_CAPACITY - cost);
-            empty.textContent = "Empty";
-            el.appendChild(empty);
+
+        const mSpecDiv = document.getElementById('machineSpec');
+        if(partsList.length > 0) {
+            mSpecDiv.innerHTML = `合計: 🚀${mStats.s} ⚡${mStats.a} 🌀${mStats.h} 💪${mStats.p} ⏩${mStats.d}`;
+        } else {
+            mSpecDiv.textContent = "";
         }
-        document.getElementById(costId).textContent = cost;
-        document.getElementById(costId).style.color = (cost === ROW_CAPACITY) ? '#d32f2f' : 'inherit';
+
+        // 3. 最終合計 (キャラ + マシン)
+        const tDiv = document.getElementById('totalStats');
+        if(char) {
+            const totalS = char.speed + mStats.s;
+            const totalA = char.accel + mStats.a;
+            const totalH = char.handling + mStats.h;
+            const totalP = char.power + mStats.p;
+            const totalD = char.dash + mStats.d;
+            tDiv.innerHTML = `🚀${totalS} &nbsp; ⚡${totalA} &nbsp; 🌀${totalH} &nbsp; 💪${totalP} &nbsp; ⏩${totalD}`;
+        } else {
+            tDiv.innerHTML = "🚀 - &nbsp; ⚡ - &nbsp; 🌀 - &nbsp; 💪 - &nbsp; ⏩ -";
+        }
     }
 
-    function getRowCost(arr) { return arr.reduce((s, i) => s + i.cost, 0); }
-    function loadCustomGadgets() { const j = localStorage.getItem('sonicCW_customs'); if(j) customGadgets = JSON.parse(j); }
-    function loadMemosFromStorage() { const j = localStorage.getItem('sonicCW_memos'); if(j) savedMemos = JSON.parse(j); renderMemoList(); }
-    
-    function saveMemo() {
-        const t = document.getElementById('memoTitle').value.trim() || `無題 ${new Date().toLocaleTimeString()}`;
-        savedMemos.unshift({ id: Date.now(), title: t, data: JSON.parse(JSON.stringify(currentSetup)) });
-        localStorage.setItem('sonicCW_memos', JSON.stringify(savedMemos));
-        renderMemoList();
-    }
-    function renderMemoList() {
-        const l = document.getElementById('memoList'); l.innerHTML = '';
-        savedMemos.forEach(m => {
-            const d = document.createElement('div'); d.className = 'memo-item';
-            d.innerHTML = `<span>${m.title}</span>`;
-            const bg = document.createElement('div'); bg.style.display='flex'; bg.style.gap='5px';
-            const btnL = document.createElement('button'); btnL.textContent='読込'; btnL.className='btn-save'; btnL.style.padding='4px 8px';
-            btnL.onclick=()=>{currentSetup=JSON.parse(JSON.stringify(m.data)); render();};
-            const btnD = document.createElement('button'); btnD.textContent='削除'; btnD.className='btn-delete-memo';
-            btnD.onclick=()=>{if(confirm('削除?')){savedMemos=savedMemos.filter(x=>x.id!==m.id);localStorage.setItem('sonicCW_memos',JSON.stringify(savedMemos));renderMemoList();}};
-            bg.appendChild(btnL); bg.appendChild(btnD); d.appendChild(bg); l.appendChild(d);
-        });
-    }
-    
-    // 共有URL
+    /* --- 以下、変更なしの共通機能 --- */
+    // ※既存のコード（toggleSort, updateSelectOptions, tryAddGadget, render など）はそのまま残してください
+    // ※ただし、saveMemo, loadFromUrlNew などの「保存・復元」に関しては、
+    //   currentSetup の構造が変わったので微修正が必要です↓
+
+    // 保存用データ構造の更新に伴う修正
     function generateShareUrl() {
+        // パラメータ: c=キャラID & mt=マシンタイプ & p=p1,p2,p3 & d=ガジェットデータ
         const ser = i => `${encodeURIComponent(i.name)}:${i.cost}:${i.type||'custom'}`;
         const data = currentSetup.upper.map(ser).join(',') + '|' + currentSetup.lower.map(ser).join(',');
-        const url = new URL(window.location.href); url.searchParams.set('data', data);
+        const pStr = `${currentSetup.part1||''},${currentSetup.part2||''},${currentSetup.part3||''}`;
+        
+        const url = new URL(window.location.href);
+        url.searchParams.set('s', 
+            `c=${currentSetup.charId||''}&mt=${currentSetup.machineType||''}&p=${pStr}&d=${encodeURIComponent(data)}`
+        );
+        url.searchParams.delete('data'); // 旧パラメータ削除
         document.getElementById('shareArea').style.display = 'block';
         document.getElementById('shareUrl').value = url.href;
     }
-    function loadFromUrlV6(str) {
-        const [u, l] = str.split('|');
-        const des = s => {
-            if(!s) return [];
-            return s.split(',').map(x => {
-                const [n, c, t] = x.split(':');
-                return { id:"share"+Math.random(), name:decodeURIComponent(n), cost:parseInt(c), type:t, uid:Math.random() };
-            });
-        };
-        currentSetup.upper = des(u); currentSetup.lower = des(l);
-        render();
+
+    function loadFromUrlNew(str) {
+        const params = new URLSearchParams(str);
+        if(params.has('c')) currentSetup.charId = params.get('c');
+        if(params.has('mt')) {
+            currentSetup.machineType = params.get('mt');
+            // UI反映のためにタイプ選択をセットしてからchangeMachineTypeを呼ぶ必要がある
+            // ※DOMがまだ作られていないタイミングだとエラーになるので、onload内で呼ぶこと
+            setTimeout(() => {
+                document.getElementById('machineTypeSelect').value = params.get('mt');
+                changeMachineType(); // パーツリストを生成
+                if(params.has('p')) {
+                    const parts = params.get('p').split(',');
+                    if(parts[0]) document.getElementById('part1Select').value = parts[0];
+                    if(parts[1]) document.getElementById('part2Select').value = parts[1];
+                    if(parts[2]) document.getElementById('part3Select').value = parts[2];
+                    updateCharMachineInfo(); // 計算実行
+                }
+            }, 100);
+        }
+        if(params.has('d')) loadFromUrlV6(decodeURIComponent(params.get('d')));
     }
-    function showMessage(msg, err=false) { const e=document.getElementById('message'); e.textContent=msg; e.style.color=err?'red':'#0055ff'; setTimeout(()=>e.textContent='',3000); }
-    function resetCurrent() { if(confirm("リセットしますか？")){currentSetup={upper:[],lower:[]}; render(); document.getElementById('shareArea').style.display='none';}}
+
+    // (その他の関数: showGadgetDescription, tryAddGadget, smartAdd, setRandomSetup, 
+    //  setAiOriginalSetup, registerCustomGadget, deleteCustomGadget, renderCustomList, 
+    //  render, renderRow, getRowCost, loadCustomGadgets, loadMemosFromStorage, 
+    //  saveMemo, renderMemoList, loadFromUrlV6, showMessage, resetCurrent 
+    //  は前回のままでOKですが、render()内の復元処理だけ削除してください)
+    
+    function render() {
+        // ※render関数内での charSelect.value = ... の処理は不要になりました（個別に管理するため）
+        renderRow('visualUpper', 'costUpper', currentSetup.upper);
+        renderRow('visualLower', 'costLower', currentSetup.lower);
+    }
+
+    /* --- ここまで --- */
 </script>
 </body>
 </html>
