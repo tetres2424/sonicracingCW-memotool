@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ソニックレーシングCW 構成ツール v13</title>
+    <title>ソニックレーシングCW 構成ツール v14</title>
     <style>
         :root {
             --bg-color: #f4f4f9;
@@ -115,7 +115,7 @@
 </head>
 <body>
 
-    <h1>Sonic Racing CW 構成ツール v13</h1>
+    <h1>Sonic Racing CW 構成ツール v14</h1>
 
     <div class="container">
         
@@ -139,7 +139,8 @@
                 </li>
             </ul>
         </div>
-        <div class="card">
+       <div class="card">
+            <div class="row-container">
                 <div class="row-label"><span>上段 (Upper)</span><span>Cost: <span id="costUpper">0</span>/3</span></div>
                 <div class="visual-row" id="visualUpper"></div>
             </div>
@@ -149,12 +150,34 @@
             </div>
             <div id="message"></div>
 
-            <div class="controls" style="margin-top: 20px;">
-                <select id="gadgetSelect"><option value="" disabled selected>ガジェットを選択してください</option></select>
+            <div class="controls" style="margin-top: 20px; align-items: flex-start;">
+                <div style="flex-grow: 1; min-width: 200px;">
+                    <select id="gadgetSelect" onchange="showGadgetDescription()" style="width: 100%;">
+                        <option value="" disabled selected>ガジェットを選択してください</option>
+                    </select>
+                    <div id="gadgetDescPreview" style="
+                        margin-top: 5px; 
+                        padding: 8px; 
+                        background: #f1f8ff; 
+                        border: 1px solid #c8e1ff; 
+                        border-radius: 4px; 
+                        font-size: 0.85rem; 
+                        color: #444;
+                        min-height: 1.5em;
+                    ">
+                        ここにガジェットの効果が表示されます
+                    </div>
+                </div>
+
                 <button class="btn-add" onclick="tryAddGadget()">追加</button>
                 <button class="btn-reset" onclick="resetCurrent()">リセット</button>
             </div>
 
+            <div class="controls" style="margin-top: 10px;">
+                <button class="btn-random" onclick="setRandomSetup()">🎲ランダム</button>
+                <button class="btn-random" style="background-color: #673ab7;" onclick="setAiOriginalSetup()">🧠AI生成</button>
+            </div>
+        </div>
             <div class="controls" style="margin-top: 10px;">
                 <button class="btn-random" onclick="setRandomSetup()">🎲ランダム</button>
                 <button class="btn-random" style="background-color: #673ab7;" onclick="setAiOriginalSetup()">🧠AI生成</button>
@@ -318,6 +341,7 @@
         else render();
     };
 
+    // リストの選択肢を更新する関数
     function updateSelectOptions() {
         const select = document.getElementById('gadgetSelect');
         const currentVal = select.value;
@@ -326,9 +350,8 @@
         const createOpt = (g) => {
             const opt = document.createElement('option');
             opt.value = g.id;
-            // リスト表示も見やすく（名前 + コスト）
-            const descShort = g.desc ? ` - ${g.desc.substring(0,10)}...` : "";
-            opt.textContent = `${g.name} (コスト${g.cost})${descShort}`;
+            // ★変更点: ここでは説明文(desc)を入れず、シンプルにする
+            opt.textContent = `${g.name} (コスト${g.cost})`;
             select.appendChild(opt);
         };
         defaultGadgets.forEach(createOpt);
@@ -342,6 +365,25 @@
         if(currentVal) select.value = currentVal;
         
         renderCustomList(); 
+    }
+
+    // ★追加: 選択されたガジェットの説明文を表示する関数
+    function showGadgetDescription() {
+        const select = document.getElementById('gadgetSelect');
+        const preview = document.getElementById('gadgetDescPreview');
+        const gId = select.value;
+
+        if (!gId) {
+            preview.textContent = "ここにガジェットの効果が表示されます";
+            return;
+        }
+
+        const g = defaultGadgets.find(item => item.id === gId) || customGadgets.find(item => item.id === gId);
+        
+        if (g) {
+            // 説明文があれば表示、なければ「説明なし」
+            preview.textContent = g.desc ? g.desc : "（説明文が登録されていません）";
+        }
     }
 
     function tryAddGadget() {
