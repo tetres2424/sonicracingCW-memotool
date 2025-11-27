@@ -74,7 +74,16 @@
         /* 操作パネル */
         .controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; align-items: center; }
         select, input[type="text"] { padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; }
-        
+        /* スマホでの背景色バグ対策 */
+        select:disabled {
+            background-color: #eee !important; /* 無効時は強制グレー */
+            color: #aaa;
+            opacity: 1; /* 勝手に透明になるのを防ぐ */
+        }
+        select:not(:disabled) {
+            background-color: #fff !important; /* 有効時は強制白 */
+            color: #333;
+        }        
         button {
             padding: 10px 16px; font-size: 14px; cursor: pointer; border: none; border-radius: 4px;
             color: white; font-weight: bold; transition: opacity 0.2s;
@@ -850,45 +859,43 @@
         showMessage("🎲 ガジェットをランダム生成しました！");
     }
 
-    // --- ランダム生成（完全ランダム） ---
+   // --- ランダム生成（完全ランダム・修正版） ---
     function setRandomFull() {
         if(!confirm("現在の構成を全て破棄して、キャラ・マシン含めて完全にランダム生成しますか？")) return;
 
-        // 1. キャラをランダム決定
+        // 1. キャラをランダム決定してUIにセット
         const randChar = characterData[Math.floor(Math.random() * characterData.length)];
-        currentSetup.charId = randChar.id;
+        document.getElementById('charSelect').value = randChar.id;
 
-        // 2. マシンタイプをランダム決定
+        // 2. マシンタイプをランダム決定してUIにセット
         const types = ["スピード", "アクセル", "ハンドリング", "パワー", "ダッシュ"];
         const randType = types[Math.floor(Math.random() * types.length)];
-        currentSetup.machineType = randType;
+        document.getElementById('machineTypeSelect').value = randType;
 
-        // 3. マシンパーツをランダム決定（タイプに合うものから抽選）
+        // ★重要: タイプ決定に伴ってパーツリストを更新する
+        changeMachineType();
+
+        // 3. マシンパーツをランダム決定してUIにセット
         const parts = machineParts.filter(m => m.type === randType);
         if (parts.length > 0) {
-            currentSetup.part1 = parts[Math.floor(Math.random() * parts.length)].id;
-            currentSetup.part2 = parts[Math.floor(Math.random() * parts.length)].id;
+            // フロント・リア
+            const p1 = parts[Math.floor(Math.random() * parts.length)].id;
+            const p2 = parts[Math.floor(Math.random() * parts.length)].id;
+            document.getElementById('part1Select').value = p1;
+            document.getElementById('part2Select').value = p2;
             
+            // タイヤ（ダッシュ以外）
             if (randType !== "ダッシュ") {
-                currentSetup.part3 = parts[Math.floor(Math.random() * parts.length)].id;
-            } else {
-                currentSetup.part3 = "";
+                const p3 = parts[Math.floor(Math.random() * parts.length)].id;
+                document.getElementById('part3Select').value = p3;
             }
         }
 
         // 4. ガジェットもランダム決定
         generateRandomGadgets();
 
-        // 5. UIへの反映
-        document.getElementById('charSelect').value = currentSetup.charId;
-        document.getElementById('machineTypeSelect').value = currentSetup.machineType;
-        changeMachineType(); // パーツリスト更新
-        
-        document.getElementById('part1Select').value = currentSetup.part1;
-        document.getElementById('part2Select').value = currentSetup.part2;
-        document.getElementById('part3Select').value = currentSetup.part3;
-
-        updateCharMachineInfo(); // ステータス計算
+        // 5. 全ての計算を更新
+        updateCharMachineInfo();
         render();
         
         showMessage("🎲 完全ランダム構成を生成しました！");
