@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ソニックレーシングCW 構成ツール v16</title>
+    <title>ソニックレーシングCW 構成ツール v17</title>
     <style>
         :root {
             --bg-color: #f4f4f9;
@@ -131,7 +131,7 @@
 </head>
 <body>
 
-    <h1>Sonic Racing CW 構成ツール v16</h1>
+    <h1>Sonic Racing CW 構成ツール v17</h1>
 
     <div class="container">
         
@@ -243,115 +243,114 @@
         <p>Created with respect for Sonic Racing CW community.</p>
     </footer>
 <script>
-    // ★全データ完備 (概要入力対応版)★
+    // ★全データ完備 (ID体系変更版: 0101形式 + 詳細説明文)★
     const defaultGadgets = [
         // 1. リングゲット (ring-get)
-        { id: "101", name: "スタート成功ボーナス", cost: 1, type: "ring-get", desc: "スタートダッシュ成功時にリングを30枚入手する" },
-        { id: "102", name: "エアトリックボーナス", cost: 1, type: "ring-get", desc: "エアトリック1回につきリングを2枚入手する" },
-        { id: "103", name: "アイテム攻撃リングボーナス", cost: 1, type: "ring-get", desc: "他のレーサーにアイテムがヒットするとリングを10枚獲得する" },
-        { id: "104", name: "ランオフボーナス", cost: 1, type: "ring-get", desc: "加速アイテムで減速エリアを通っている間、リングを5枚ずつ獲得し続ける" },
-        { id: "105", name: "スリップストリームボーナス", cost: 1, type: "ring-get", desc: "スリップストリーム発動中、約0.5秒毎にリングを1枚ずつ獲得し続ける" },
-        { id: "106", name: "トラベルリングボーナス", cost: 1, type: "ring-get", desc: "トラベルリング(LAP2開始時とLAP3開始時)を通った時、リングを15枚獲得する" },
-        { id: "107", name: "変形時アクションボーナス", cost: 1, type: "ring-get", desc: "水上、空中でチャージアクションをするとリングを4枚獲得する" },
-        { id: "108", name: "ジャストチャージボーナス", cost: 2, type: "ring-get", desc: "チャージが溜まり切ったタイミングでダッシュすることでリングを獲得できるようになる" },
-        { id: "109", name: "ダッシュパネルボーナス", cost: 2, type: "ring-get", desc: "ダッシュパネルに乗るとリングを5枚獲得できる" },
-        { id: "110", name: "ダッシュパネルボーナスミニ", cost: 1, type: "ring-get", desc: "ダッシュパネルに乗るとリングを2枚獲得できる" },
-        { id: "111", name: "ダッシュパネルボーナスコンボ", cost: 2, type: "ring-get", desc: "ダッシュパネルに乗るとリングを3枚獲得でき、連続で乗ると増えていく" },
+        { id: "0101", name: "スタート成功ボーナス", cost: 1, type: "ring-get", desc: "スタートダッシュ成功時にリングを30枚入手する" },
+        { id: "0102", name: "エアトリックボーナス", cost: 1, type: "ring-get", desc: "エアトリック1回につきリングを2枚入手する" },
+        { id: "0103", name: "アイテム攻撃リングボーナス", cost: 1, type: "ring-get", desc: "他のレーサーにアイテムがヒットするとリングを10枚獲得する" },
+        { id: "0104", name: "ランオフボーナス", cost: 1, type: "ring-get", desc: "加速アイテムで減速エリアを通っている間、リングを5枚ずつ獲得し続ける" },
+        { id: "0105", name: "スリップストリームボーナス", cost: 1, type: "ring-get", desc: "スリップストリーム発動中、約0.5秒毎にリングを1枚ずつ獲得し続ける" },
+        { id: "0106", name: "トラベルリングボーナス", cost: 1, type: "ring-get", desc: "トラベルリング(LAP2開始時とLAP3開始時)を通った時、リングを15枚獲得する" },
+        { id: "0107", name: "変形時アクションボーナス", cost: 1, type: "ring-get", desc: "水上、空中でチャージアクションをするとリングを4枚獲得する" },
+        { id: "0108", name: "ジャストチャージボーナス", cost: 2, type: "ring-get", desc: "チャージが溜まり切ったタイミングでダッシュすることでリングを獲得できるようになる" },
+        { id: "0109", name: "ダッシュパネルボーナス", cost: 2, type: "ring-get", desc: "ダッシュパネルに乗るとリングを5枚獲得できる" },
+        { id: "0110", name: "ダッシュパネルボーナスミニ", cost: 1, type: "ring-get", desc: "ダッシュパネルに乗るとリングを2枚獲得できる" },
+        { id: "0111", name: "ダッシュパネルボーナスコンボ", cost: 2, type: "ring-get", desc: "ダッシュパネルに乗るとリングを3枚獲得でき、連続で乗ると増えていく" },
 
         // 2. リングアビリティ (ring-ability)
-        { id: "112", name: "リング上限130", cost: 1, type: "ring-ability", desc: "リングの所持上限を130枚にする" },
-        { id: "113", name: "リング上限200", cost: 2, type: "ring-ability", desc: "リングの所持上限を200枚にする" },
-        { id: "114", name: "リングスティールミニ", cost: 1, type: "ring-ability", desc: "他のレーサーに接触した時、リングを2枚奪う" },
-        { id: "115", name: "リングスティール", cost: 2, type: "ring-ability", desc: "他のレーサーにぶつかった時、リングを5枚奪う" },
-        { id: "116", name: "リングゲットダッシュミニ", cost: 1, type: "ring-ability", desc: "リング獲得時、約7km/hほど加速する" },
-        { id: "117", name: "リングゲットダッシュ", cost: 2, type: "ring-ability", desc: "リング獲得時に約14km/hほど加速する" },
-        { id: "118", name: "リング獲得範囲アップ", cost: 1, type: "ring-ability", desc: "リング獲得判定を拡大する" },
+        { id: "0201", name: "リング上限130", cost: 1, type: "ring-ability", desc: "リングの所持上限を130枚にする" },
+        { id: "0202", name: "リング上限200", cost: 2, type: "ring-ability", desc: "リングの所持上限を200枚にする" },
+        { id: "0203", name: "リングスティールミニ", cost: 1, type: "ring-ability", desc: "他のレーサーに接触した時、リングを2枚奪う" },
+        { id: "0204", name: "リングスティール", cost: 2, type: "ring-ability", desc: "他のレーサーにぶつかった時、リングを5枚奪う" },
+        { id: "0205", name: "リングゲットダッシュミニ", cost: 1, type: "ring-ability", desc: "リング獲得時、約7km/hほど加速する" },
+        { id: "0206", name: "リングゲットダッシュ", cost: 2, type: "ring-ability", desc: "リング獲得時に約14km/hほど加速する" },
+        { id: "0207", name: "リング獲得範囲アップ", cost: 1, type: "ring-ability", desc: "リング獲得判定を拡大する" },
 
         // 3. テクニック強化 (tech-boost)
-        { id: "119", name: "ロングスリップストリーム", cost: 1, type: "tech-boost", desc: "スリップストリームの発生距離を延長し、前車との距離が少し遠くてもスリップストリームが発動するようになる" },
-        { id: "120", name: "空中ドリフト自由度アップ", cost: 1, type: "tech-boost", desc: "空中でドリフトをすると「すごく曲がるようになる」" },
-        { id: "121", name: "チャージジャンプ自由度アップ", cost: 1, type: "tech-boost", desc: "水上でチャージジャンプした時、左右入力でエアトリックを行うとその方向へ少し移動する" },
-        { id: "122", name: "高速エアトリック", cost: 1, type: "tech-boost", desc: "エアトリックにかかる時間を短縮する" },
-        { id: "123", name: "超高速エアトリック", cost: 2, type: "tech-boost", desc: "エアトリックにかかる時間を大きく短縮する" },
-        { id: "124", name: "ぶつかりダッシュ", cost: 2, type: "tech-boost", desc: "他のレーサーとぶつかった時、短時間ダッシュする" },
-        { id: "125", name: "スピンドリフト", cost: 2, type: "tech-boost", desc: "ドリフト中に高速回転し、触れたレーサーを弾き飛ばす" },
+        { id: "0301", name: "ロングスリップストリーム", cost: 1, type: "tech-boost", desc: "スリップストリームの発生距離を延長し、前車との距離が少し遠くてもスリップストリームが発動するようになる" },
+        { id: "0302", name: "空中ドリフト自由度アップ", cost: 1, type: "tech-boost", desc: "空中でドリフトをすると「すごく曲がるようになる」" },
+        { id: "0303", name: "チャージジャンプ自由度アップ", cost: 1, type: "tech-boost", desc: "水上でチャージジャンプした時、左右入力でエアトリックを行うとその方向へ少し移動する" },
+        { id: "0304", name: "高速エアトリック", cost: 1, type: "tech-boost", desc: "エアトリックにかかる時間を短縮する" },
+        { id: "0305", name: "超高速エアトリック", cost: 2, type: "tech-boost", desc: "エアトリックにかかる時間を大きく短縮する" },
+        { id: "0306", name: "ぶつかりダッシュ", cost: 2, type: "tech-boost", desc: "他のレーサーとぶつかった時、短時間ダッシュする" },
+        { id: "0307", name: "スピンドリフト", cost: 2, type: "tech-boost", desc: "ドリフト中に高速回転し、触れたレーサーを弾き飛ばす" },
 
         // 4. チャージ強化 (charge-boost)
-        { id: "126", name: "ファーストファストチャージ", cost: 2, type: "charge-boost", desc: "ドリフト時のチャージ1段階目を高速化する" },
-        { id: "127", name: "セカンドファストチャージ", cost: 1, type: "charge-boost", desc: "ドリフト時のチャージ2段階目を高速化する" },
-        { id: "128", name: "サードファストチャージ", cost: 1, type: "charge-boost", desc: "ドリフト時のチャージ3段階目を高速化する" },
-        { id: "129", name: "アルティメットチャージ", cost: 2, type: "charge-boost", desc: "ドリフト時のチャージ4段階目を解禁する" },
-        { id: "130", name: "ジャストチャージダッシュ", cost: 2, type: "charge-boost", desc: "チャージが1～3段階目まで溜まった瞬間にダッシュするとダッシュの性能が上がるようになる" },
-        { id: "131", name: "テクニカルドリフト", cost: 2, type: "charge-boost", desc: "ドリフトが滑るようになる代わりにレベル1～3全て、アルティメットチャージがあればレベル4も含めて全ての段階でチャージ速度が上がる。各種ファストチャージと重複する。" },
-        { id: "132", name: "フリクションドリフト", cost: 2, type: "charge-boost", desc: "ドリフト中に減速してしまう代わりにレベル1～3全て、アルティメットチャージがあればレベル4も含めて全ての段階でチャージ速度が上がる。各種ファストチャージと重複する。" },
-        { id: "133", name: "切りかえしクイックチャージ", cost: 3, type: "charge-boost", desc: "ドリフトを切り返すとチャージが大きく溜まるようになるガジェット" },
+        { id: "0401", name: "ファーストファストチャージ", cost: 2, type: "charge-boost", desc: "ドリフト時のチャージ1段階目を高速化する" },
+        { id: "0402", name: "セカンドファストチャージ", cost: 1, type: "charge-boost", desc: "ドリフト時のチャージ2段階目を高速化する" },
+        { id: "0403", name: "サードファストチャージ", cost: 1, type: "charge-boost", desc: "ドリフト時のチャージ3段階目を高速化する" },
+        { id: "0404", name: "アルティメットチャージ", cost: 2, type: "charge-boost", desc: "ドリフト時のチャージ4段階目を解禁する" },
+        { id: "0405", name: "ジャストチャージダッシュ", cost: 2, type: "charge-boost", desc: "チャージが1～3段階目まで溜まった瞬間にダッシュするとダッシュの性能が上がるようになる" },
+        { id: "0406", name: "テクニカルドリフト", cost: 2, type: "charge-boost", desc: "ドリフトが滑るようになる代わりにレベル1～3全て、アルティメットチャージがあればレベル4も含めて全ての段階でチャージ速度が上がる。各種ファストチャージと重複する。" },
+        { id: "0407", name: "フリクションドリフト", cost: 2, type: "charge-boost", desc: "ドリフト中に減速してしまう代わりにレベル1～3全て、アルティメットチャージがあればレベル4も含めて全ての段階でチャージ速度が上がる。各種ファストチャージと重複する。" },
+        { id: "0408", name: "切りかえしクイックチャージ", cost: 3, type: "charge-boost", desc: "ドリフトを切り返すとチャージが大きく溜まるようになるガジェット" },
 
         // 5. パラメータ強化 (param-boost)
-        { id: "134", name: "スターター", cost: 1, type: "param-boost", desc: "LAP1の間、すべてのパラメータを+10" },
-        { id: "135", name: "スーパースターター", cost: 2, type: "param-boost", desc: "LAP1の間、すべてのパラメータを+20" },
-        { id: "136", name: "スロースターター", cost: 2, type: "param-boost", desc: "LAP3の間、すべてのパラメータを+10" },
-        { id: "137", name: "スーパースロースターター", cost: 3, type: "param-boost", desc: "LAP3の間、すべてのパラメータを+20" },
-        { id: "138", name: "スピードチューン1", cost: 1, type: "param-boost", desc: "スピード+10、アクセル-4" },
-        { id: "139", name: "スピードチューン2", cost: 1, type: "param-boost", desc: "スピード+10、アクセル-2、ダッシュ-2" },
-        { id: "140", name: "アクセルチューン1", cost: 1, type: "param-boost", desc: "アクセル+10、ハンドリング-4" },
-        { id: "141", name: "アクセルチューン2", cost: 1, type: "param-boost", desc: "アクセル+10、ハンドリング-2、ダッシュ-2" },
-        { id: "142", name: "ハンドリングチューン1", cost: 1, type: "param-boost", desc: "ハンドリング+10、パワー-4" },
-        { id: "143", name: "ハンドリングチューン2", cost: 1, type: "param-boost", desc: "ハンドリング+10、パワー-2、スピード-2" },
-        { id: "144", name: "パワーチューン1", cost: 1, type: "param-boost", desc: "パワー+10、アクセル-4" },
-        { id: "145", name: "パワーチューン2", cost: 1, type: "param-boost", desc: "パワー+10、アクセル-2、ハンドリング-2" },
-        { id: "146", name: "ダッシュチューン1", cost: 1, type: "param-boost", desc: "ダッシュ+10、スピード-4" },
-        { id: "147", name: "ダッシュチューン2", cost: 1, type: "param-boost", desc: "ダッシュ+10、スピード-2、パワー-2" },
+        { id: "0501", name: "スターター", cost: 1, type: "param-boost", desc: "LAP1の間、すべてのパラメータを+10" },
+        { id: "0502", name: "スーパースターター", cost: 2, type: "param-boost", desc: "LAP1の間、すべてのパラメータを+20" },
+        { id: "0503", name: "スロースターター", cost: 2, type: "param-boost", desc: "LAP3の間、すべてのパラメータを+10" },
+        { id: "0504", name: "スーパースロースターター", cost: 3, type: "param-boost", desc: "LAP3の間、すべてのパラメータを+20" },
+        { id: "0505", name: "スピードチューン1", cost: 1, type: "param-boost", desc: "スピード+10、アクセル-4" },
+        { id: "0506", name: "スピードチューン2", cost: 1, type: "param-boost", desc: "スピード+10、アクセル-2、ダッシュ-2" },
+        { id: "0507", name: "アクセルチューン1", cost: 1, type: "param-boost", desc: "アクセル+10、ハンドリング-4" },
+        { id: "0508", name: "アクセルチューン2", cost: 1, type: "param-boost", desc: "アクセル+10、ハンドリング-2、ダッシュ-2" },
+        { id: "0509", name: "ハンドリングチューン1", cost: 1, type: "param-boost", desc: "ハンドリング+10、パワー-4" },
+        { id: "0510", name: "ハンドリングチューン2", cost: 1, type: "param-boost", desc: "ハンドリング+10、パワー-2、スピード-2" },
+        { id: "0511", name: "パワーチューン1", cost: 1, type: "param-boost", desc: "パワー+10、アクセル-4" },
+        { id: "0512", name: "パワーチューン2", cost: 1, type: "param-boost", desc: "パワー+10、アクセル-2、ハンドリング-2" },
+        { id: "0513", name: "ダッシュチューン1", cost: 1, type: "param-boost", desc: "ダッシュ+10、スピード-4" },
+        { id: "0514", name: "ダッシュチューン2", cost: 1, type: "param-boost", desc: "ダッシュ+10、スピード-2、パワー-2" },
 
         // 6. サポート (support)
-        { id: "148", name: "グリップ力強化", cost: 1, type: "support", desc: "氷や砂などの滑るコースで滑らなくなる" },
-        { id: "149", name: "落下時ブーストリカバー", cost: 1, type: "support", desc: "穴のあるコースで落下してしまった際、ブーストを1つ獲得できる" },
-        { id: "150", name: "壁リングガード", cost: 1, type: "support", desc: "壁に当たると数枚リングを失ってしまうが、それを防ぐことができるガジェット" },
-        { id: "151", name: "無敵スタート", cost: 2, type: "support", desc: "レース開始からしばらくの間、全ての攻撃を無効化する" },
-        { id: "152", name: "アイテムロスト無効化", cost: 2, type: "support", desc: "カッターやスライムなどによるアイテムロストを防ぐガジェット" },
-        { id: "153", name: "クイックリカバー", cost: 3, type: "support", desc: "被弾時からの復帰速度が上昇する" },
-        { id: "154", name: "リングガード", cost: 2, type: "support", desc: "ほとんどのリング減少を半減する" },
+        { id: "0601", name: "グリップ力強化", cost: 1, type: "support", desc: "氷や砂などの滑るコースで滑らなくなる" },
+        { id: "0602", name: "落下時ブーストリカバー", cost: 1, type: "support", desc: "穴のあるコースで落下してしまった際、ブーストを1つ獲得できる" },
+        { id: "0603", name: "壁リングガード", cost: 1, type: "support", desc: "壁に当たると数枚リングを失ってしまうが、それを防ぐことができるガジェット" },
+        { id: "0604", name: "無敵スタート", cost: 2, type: "support", desc: "レース開始からしばらくの間、全ての攻撃を無効化する" },
+        { id: "0605", name: "アイテムロスト無効化", cost: 2, type: "support", desc: "カッターやスライムなどによるアイテムロストを防ぐガジェット" },
+        { id: "0606", name: "クイックリカバー", cost: 3, type: "support", desc: "被弾時からの復帰速度が上昇する" },
+        { id: "0607", name: "リングガード", cost: 2, type: "support", desc: "ほとんどのリング減少を半減する" },
 
         // 7. アイテムコントロール (item-control)
-        { id: "155", name: "アイテムストックトレード", cost: 3, type: "item-control", desc: "持っているアイテムの順番を入れ替えられるようになる" },
-        { id: "156", name: "アイテムストックプラス", cost: 2, type: "item-control", desc: "アイテムを1度に3つ持てるようになる" },
-        { id: "157", name: "設置アイテム確率アップ", cost: 1, type: "item-control", desc: "アイテムボックスから設置アイテムが出現する確率が上がる" },
-        { id: "158", name: "攻撃アイテム確率アップ", cost: 1, type: "item-control", desc: "アイテムボックスから攻撃アイテムが出現する確率が上がる" },
-        { id: "159", name: "防御アイテム確率アップ", cost: 2, type: "item-control", desc: "アイテムボックスから防御アイテムが出現する確率が上がる" },
-        { id: "160", name: "加速アイテム確率アップ", cost: 3, type: "item-control", desc: "アイテムボックスから加速アイテムが出現する確率が上がる" },
-        { id: "161", name: "ウィスプ確率アップ", cost: 1, type: "item-control", desc: "ブースト・レーザー・ドリル・ボム・ヴォイドの5種が入手しやすくなるガジェット" },
+        { id: "0701", name: "アイテムストックトレード", cost: 3, type: "item-control", desc: "持っているアイテムの順番を入れ替えられるようになる" },
+        { id: "0702", name: "アイテムストックプラス", cost: 2, type: "item-control", desc: "アイテムを1度に3つ持てるようになる" },
+        { id: "0703", name: "設置アイテム確率アップ", cost: 1, type: "item-control", desc: "アイテムボックスから設置アイテムが出現する確率が上がる" },
+        { id: "0704", name: "攻撃アイテム確率アップ", cost: 1, type: "item-control", desc: "アイテムボックスから攻撃アイテムが出現する確率が上がる" },
+        { id: "0705", name: "防御アイテム確率アップ", cost: 2, type: "item-control", desc: "アイテムボックスから防御アイテムが出現する確率が上がる" },
+        { id: "0706", name: "加速アイテム確率アップ", cost: 3, type: "item-control", desc: "アイテムボックスから加速アイテムが出現する確率が上がる" },
+        { id: "0707", name: "ウィスプ確率アップ", cost: 1, type: "item-control", desc: "ブースト・レーザー・ドリル・ボム・ヴォイドの5種が入手しやすくなるガジェット" },
 
         // 8. アイテム強化・追加 (item-boost)
-        { id: "162", name: "最初からブースト", cost: 1, type: "item-boost", desc: "名前の通りレース開始時からブーストを持てる" },
-        { id: "163", name: "ダブルブースト追加", cost: 2, type: "item-boost", desc: "最初からブーストのダブル版。最初からダブルブーストを持てる" },
-        { id: "164", name: "最初からダークチャオ", cost: 1, type: "item-boost", desc: "スタート時にダークチャオを持つ" },
-        { id: "165", name: "ワープリング追加", cost: 2, type: "item-boost", desc: "自分より上位のレーサーの元へワープできるアイテム「ワープリング」を開幕に入手する" },
-        { id: "166", name: "ロケットパンチ巨大化", cost: 1, type: "item-boost", desc: "ロケットパンチが大きくなり、当てやすくなる" },
-        { id: "167", name: "トゲ鉄球巨大化", cost: 1, type: "item-boost", desc: "トゲ鉄球が巨大化、さらにアイテムボックスからトゲ鉄球が出やすくなる" },
-        { id: "168", name: "ボムクイックチャージ", cost: 1, type: "item-boost", desc: "ボムのチャージ速度が上昇、さらにアイテムボックスからボムが出やすくなる" },
-        { id: "169", name: "最初からモンスタートラック", cost: 3, type: "item-boost", desc: "レース開始時からモンスタートラックを持った状態でレースを始められるようになる" },
+        { id: "0801", name: "最初からブースト", cost: 1, type: "item-boost", desc: "名前の通りレース開始時からブーストを持てる" },
+        { id: "0802", name: "ダブルブースト追加", cost: 2, type: "item-boost", desc: "最初からブーストのダブル版。最初からダブルブーストを持てる" },
+        { id: "0803", name: "最初からダークチャオ", cost: 1, type: "item-boost", desc: "スタート時にダークチャオを持つ" },
+        { id: "0804", name: "ワープリング追加", cost: 2, type: "item-boost", desc: "自分より上位のレーサーの元へワープできるアイテム「ワープリング」を開幕に入手する" },
+        { id: "0805", name: "ロケットパンチ巨大化", cost: 1, type: "item-boost", desc: "ロケットパンチが大きくなり、当てやすくなる" },
+        { id: "0806", name: "トゲ鉄球巨大化", cost: 1, type: "item-boost", desc: "トゲ鉄球が巨大化、さらにアイテムボックスからトゲ鉄球が出やすくなる" },
+        { id: "0807", name: "ボムクイックチャージ", cost: 1, type: "item-boost", desc: "ボムのチャージ速度が上昇、さらにアイテムボックスからボムが出やすくなる" },
+        { id: "0808", name: "最初からモンスタートラック", cost: 3, type: "item-boost", desc: "レース開始時からモンスタートラックを持った状態でレースを始められるようになる" },
 
         // 9. スタンダードキット (standard)
-        { id: "170", name: "ドリフトチャージ短縮キット", cost: 3, type: "standard", desc: "チャージ1〜2段目を高速化し、ハンドリングを+3" },
-        { id: "171", name: "アイテムたくさんキット", cost: 3, type: "standard", desc: "アイテムが3つ持てるようになり、さらにLAPが上がった際(=2周目と3周目開始時)にアイテムを1つ獲得する" },
-        { id: "172", name: "ダメージサポートキット", cost: 3, type: "standard", desc: "スタートからしばらく無敵になり、落下した際にブーストを獲得する" },
+        { id: "0901", name: "ドリフトチャージ短縮キット", cost: 3, type: "standard", desc: "チャージ1〜2段目を高速化し、ハンドリングを+3" },
+        { id: "0902", name: "アイテムたくさんキット", cost: 3, type: "standard", desc: "アイテムが3つ持てるようになり、さらにLAPが上がった際(=2周目と3周目開始時)にアイテムを1つ獲得する" },
+        { id: "0903", name: "ダメージサポートキット", cost: 3, type: "standard", desc: "スタートからしばらく無敵になり、落下した際にブーストを獲得する" },
 
         // 10. マシンタイプキット (machine)
-        { id: "173", name: "スピードマシンキット", cost: 3, type: "machine", desc: "リング獲得範囲アップ+リングゲットダッシュミニを内包する。スピードマシンだとスピード+20、アクセル-16" },
-        { id: "174", name: "アクセルマシンキット", cost: 3, type: "machine", desc: "クイックリカバー（弱）を内包する。アクセルマシンだとアクセル+20、ダッシュ-16" },
-        { id: "175", name: "ハンドリングマシンキット", cost: 3, type: "machine", desc: "アルティメットチャージを内包する。ハンドリングマシンだとハンドリング+20、スピード-16" },
-        { id: "176", name: "パワーマシンキット", cost: 3, type: "machine", desc: "ぶつかりダッシュを内包する。パワーマシンだとパワー+20、ハンドリング-16" },
-        { id: "177", name: "ダッシュマシンキット", cost: 3, type: "machine", desc: "チャージダッシュ時にリングを2枚獲得する。ダッシュマシンだとダッシュ+20、パワー-16" },
+        { id: "1001", name: "スピードマシンキット", cost: 3, type: "machine", desc: "リング獲得範囲アップ+リングゲットダッシュミニを内包する。スピードマシンだとスピード+20、アクセル-16" },
+        { id: "1002", name: "アクセルマシンキット", cost: 3, type: "machine", desc: "クイックリカバー（弱）を内包する。アクセルマシンだとアクセル+20、ダッシュ-16" },
+        { id: "1003", name: "ハンドリングマシンキット", cost: 3, type: "machine", desc: "アルティメットチャージを内包する。ハンドリングマシンだとハンドリング+20、スピード-16" },
+        { id: "1004", name: "パワーマシンキット", cost: 3, type: "machine", desc: "ぶつかりダッシュを内包する。パワーマシンだとパワー+20、ハンドリング-16" },
+        { id: "1005", name: "ダッシュマシンキット", cost: 3, type: "machine", desc: "チャージダッシュ時にリングを2枚獲得する。ダッシュマシンだとダッシュ+20、パワー-16" },
 
         // 11. キャラタイプキット (char)
-        { id: "178", name: "ハンドリングキャラキット", cost: 3, type: "char", desc: "「リングスティール」「リングスティールミニ」「ハンドリングタイプのキャラクター時にハンドリング+7とスピード-5」が合わさった性能" },
-        { id: "179", name: "パワーキャラキット", cost: 3, type: "char", desc: "「ぶつかりダッシュ」「ロングスリップストリーム」*1「パワータイプのキャラクター時にパワー+7とハンドリング-5」が合わさった性能" },
-        { id: "180", name: "ダッシュキャラキット", cost: 3, type: "char", desc: "「超高速エアトリック」「エアトリックボーナス」「ダッシュタイプのキャラクター時にダッシュ+7とパワー-5」が合わさった性能" },
+        { id: "1101", name: "ハンドリングキャラキット", cost: 3, type: "char", desc: "「リングスティール」「リングスティールミニ」「ハンドリングタイプのキャラクター時にハンドリング+7とスピード-5」が合わさった性能" },
+        { id: "1102", name: "パワーキャラキット", cost: 3, type: "char", desc: "「ぶつかりダッシュ」「ロングスリップストリーム」*1「パワータイプのキャラクター時にパワー+7とハンドリング-5」が合わさった性能" },
+        { id: "1103", name: "ダッシュキャラキット", cost: 3, type: "char", desc: "「超高速エアトリック」「エアトリックボーナス」「ダッシュタイプのキャラクター時にダッシュ+7とパワー-5」が合わさった性能" },
 
         // 12. アドバンスドキット (advanced)
-        { id: "181", name: "後半追い上げキット", cost: 3, type: "advanced", desc: "リング上限が110枚になり、LAP3突入時にアイテムを2個獲得する" },
-        { id: "182", name: "水上強化キット", cost: 3, type: "advanced", desc: "「超高速エアトリック」「チャージジャンプ自由度アップ」を組み合わせたキット" },
+        { id: "1201", name: "後半追い上げキット", cost: 3, type: "advanced", desc: "リング上限が110枚になり、LAP3突入時にアイテムを2個獲得する" },
+        { id: "1202", name: "水上強化キット", cost: 3, type: "advanced", desc: "「超高速エアトリック」「チャージジャンプ自由度アップ」を組み合わせたキット" },
     ];
-
 // --- 状態管理 ---
     const ROW_CAPACITY = 3;
     let currentSetup = { upper: [], lower: [] };
