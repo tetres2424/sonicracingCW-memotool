@@ -373,42 +373,53 @@
         showMessage("🎲 ランダム構成を生成しました！");
     }
 
-    // ★シナジー（テーマ別）構成生成ロジック★
+    // ★シナジー構成生成ロジック (v2: キーワード検索強化版) ★
     function setSynergySetup() {
         if(!confirm("現在の構成を破棄して、テーマ統一された構成を生成しますか？")) return;
 
-        // シナジーの定義：相性の良いタイプの組み合わせ
+        // テーマ定義：タイプだけでなく「名前に含まれる文字」で絞り込む
         const themes = [
-            { name: "リング長者セット", types: ["ring-get", "ring-ability"] },
-            { name: "テクニック特化", types: ["tech-boost", "charge-boost"] },
-            { name: "パラメータ・マシン強化", types: ["param-boost", "machine", "char"] },
-            { name: "アイテム攻防セット", types: ["item-control", "item-boost"] },
-            { name: "サポート・標準セット", types: ["support", "standard", "advanced"] }
+            // 既存のタイプベース
+            { name: "💰リング長者セット", filter: g => ["ring-get", "ring-ability"].includes(g.type) },
+            { name: "🏎️スピード＆アクセル", filter: g => ["machine", "param-boost"].includes(g.type) && (g.name.includes("スピード") || g.name.includes("アクセル")) },
+            
+            // 名前検索による精密シナジー
+            { name: "🌀ドリフト特化", filter: g => g.name.includes("ドリフト") || g.type === "charge-boost" },
+            { name: "🚀スタートダッシュ特化", filter: g => g.name.includes("スタート") || g.name.includes("スターター") || g.name.includes("最初から") },
+            { name: "💣アイテム攻撃特化", filter: g => g.name.includes("攻撃") || g.type === "item-boost" },
+            { name: "🛡️鉄壁の防御セット", filter: g => g.name.includes("ガード") || g.name.includes("防御") || g.name.includes("無敵") },
+            
+            // マニアックな組み合わせ
+            { name: "⚡ブースト＆ダッシュ", filter: g => g.name.includes("ブースト") || g.name.includes("ダッシュ") },
+            { name: "🎪エアトリック芸人", filter: g => g.name.includes("エアトリック") || g.name.includes("ジャンプ") }
         ];
 
-        // ランダムに1つのテーマを決める
+        // 1. テーマをランダムに決定
         const theme = themes[Math.floor(Math.random() * themes.length)];
         
-        // そのテーマに合致するガジェットだけを抽出
-        const pool = [...defaultGadgets, ...customGadgets].filter(g => theme.types.includes(g.type));
+        // 2. そのテーマに合致するガジェット(pool)を抽出
+        // ※カスタムガジェットも含める
+        const allGadgets = [...defaultGadgets, ...customGadgets];
+        let pool = allGadgets.filter(theme.filter);
 
-        // もし候補が少なすぎる場合は、汎用的な「サポート(support)」や「標準(standard)」も混ぜる
-        const backupPool = [...defaultGadgets].filter(g => ["support", "standard"].includes(g.type));
+        // ※もし候補が少なすぎて6枠埋まらない可能性がある場合、汎用系(standard/support)をバックアップに追加
+        if (pool.length < 5) {
+            const backup = allGadgets.filter(g => ["standard", "support"].includes(g.type));
+            pool = [...pool, ...backup];
+        }
 
         const fillRow = () => {
             let row = [];
             let cost = 0;
             let safety = 0;
+            
             while(cost < ROW_CAPACITY && safety < 100) {
-                // 80%の確率でテーマ一致、20%で汎用、なければテーマ一致のみ
-                let source = (Math.random() < 0.8 && pool.length > 0) ? pool : (backupPool.length > 0 ? backupPool : pool);
+                // プールからランダム選出
+                const g = pool[Math.floor(Math.random() * pool.length)];
                 
-                if(source.length === 0) break; // 候補なし
-
-                const g = source[Math.floor(Math.random() * source.length)];
+                // 重複チェック (名前で判定)
+                const isDuplicate = row.some(r => r.name === g.name); // IDではなく名前で重複排除
                 
-                // 重複チェック（同じガジェットを積みすぎないように名前でチェック）
-                const isDuplicate = row.some(r => r.id === g.id);
                 if (!isDuplicate && cost + g.cost <= ROW_CAPACITY) {
                     row.push({ ...g, uid: Date.now() + Math.random() });
                     cost += g.cost;
@@ -424,7 +435,6 @@
         render();
         showMessage(`🤖 テーマ「${theme.name}」で生成しました！`);
     }
-
     function registerCustomGadget() {
         const name = document.getElementById('customName').value.trim();
         const cost = parseInt(document.getElementById('customCost').value);
