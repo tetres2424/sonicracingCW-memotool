@@ -227,8 +227,9 @@
                 </div>
             </div>
 
-            <div class="controls" style="margin-top: 15px;">
-                <button class="btn-random" onclick="setRandomSetup()">🎲ランダム</button>
+           <div class="controls" style="margin-top: 15px;">
+                <button class="btn-random" onclick="setRandomGadgets()">🎲ガジェットのみ</button>
+                <button class="btn-random" style="background-color: #e91e63;" onclick="setRandomFull()">🎲全ランダム</button>
                 <button class="btn-random" style="background-color: #673ab7;" onclick="setAiOriginalSetup()">🧠AI生成</button>
             </div>
         </div>
@@ -838,8 +839,63 @@
         return true;
     }
 
-    function setRandomSetup() {
-        if(!confirm("現在の構成を破棄して、ランダムな構成を生成しますか？")) return;
+   // --- ランダム生成（ガジェットのみ） ---
+    function setRandomGadgets() {
+        if(!confirm("現在のガジェット構成を破棄して、ランダムに再生成しますか？\n（キャラ・マシンは維持されます）")) return;
+        
+        // ガジェットだけ作り直す
+        generateRandomGadgets();
+        
+        render();
+        showMessage("🎲 ガジェットをランダム生成しました！");
+    }
+
+    // --- ランダム生成（完全ランダム） ---
+    function setRandomFull() {
+        if(!confirm("現在の構成を全て破棄して、キャラ・マシン含めて完全にランダム生成しますか？")) return;
+
+        // 1. キャラをランダム決定
+        const randChar = characterData[Math.floor(Math.random() * characterData.length)];
+        currentSetup.charId = randChar.id;
+
+        // 2. マシンタイプをランダム決定
+        const types = ["スピード", "アクセル", "ハンドリング", "パワー", "ダッシュ"];
+        const randType = types[Math.floor(Math.random() * types.length)];
+        currentSetup.machineType = randType;
+
+        // 3. マシンパーツをランダム決定（タイプに合うものから抽選）
+        const parts = machineParts.filter(m => m.type === randType);
+        if (parts.length > 0) {
+            currentSetup.part1 = parts[Math.floor(Math.random() * parts.length)].id;
+            currentSetup.part2 = parts[Math.floor(Math.random() * parts.length)].id;
+            
+            if (randType !== "ダッシュ") {
+                currentSetup.part3 = parts[Math.floor(Math.random() * parts.length)].id;
+            } else {
+                currentSetup.part3 = "";
+            }
+        }
+
+        // 4. ガジェットもランダム決定
+        generateRandomGadgets();
+
+        // 5. UIへの反映
+        document.getElementById('charSelect').value = currentSetup.charId;
+        document.getElementById('machineTypeSelect').value = currentSetup.machineType;
+        changeMachineType(); // パーツリスト更新
+        
+        document.getElementById('part1Select').value = currentSetup.part1;
+        document.getElementById('part2Select').value = currentSetup.part2;
+        document.getElementById('part3Select').value = currentSetup.part3;
+
+        updateCharMachineInfo(); // ステータス計算
+        render();
+        
+        showMessage("🎲 完全ランダム構成を生成しました！");
+    }
+
+    //（共通）ガジェットランダム生成ロジック
+    function generateRandomGadgets() {
         const pool = [...defaultGadgets, ...customGadgets];
         const usedIds = new Set();
         const fill = () => {
@@ -851,10 +907,9 @@
                 } s++;
             } return r;
         };
-        currentSetup.upper=fill(); currentSetup.lower=fill(); render();
-        showMessage("🎲 ランダム構成を生成しました！");
+        currentSetup.upper = fill();
+        currentSetup.lower = fill();
     }
-
     function setAiOriginalSetup() {
         if(!confirm("現在の構成を破棄して、AIが考案した戦術を展開しますか？")) return;
 
