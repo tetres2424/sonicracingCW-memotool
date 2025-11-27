@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ソニックレーシングCW 構成ツール v14</title>
+    <title>ソニックレーシングCW 構成ツール v15</title>
     <style>
         :root {
             --bg-color: #f4f4f9;
@@ -115,7 +115,7 @@
 </head>
 <body>
 
-    <h1>Sonic Racing CW 構成ツール v14</h1>
+    <h1>Sonic Racing CW 構成ツール v15</h1>
 
     <div class="container">
         
@@ -126,8 +126,8 @@
             <ul style="margin:0; padding-left:20px;">
                 <li style="margin-bottom: 5px;">
                     <strong>AI生成・ランダム機能について:</strong><br>
-                    コンセプトに基づいて選出されますが、ゲーム内の仕様に合わせ、<br>
-                    <u>同じガジェットが重複しない組み合わせ</u>で出力されるよう調整されています。
+                    ランダム生成やAI生成機能の使用時、効果が重複しないガジェットが選ばれることがあります。<br>
+                    （ゲーム内の仕様や相性を完全に保証するものではありません）
                 </li>
                 <li style="margin-bottom: 5px;">
                     <strong>「○○チューン」系ガジェット:</strong><br>
@@ -144,10 +144,12 @@
                 <div class="row-label"><span>上段 (Upper)</span><span>Cost: <span id="costUpper">0</span>/3</span></div>
                 <div class="visual-row" id="visualUpper"></div>
             </div>
+            
             <div class="row-container">
                 <div class="row-label"><span>下段 (Lower)</span><span>Cost: <span id="costLower">0</span>/3</span></div>
                 <div class="visual-row" id="visualLower"></div>
             </div>
+            
             <div id="message"></div>
 
             <div class="controls" style="margin-top: 20px; align-items: flex-start;">
@@ -155,6 +157,7 @@
                     <select id="gadgetSelect" onchange="showGadgetDescription()" style="width: 100%;">
                         <option value="" disabled selected>ガジェットを選択してください</option>
                     </select>
+                    
                     <div id="gadgetDescPreview" style="
                         margin-top: 5px; 
                         padding: 8px; 
@@ -163,21 +166,19 @@
                         border-radius: 4px; 
                         font-size: 0.85rem; 
                         color: #444;
-                        min-height: 1.5em;
+                        height: 4.5em; 
+                        overflow-y: auto;
                     ">
                         ここにガジェットの効果が表示されます
                     </div>
                 </div>
 
-                <button class="btn-add" onclick="tryAddGadget()">追加</button>
-                <button class="btn-reset" onclick="resetCurrent()">リセット</button>
+                <div style="display:flex; flex-direction:column; gap:5px;">
+                    <button class="btn-add" onclick="tryAddGadget()">追加</button>
+                    <button class="btn-reset" onclick="resetCurrent()">リセット</button>
+                </div>
             </div>
 
-            <div class="controls" style="margin-top: 10px;">
-                <button class="btn-random" onclick="setRandomSetup()">🎲ランダム</button>
-                <button class="btn-random" style="background-color: #673ab7;" onclick="setAiOriginalSetup()">🧠AI生成</button>
-            </div>
-        </div>
             <div class="controls" style="margin-top: 10px;">
                 <button class="btn-random" onclick="setRandomSetup()">🎲ランダム</button>
                 <button class="btn-random" style="background-color: #673ab7;" onclick="setAiOriginalSetup()">🧠AI生成</button>
