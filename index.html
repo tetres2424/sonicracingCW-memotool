@@ -144,16 +144,11 @@
                     <ul style="margin:0; padding-left:20px;">
                         <li style="margin-bottom: 5px;">
                             <strong>ランキングデータについて:</strong><br>
-                            使用率データは <span style="color:#d32f2f; font-weight:bold;">Top50プレイヤー (11/11時点)</span> の集計結果に基づいています。<br>
-                            （順次更新中）
+                            使用率データは <span style="color:#d32f2f; font-weight:bold;">Top50プレイヤー (11/11 20:00時点)</span> の集計結果に基づいています。
                         </li>
                         <li style="margin-bottom: 5px;">
                             <strong>AI生成・ランダム機能:</strong><br>
                             ゲーム内の仕様上、効果が重複しないガジェットが選ばれることがあります。
-                        </li>
-                        <li style="margin-bottom: 5px;">
-                            <strong>「○○チューン」系ガジェット:</strong><br>
-                            効果やパラメータ変化量が複雑なため、採用時はご注意ください。
                         </li>
                         <li>
                             <strong>詳細データ:</strong><br>
@@ -236,7 +231,7 @@
                             </div>
                         </div>
                         <div id="gadgetDescPreview" style="
-                            width: 100%; height: 60px; padding: 10px; background: #f1f8ff; 
+                            width: 100%; height: 110px; padding: 10px; background: #f1f8ff; 
                             border: 1px solid #c8e1ff; border-radius: 4px; font-size: 0.85rem; 
                             color: #444; overflow-y: auto; box-sizing: border-box; line-height: 1.4;">
                             （ここにガジェットの効果が表示されます）
@@ -551,7 +546,7 @@
             id: "0901", name: "ドリフトチャージ短縮キット", cost: 3, type: "standard", desc: "チャージ1-2段高速化 / H+3",
             calc: (s) => { s.h+=3; }
         },
-        { id: "0902", name: "アイテムたくさんキット", cost: 3, type: "standard", desc: "アイテム3枠＆LAP2,3にアイテム獲得" },
+        { id: "0902", name: "アイテムたくさんキット", cost: 3, type: "standard", desc: "アイテム3枠＆LAPアイテム獲得" },
         { id: "0903", name: "ダメージサポートキット", cost: 3, type: "standard", desc: "無敵スタート＆落下リカバー" },
 
         // 10. マシンタイプキット
@@ -812,6 +807,7 @@
 
     function updateSelectOptions() {
         const select = document.getElementById('gadgetSelect');
+        const currentVal = select.value;
         select.innerHTML = '<option value="" disabled selected>ガジェットを選択してください</option>';
         let listToRender = [...defaultGadgets];
         if (isSortedByUsage) {
