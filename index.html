@@ -560,6 +560,29 @@
 
     const usageStats = { "0402":34, "0404":33, "0403":32, "0406":31, "0901":9, "0702":9, "0707":7, "0701":6, "0102":6, "0305":4, "0401":3, "0108":2, "0513":2, "0606":1, "0514":1, "0301":1, "0105":1, "0205":1 };
 
+    // ★Top50 ガジェット共起（シナジー）データ★
+    // キーのガジェットを選んだ人が、よく一緒に選んでいるガジェットTop3
+    const synergyData = {
+        "0406": ["0402", "0404", "0403"], // テクニカルドリフト -> セカンド, アルチャ, サード
+        "0702": ["0707", "0701", "0402"], // アイテムストックプラス -> ウィスプ, トレード, セカンド
+        "0108": ["0403", "0901", "0406"], // ジャストチャージ -> サード, 短縮, テクニカル
+        "0102": ["0305", "0901", "0406"], // エアトリック -> 超高速, 短縮, テクニカル
+        "0513": ["0406", "0514", "0404"], // ダッシュチューン1 -> テクニカル, ダッシュ2, アルチャ
+        "0707": ["0702", "0701", "0401"], // ウィスプ -> プラス, トレード, ファースト
+        "0205": ["0606", "0301", "0105"], // リングゲットダッシュミニ -> リカバー, ロングスリップ, ボーナス
+        "0401": ["0402", "0403", "0404"], // ファースト -> セカンド, サード, アルチャ
+        "0606": ["0301", "0205", "0105"], // クイックリカバー -> ロングスリップ, リングミニ, ボーナス
+        "0701": ["0707", "0702"],         // トレード -> ウィスプ, プラス
+        "0105": ["0606", "0301", "0205"], // スリップボーナス -> リカバー, ロングスリップ, リングミニ
+        "0901": ["0305", "0102", "0403"], // 短縮キット -> 超高速, エアトリック, サード
+        "0402": ["0404", "0406", "0403"], // セカンド -> アルチャ, テクニカル, サード
+        "0305": ["0901", "0102"],         // 超高速 -> 短縮, エアトリック
+        "0301": ["0606", "0205", "0105"], // ロングスリップ -> リカバー, リングミニ, ボーナス
+        "0403": ["0404", "0402", "0406"], // サード -> アルチャ, セカンド, テクニカル
+        "0514": ["0406", "0513", "0404"], // ダッシュチューン2 -> テクニカル, ダッシュ1, アルチャ
+        "0404": ["0402", "0403", "0406"]  // アルチャ -> セカンド, サード, テクニカル
+    };
+    
     // ==========================================
     //  2. ロジック・状態管理
     // ==========================================
@@ -802,15 +825,41 @@
         renderCustomList();
     }
 
+   // --- ガジェット説明文 ＆ シナジー情報の表示 ---
     function showGadgetDescription() {
         const select = document.getElementById('gadgetSelect');
         const preview = document.getElementById('gadgetDescPreview');
         const gId = select.value;
-        if (!gId) { preview.textContent = "（ここにガジェットの効果が表示されます）"; return; }
+        
+        if (!gId) { 
+            preview.textContent = "（ここにガジェットの効果が表示されます）"; 
+            return; 
+        }
+        
         const g = defaultGadgets.find(item => item.id === gId) || customGadgets.find(item => item.id === gId);
-        if (g) preview.textContent = g.desc ? g.desc : "（説明文が登録されていません）";
+        
+        if (g) {
+            let html = `<div style="margin-bottom:8px;">${g.desc ? g.desc : "（説明文が登録されていません）"}</div>`;
+            
+            // ★追加: シナジー情報の表示
+            const synergyIds = synergyData[g.id];
+            if (synergyIds && synergyIds.length > 0) {
+                const names = synergyIds.map(id => {
+                    const target = defaultGadgets.find(d => d.id === id);
+                    return target ? target.name : "";
+                }).filter(n => n).join("、");
+                
+                if (names) {
+                    html += `
+                    <div style="border-top:1px dashed #ccc; padding-top:6px; margin-top:6px; font-size:0.8rem; color:#00695c;">
+                        <strong>💡 Top50プレイヤーの併用例:</strong><br>
+                        ${names}
+                    </div>`;
+                }
+            }
+            preview.innerHTML = html; // textContentからinnerHTMLに変更
+        }
     }
-
     function tryAddGadget() {
         const gId = document.getElementById('gadgetSelect').value;
         if (!gId) return;
