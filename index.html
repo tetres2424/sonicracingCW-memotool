@@ -58,13 +58,45 @@
         .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; font-size: 0.8rem; color: #777; }
         .footer a { color: #555; text-decoration: none; }
         .footer a:hover { text-decoration: underline; }
-        
-        /* ランキング画面用スタイル */
-        .rank-bar { height: 20px; background-color: #e3f2fd; border-radius: 4px; overflow: hidden; margin-top: 4px; }
+
+        /* --- ランキング画面用スタイル (Popup対応) --- */
+        .rank-bar { height: 18px; background-color: #e3f2fd; border-radius: 3px; overflow: hidden; margin-top: 4px; width: 100%; position: relative; }
         .rank-fill { height: 100%; background-color: #2196f3; transition: width 0.5s; }
-        .player-row { cursor: pointer; transition: background-color 0.2s; }
-        .player-row:hover { background-color: #f5f5f5; }
-        .player-detail { display: none; background-color: #fafafa; padding: 10px; border-top: 1px dashed #ddd; font-size: 0.9rem; }
+        .rank-text { position: absolute; top: 0; left: 5px; font-size: 0.75rem; color: #333; line-height: 18px; }
+        
+        .player-row { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; 
+            transition: background-color 0.2s; 
+        }
+        .player-row:hover { background-color: #f0f8ff; }
+        
+        /* ポップアップモーダル */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1000;
+            align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: white; width: 90%; max-width: 600px; max-height: 90vh;
+            border-radius: 8px; padding: 20px; overflow-y: auto; position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .modal-close {
+            position: absolute; top: 10px; right: 15px; font-size: 24px; 
+            cursor: pointer; color: #888; font-weight: bold;
+        }
+        
+        /* ガジェットグリッド (3x2) */
+        .gadget-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;
+            margin-top: 10px; background: #eee; padding: 5px; border-radius: 4px;
+        }
+        .grid-item {
+            background: #fff; padding: 8px 4px; border-radius: 3px; border: 1px solid #ddd;
+            text-align: center; font-size: 0.75rem; display: flex; align-items: center; justify-content: center;
+            min-height: 40px; word-break: break-all;
+        }
     </style>
 </head>
 <body>
@@ -157,7 +189,6 @@
                         </div>
                         <div id="gadgetDescPreview" style="width: 100%; height: 110px; padding: 10px; background: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 4px; font-size: 0.85rem; color: #444; overflow-y: auto; box-sizing: border-box; line-height: 1.4;">（ここにガジェットの効果が表示されます）</div>
                     </div>
-
                     <div class="controls" style="margin-top: 15px;">
                         <button class="btn-random" onclick="setRandomGadgets()">🎲ガジェットのみ</button>
                         <button class="btn-random" style="background-color: #e91e63;" onclick="setRandomFull()">🎲全ランダム</button>
@@ -197,7 +228,7 @@
             </div>
         </div>
         
-       <div id="page-ranking" style="display: none;">
+        <div id="page-ranking" style="display: none;">
             <div class="container">
                 <div style="margin-bottom: 15px;">
                     <button onclick="showPage('main')" style="background-color: #666; padding: 8px 15px; font-size: 0.9rem; border-radius: 20px; border: none; color: white; cursor: pointer;">
@@ -206,46 +237,52 @@
                 </div>
 
                 <div class="card">
-                    <h3 style="color:#0055ff; margin-top:0;">📋 Top50 プレイヤー構成一覧</h3>
-                    <p style="font-size:0.8rem; color:#666;">名前をクリックすると詳細（マシン・ステータス）が開閉します。</p>
-                    <div id="player-list-container" style="max-height: 400px; overflow-y: auto; border: 1px solid #eee;"></div>
-                </div>
+                    <h2 style="text-align:center; color:#ff9800; border-bottom:2px solid #ffe0b2; padding-bottom:10px;">🏆 Top50 環境ランキング</h2>
+                    <p style="text-align:center; font-size:0.85rem; color:#666; margin-bottom:20px;">
+                        集計期間: 2025/11/11 20:00時点 / 対象: Top50
+                    </p>
 
-                <div class="card">
-                    <h3 style="color:#ff9800; margin-top:0;">📊 環境メタ分析</h3>
-                    
-                    <h4 style="color:#555;">🔫 ガジェット使用率</h4>
-                    <div id="rank-gadgets"></div>
+                    <div style="display:flex; gap:20px; flex-wrap:wrap;">
+                        <div style="flex:1; min-width:300px;">
+                            <h3 style="color:#0055ff; margin-top:0;">📋 プレイヤー一覧</h3>
+                            <p style="font-size:0.8rem; color:#666;">クリックで構成詳細を表示</p>
+                            <div id="player-list-container" style="height: 500px; overflow-y: auto; border: 1px solid #eee; border-radius:4px;"></div>
+                        </div>
 
-                    <h4 style="color:#555; margin-top:30px;">👤 キャラタイプ使用率</h4>
-                    <div id="rank-chartypes"></div>
+                        <div style="flex:1; min-width:300px;">
+                            <h3 style="color:#ff9800; margin-top:0;">📊 使用率 & シナジー</h3>
+                            
+                            <h4 style="color:#555; margin-bottom:5px;">🔫 ガジェット (Top10)</h4>
+                            <div id="rank-gadgets"></div>
 
-                    <h4 style="color:#555; margin-top:30px;">🏎️ マシンタイプ使用率</h4>
-                    <div id="rank-machines"></div>
-                    
-                    <h4 style="color:#555; margin-top:30px;">💡 注目シナジー（よくある組み合わせ）</h4>
-                    <div id="rank-synergy" style="font-size:0.9rem; line-height:1.6;"></div>
+                            <h4 style="color:#555; margin-top:30px; margin-bottom:5px;">👤 キャラタイプ</h4>
+                            <div id="rank-chartypes"></div>
+
+                            <h4 style="color:#555; margin-top:30px; margin-bottom:5px;">💡 注目シナジー (グループ)</h4>
+                            <div id="rank-synergy" style="font-size:0.85rem; line-height:1.5;"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div id="player-modal" class="modal-overlay" onclick="closeModal(event)">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <span class="modal-close" onclick="closeModal()">&times;</span>
+                <div id="modal-body"></div>
+            </div>
+        </div>
+
     </div>
 
     <footer class="footer">
-        <p>
-            本ツールのデータは 
-            <a href="https://w.atwiki.jp/sonicracingcw/" target="_blank">ソニックレーシング CW @ ウィキ</a> 
-            様を参考に作成いたしました。<br>
-            貴重なデータを収集・公開してくださっている編集者の皆様に深く感謝申し上げます。
-        </p>
+        <p>本ツールのデータは <a href="https://w.atwiki.jp/sonicracingcw/" target="_blank">ソニックレーシング CW @ ウィキ</a> 様を参考に作成いたしました。<br>
+        貴重なデータを収集・公開してくださっている編集者の皆様に深く感謝申し上げます。</p>
         <p>Created with respect for Sonic Racing CW community.</p>
     </footer>
 
 <script>
-    // ==========================================
-    //  1. データ定義エリア
-    // ==========================================
-
-    // キャラクターデータ
+    // データ定義 (前回と同じだが、ランキングデータはPythonで生成したものに差し替え)
     const characterData = [
         { id: "c01", name: "ソニック", type: "スピード", speed: 20, accel: 5, handling: 13, power: 15, dash: 7 },
         { id: "c02", name: "テイルス", type: "アクセル", speed: 15, accel: 20, handling: 7, power: 13, dash: 5 },
@@ -284,8 +321,6 @@
         { id: "c47", name: "スポンジ・ボブ", type: "ハンドリング", speed: 7, accel: 14, handling: 16, power: 10, dash: 13 },
         { id: "c49", name: "パトリック", type: "パワー", speed: 13, accel: 9, handling: 6, power: 17, dash: 15 }
     ];
-
-    // マシンパーツデータ
     const machineParts = [
         { id: "ms01", type: "スピード", name: "スピードスターライトニング", s: 20, a: 5, h: 13, p: 15, d: 7 },
         { id: "ms02", type: "スピード", name: "ダークリーパー", s: 20, a: 6, h: 12, p: 14, d: 8 },
@@ -341,7 +376,6 @@
         { id: "md11", type: "ダッシュ", name: "ディーヴァマッキナ", s: 14, a: 18, h: 22, p: 10, d: 26 }
     ];
 
-    // ガジェットデータ
     const defaultGadgets = [
         { id: "0101", name: "スタート成功ボーナス", cost: 1, type: "ring-get", desc: "スタートダッシュ成功時にリングを30枚入手" },
         { id: "0102", name: "エアトリックボーナス", cost: 1, type: "ring-get", desc: "エアトリック1回につきリングを2枚入手" },
@@ -393,7 +427,7 @@
         { id: "0601", name: "グリップ力強化", cost: 1, type: "support", desc: "滑る路面でグリップ力アップ" },
         { id: "0602", name: "落下時ブーストリカバー", cost: 1, type: "support", desc: "落下復帰時にブースト獲得" },
         { id: "0603", name: "壁リングガード", cost: 1, type: "support", desc: "壁衝突時のリング減少を防ぐ" },
-        { id: "0604", name: "無敵スタート", cost: 2, type: "support", desc: "スタート直後無敵" },
+        { id: "0604", name: "無敵スタート", cost: 2, type: "support", desc: "スタート直後約40秒無敵" },
         { id: "0605", name: "アイテムロスト無効化", cost: 2, type: "support", desc: "被弾時のアイテムロストを防ぐ" },
         { id: "0606", name: "クイックリカバー", cost: 3, type: "support", desc: "復帰速度アップ" },
         { id: "0607", name: "リングガード", cost: 2, type: "support", desc: "被弾時のリング減少を半減" },
@@ -403,7 +437,7 @@
         { id: "0704", name: "攻撃アイテム確率アップ", cost: 1, type: "item-control", desc: "攻撃アイテム出現率アップ" },
         { id: "0705", name: "防御アイテム確率アップ", cost: 2, type: "item-control", desc: "防御アイテム出現率アップ" },
         { id: "0706", name: "加速アイテム確率アップ", cost: 3, type: "item-control", desc: "加速アイテム出現率アップ" },
-        { id: "0707", name: "ウィスプ確率アップ", cost: 1, type: "item-control", desc: "特定ウィスプ出現率アップ" },
+        { id: "0707", name: "ウィスプ確率アップ", cost: 1, type: "item-control", desc: "ブースト・レーザー・ドリル・ボム・ヴォイドの5種が出現率アップ" },
         { id: "0801", name: "最初からブースト", cost: 1, type: "item-boost", desc: "開始時ブースト所持" },
         { id: "0802", name: "ダブルブースト追加", cost: 2, type: "item-boost", desc: "開始時ダブルブースト所持" },
         { id: "0803", name: "最初からダークチャオ", cost: 1, type: "item-boost", desc: "開始時ダークチャオ所持" },
@@ -413,22 +447,22 @@
         { id: "0807", name: "ボムクイックチャージ", cost: 1, type: "item-boost", desc: "ボム強化＆出現率アップ" },
         { id: "0808", name: "最初からモンスタートラック", cost: 3, type: "item-boost", desc: "開始時モンスタートラック所持" },
         { id: "0901", name: "ドリフトチャージ短縮キット", cost: 3, type: "standard", desc: "チャージ1-2段高速化 / H+3", calc: (s) => { s.h+=3; } },
-        { id: "0902", name: "アイテムたくさんキット", cost: 3, type: "standard", desc: "アイテム3枠＆LAPアイテム獲得" },
+        { id: "0902", name: "アイテムたくさんキット", cost: 3, type: "standard", desc: "アイテム3枠＆LAP2,3にアイテム獲得" },
         { id: "0903", name: "ダメージサポートキット", cost: 3, type: "standard", desc: "無敵スタート＆落下リカバー" },
-        { id: "1001", name: "スピードマシンキット", cost: 3, type: "machine", desc: "リング獲得範囲アップ+リングゲットダッシュミニを内包 スピードマシンならS+20/A-16", calc: (s, ctx) => { if(ctx.mT==="スピード"){ s.s+=20; s.a-=16; } } },
-        { id: "1002", name: "アクセルマシンキット", cost: 3, type: "machine", desc: "クイックリカバー（弱）を内包 アクセルマシンならA+20/D-16", calc: (s, ctx) => { if(ctx.mT==="アクセル"){ s.a+=20; s.d-=16; } } },
-        { id: "1003", name: "ハンドリングマシンキット", cost: 3, type: "machine", desc: "アルティメットチャージを内包 ハンドリングマシンならH+20/S-16", calc: (s, ctx) => { if(ctx.mT==="ハンドリング"){ s.h+=20; s.s-=16; } } },
-        { id: "1004", name: "パワーマシンキット", cost: 3, type: "machine", desc: "ぶつかりダッシュを内包 パワーマシンならP+20/H-16", calc: (s, ctx) => { if(ctx.mT==="パワー"){ s.p+=20; s.h-=16; } } },
-        { id: "1005", name: "ダッシュマシンキット", cost: 3, type: "machine", desc: "チャージダッシュ時にリングを2枚獲得 ダッシュマシンならD+20/P-16", calc: (s, ctx) => { if(ctx.mT==="ダッシュ"){ s.d+=20; s.p-=16; } } },
+        { id: "1001", name: "スピードマシンキット", cost: 3, type: "machine", desc: "リング獲得範囲アップ+リングゲットダッシュミニを内包。スピードマシンだとスピード+20、アクセル-16", calc: (s, ctx) => { if(ctx.mT==="スピード"){ s.s+=20; s.a-=16; } } },
+        { id: "1002", name: "アクセルマシンキット", cost: 3, type: "machine", desc: "クイックリカバー（弱）を内包。アクセルマシンだとアクセル+20、ダッシュ-16", calc: (s, ctx) => { if(ctx.mT==="アクセル"){ s.a+=20; s.d-=16; } } },
+        { id: "1003", name: "ハンドリングマシンキット", cost: 3, type: "machine", desc: "アルティメットチャージを内包。ハンドリングマシンだとハンドリング+20、スピード-16", calc: (s, ctx) => { if(ctx.mT==="ハンドリング"){ s.h+=20; s.s-=16; } } },
+        { id: "1004", name: "パワーマシンキット", cost: 3, type: "machine", desc: "ぶつかりダッシュを内包。パワーマシンだとパワー+20、ハンドリング-16", calc: (s, ctx) => { if(ctx.mT==="パワー"){ s.p+=20; s.h-=16; } } },
+        { id: "1005", name: "ダッシュマシンキット", cost: 3, type: "machine", desc: "チャージダッシュ時にリングを2枚獲得。ダッシュマシンだとダッシュ+20、パワー-16", calc: (s, ctx) => { if(ctx.mT==="ダッシュ"){ s.d+=20; s.p-=16; } } },
         { id: "1101", name: "ハンドリングキャラキット", cost: 3, type: "char", desc: "リングスティール、リングスティールミニを内包 ハンドリングキャラならH+7/S-5", calc: (s, ctx) => { if(ctx.cT==="ハンドリング"){ s.h+=7; s.s-=5; } } },
         { id: "1102", name: "パワーキャラキット", cost: 3, type: "char", desc: "ぶつかりダッシュ、ロングスリップストリームを内包 パワーキャラならP+7/H-5", calc: (s, ctx) => { if(ctx.cT==="パワー"){ s.p+=7; s.h-=5; } } },
         { id: "1103", name: "ダッシュキャラキット", cost: 3, type: "char", desc: "超高速エアトリック、エアトリックボーナスを内包 ダッシュキャラならD+7/P-5", calc: (s, ctx) => { if(ctx.cT==="ダッシュ"){ s.d+=7; s.p-=5; } } },
         { id: "1201", name: "後半追い上げキット", cost: 3, type: "advanced", desc: "リング上限110枚＆LAP3アイテム2つ獲得" },
-        { id: "1202", name: "水上強化キット", cost: 3, type: "advanced", desc: "水上・空中・チャージ性能アップ" }
+        { id: "1202", name: "水上強化キット", cost: 3, type: "advanced", desc: "「超高速エアトリック」「チャージジャンプ自由度アップ」を組み合わせたキット" }
     ];
 
     const usageStats = { "0402":34, "0404":33, "0403":32, "0406":31, "0901":9, "0702":9, "0707":7, "0701":6, "0102":6, "0305":4, "0401":3, "0108":2, "0513":2, "0606":1, "0514":1, "0301":1, "0105":1, "0205":1 };
-    
+
     const synergyData = {
         "0406": ["0402", "0404", "0403"], "0702": ["0707", "0701", "0402"],
         "0108": ["0403", "0901", "0406"], "0102": ["0305", "0901", "0406"],
@@ -471,68 +505,65 @@
             ]
         },
         synergy: [
-            { name: "アルティメットチャージ + セカンドファストチャージ", count: 31, note: "最強のドリフトコンボ" },
-            { name: "アルティメットチャージ + サードファストチャージ", count: 30 },
-            { name: "アルティメットチャージ + テクニカルドリフト", count: 30 },
-            { name: "サードファストチャージ + セカンドファストチャージ", count: 30 },
-            { name: "セカンドファストチャージ + テクニカルドリフト", count: 30 }
+            { name: "ドリフト4点セット (アルチャ/セカンド/サード/テクドリ)", count: 18, note: "現在のメタ構成。スピード/ダッシュタイプで採用率高" },
+            { name: "アイテム3点セット (プラス/トレード/ウィスプ)", count: 3, note: "アイテム特化構成" }
         ],
         playerList: [
-            { rank: 1, name: "CallieMacN", char: "エミー", charType: "ハンドリング", machineType: "ハンドリング", machineBody: "ホットハッチ", gadgets: ["ドリフトチャージ短縮キット", "サードファストチャージ", "アルティメットチャージ"], stats: { speed: 22, accel: 60, handling: 81, power: 30, dash: 50 } },
-            { rank: 2, name: "IndigoDestiny", char: "エミー", charType: "ハンドリング", machineType: "ハンドリング", machineBody: "マインカート", gadgets: ["エアトリックボーナス", "超高速エアトリック", "ドリフトチャージ短縮キット"], stats: { speed: 26, accel: 57, handling: 71, power: 37, dash: 52 } },
-            { rank: 3, name: "notnamie", char: "クリーム＆チーズ", charType: "ハンドリング", machineType: "スピード", machineBody: "ダークリーパー", gadgets: ["エアトリックボーナス", "超高速エアトリック", "ドリフトチャージ短縮キット"], stats: { speed: 67, accel: 32, handling: 58, power: 51, dash: 35 } },
-            { rank: 4, name: "sneaky31415", char: "テイルス", charType: "アクセル", machineType: "スピード", machineBody: "ダークリーパー", gadgets: ["超高速エアトリック", "エアトリックボーナス", "ドリフトチャージ短縮キット"], stats: { speed: 75, accel: 38, handling: 46, power: 55, dash: 29 } },
-            { rank: 5, name: "SV★TwitchKEY1DR", char: "ブレイズ(AIレーサー)", charType: "スピード", machineType: "ダッシュ", machineBody: "ウィスポンブースター", gadgets: ["テクニカルドリフト", "セカンドファストチャージ", "サードファストチャージ", "アルティメットチャージ"], stats: { speed: 46, accel: 41, handling: 53, power: 33, dash: 67 } },
-            { rank: 6, name: "くろぼん", char: "ソニック", charType: "スピード", machineType: "スピード", machineBody: "スピードスターライトニング", gadgets: ["アイテムストックプラス", "ウィスプ確率アップ", "アイテムストックトレード"], stats: { speed: 80, accel: 21, handling: 51, power: 59, dash: 29 } },
-            { rank: 7, name: "Estabanツ", char: "セージ", charType: "アクセル", machineType: "ダッシュ", machineBody: "クワッドコプター", gadgets: ["アイテムたくさんキット", "ドリフトチャージ短縮キット"], stats: { speed: 39, accel: 53, handling: 57, power: 30, dash: 64 } },
-            { rank: 8, name: "TimTheGamer12", char: "初音ミク", charType: "ダッシュ", machineType: "ハンドリング", machineBody: "マインカート", gadgets: ["セカンドファストチャージ", "テクニカルドリフト", "サードファストチャージ", "アルティメットチャージ"], stats: { speed: 30, accel: 56, handling: 63, power: 36, dash: 55 } },
-            { rank: 9, name: "SV Jonny", char: "エスピオ", charType: "スピード", machineType: "ダッシュ", machineBody: "タイプ-J イオタ", gadgets: ["アルティメットチャージ", "ダッシュチューン2", "テクニカルドリフト", "ダッシュチューン1"], stats: { speed: 37, accel: 37, handling: 56, power: 34, dash: 88 } },
-            { rank: 10, name: "SOOOOOOOOOOOOONC", char: "ウェーブ", charType: "アクセル", machineType: "スピード", machineBody: "ロイヤルチャリオット", gadgets: ["アイテムストックトレード", "アイテムストックプラス", "ウィスプ確率アップ"], stats: { speed: 74, accel: 38, handling: 42, power: 55, dash: 31 } },
-            { rank: 11, name: "Triangly", char: "エミー(AIレーサー)", charType: "ハンドリング", machineType: "ダッシュ", machineBody: "タイプ-W ウィンディ", gadgets: ["テクニカルドリフト", "セカンドファストチャージ", "アルティメットチャージ", "サードファストチャージ"], stats: { speed: 27, accel: 51, handling: 66, power: 23, dash: 73 } },
-            { rank: 12, name: "MaximilianoxD2", char: "初音ミク", charType: "ダッシュ", machineType: "ダッシュ", machineBody: "タイプ-J イオタ", gadgets: ["アルティメットチャージ", "サードファストチャージ", "テクニカルドリフト", "セカンドファストチャージ"], stats: { speed: 35, accel: 46, handling: 57, power: 26, dash: 76 } },
-            { rank: 13, name: "super", char: "ブレイズ", charType: "スピード", machineType: "ダッシュ", machineBody: "タイプ-J イオタ", gadgets: ["セカンドファストチャージ", "テクニカルドリフト", "アルティメットチャージ", "サードファストチャージ"], stats: { speed: 46, accel: 39, handling: 53, power: 33, dash: 69 } },
-            { rank: 14, name: "Absolutely Not", char: "ブレイズ", charType: "スピード", machineType: "ダッシュ", machineBody: "ディーヴァマッキナ", gadgets: ["テクニカルドリフト", "セカンドファストチャージ", "サードファストチャージ", "アルティメットチャージ"], stats: { speed: 47, accel: 42, handling: 54, power: 33, dash: 64 } },
-            { rank: 15, name: "svRenee-", char: "ウェアホッグ", charType: "パワー", machineType: "ダッシュ", machineBody: "タイプ-J イオタ", gadgets: ["テクニカルドリフト", "サードファストチャージ", "セカンドファストチャージ", "アルティメットチャージ"], stats: { speed: 40, accel: 41, handling: 48, power: 36, dash: 75 } },
-            { rank: 16, name: "JarLster", char: "エッグマン(AIレーサー)", charType: "パワー", machineType: "ダッシュ", machineBody: "タイプ-J イオタ", gadgets: ["アルティメットチャージ", "セカンドファストチャージ", "テクニカルドリフト", "サードファストチャージ"], stats: { speed: 40, accel: 40, handling: 47, power: 37, dash: 76 } },
-            { rank: 17, name: "EddyK_XV", char: "ナックルズ", charType: "パワー", machineType: "ダッシュ", machineBody: "タイプ-W ウィンディ", gadgets: ["アルティメットチャージ", "サードファストチャージ", "テクニカルドリフト", "セカンドファストチャージ"], stats: { speed: 35, accel: 44, handling: 51, power: 34, dash: 76 } },
-            { rank: 18, name: "NeederSpeeder345", char: "シャドウ", charType: "スピード", machineType: "ダッシュ", machineBody: "ブルースター", gadgets: ["テクニカルドリフト", "セカンドファストチャージ", "アルティメットチャージ", "サードファストチャージ"], stats: { speed: 48, accel: 41, handling: 55, power: 33, dash: 63 } },
-            { rank: 19, name: "ix☆Nova", char: "メタルソニック", charType: "スピード", machineType: "ダッシュ", machineBody: "タイプ-J イオタ", gadgets: ["ファーストファストチャージ", "セカンドファストチャージ", "アイテムストックプラス", "ウィスプ確率アップ"], stats: { speed: 45, accel: 37, handling: 55, power: 36, dash: 67 } },
-            { rank: 20, name: "avie", char: "ウェアホッグ", charType: "パワー", machineType: "ダッシュ", machineBody: "タイプ-J イオタ", gadgets: ["アイテムストックプラス", "ダッシュチューン1", "ドリフトチャージ短縮キット"], stats: { speed: 36, accel: 41, handling: 51, power: 36, dash: 85 } },
-            { rank: 21, name: "♪Panda.Z♪", char: "ルージュ", charType: "ハンドリング", machineType: "ダッシュ", machineBody: "タイプ-J イオタ", gadgets: ["ドリフトチャージ短縮キット", "ジャストチャージボーナス", "サードファストチャージ"], stats: { speed: 31, accel: 48, handling: 64, power: 27, dash: 73 } },
-            { rank: 22, name: "PersonaSomina1up", char: "シャドウ", charType: "スピード", machineType: "ダッシュ", machineBody: "タイプ-J イオタ", gadgets: ["アルティメットチャージ", "セカンドファストチャージ", "テクニカルドリフト", "サードファストチャージ"], stats: { speed: 46, accel: 39, handling: 53, power: 33, dash: 69 } },
-            { rank: 23, name: "NightShide303", char: "メタルソニック", charType: "スピード", machineType: "ダッシュ", machineBody: "タイプ-J イオタ", gadgets: ["テクニカルドリフト", "サードファストチャージ", "アルティメットチャージ", "セカンドファストチャージ"], stats: { speed: 45, accel: 37, handling: 55, power: 36, dash: 67 } },
-            { rank: 24, name: "SV Busydon", char: "ドレッド", charType: "パワー", machineType: "ダッシュ", machineBody: "タイプ-J イオタ", gadgets: ["アルティメットチャージ", "セカンドファストチャージ", "テクニカルドリフト", "サードファストチャージ"], stats: { speed: 39, accel: 39, handling: 47, power: 40, dash: 75 } },
-            { rank: 25, name: "The Hawk", char: "ザボック", charType: "パワー", machineType: "ダッシュ", machineBody: "ブルースター", gadgets: ["アルティメットチャージ", "サードファストチャージ", "テクニカルドリフト", "セカンドファストチャージ"], stats: { speed: 41, accel: 41, handling: 49, power: 40, dash: 69 } },
-            { rank: 26, name: "Fantaraujo", char: "テイルス", charType: "アクセル", machineType: "ダッシュ", machineBody: "タイプ-W ウィンディ", gadgets: ["ファーストファストチャージ", "セカンドファストチャージ", "アルティメットチャージ", "サードファストチャージ"], stats: { speed: 37, accel: 56, handling: 53, power: 29, dash: 65 } },
-            { rank: 27, name: "whimia", char: "ザズ", charType: "アクセル", machineType: "スピード", machineBody: "ロイヤルチャリオット", gadgets: ["アイテムストックトレード", "アイテムストックプラス", "ウィスプ確率アップ"], stats: { speed: 76, accel: 39, handling: 41, power: 52, dash: 32 } },
-            { rank: 28, name: "Anhesim", char: "ルージュ", charType: "ハンドリング", machineType: "ダッシュ", machineBody: "タイプ-W ウィンディ", gadgets: ["テクニカルドリフト", "セカンドファストチャージ", "アルティメットチャージ", "サードファストチャージ"], stats: { speed: 27, accel: 52, handling: 65, power: 23, dash: 73 } },
-            { rank: 29, name: "Anon7906", char: "ナックルズ", charType: "パワー", machineType: "ダッシュ", machineBody: "ブルースター", gadgets: ["アルティメットチャージ", "セカンドファストチャージ", "テクニカルドリフト", "エアトリックボーナス"], stats: { speed: 41, accel: 42, handling: 49, power: 38, dash: 70 } },
-            { rank: 30, name: "SV-_-TRXSHTV", char: "スティーブ", charType: "パワー", machineType: "ダッシュ", machineBody: "タイプ-J イオタ", gadgets: ["テクニカルドリフト", "セカンドファストチャージ", "アルティメットチャージ", "サードファストチャージ"], stats: { speed: 38, accel: 41, handling: 48, power: 38, dash: 75 } },
-            { rank: 31, name: "RobertSSJ4", char: "シャドウ", charType: "スピード", machineType: "ダッシュ", machineBody: "ブルースター", gadgets: ["ファーストファストチャージ", "セカンドファストチャージ", "サードファストチャージ", "アルティメットチャージ"], stats: { speed: 48, accel: 41, handling: 55, power: 33, dash: 63 } },
-            { rank: 32, name: "mikemartn67", char: "シャドウ", charType: "スピード", machineType: "スピード", machineBody: "スーパーシャイニング", gadgets: ["アイテムストックトレード", "アイテムストックプラス", "ウィスプ確率アップ"], stats: { speed: 74, accel: 22, handling: 50, power: 61, dash: 33 } },
-            { rank: 33, name: "Gabu", char: "ビッグ", charType: "パワー", machineType: "ダッシュ", machineBody: "タイプ-W ウィンディ", gadgets: ["サードファストチャージ", "テクニカルドリフト", "セカンドファストチャージ", "アルティメットチャージ"], stats: { speed: 36, accel: 44, handling: 51, power: 35, dash: 74 } },
-            { rank: 34, name: "Nemeon", char: "初音ミク", charType: "ダッシュ", machineType: "ダッシュ", machineBody: "タイプ-W ウィンディ", gadgets: ["テクニカルドリフト", "サードファストチャージ", "アルティメットチャージ", "セカンドファストチャージ"], stats: { speed: 31, accel: 50, handling: 61, power: 22, dash: 76 } },
-            { rank: 35, name: "Kenneth", char: "ストーム", charType: "パワー", machineType: "ダッシュ", machineBody: "タイプ-S ストリーム", gadgets: ["アルティメットチャージ", "サードファストチャージ", "テクニカルドリフト", "セカンドファストチャージ"], stats: { speed: 35, accel: 43, handling: 51, power: 37, dash: 74 } },
-            { rank: 36, name: "✭AFX✭Fidox", char: "ナイン", charType: "アクセル", machineType: "ダッシュ", machineBody: "ウィスポンブースター", gadgets: ["超高速エアトリック", "エアトリックボーナス", "ドリフトチャージ短縮キット"], stats: { speed: 42, accel: 54, handling: 53, power: 33, dash: 61 } },
-            { rank: 37, name: "Missing_Ache", char: "ウェアホッグ", charType: "パワー", machineType: "ダッシュ", machineBody: "タイプ-J イオタ", gadgets: ["アルティメットチャージ", "セカンドファストチャージ", "テクニカルドリフト", "エアトリックボーナス"], stats: { speed: 40, accel: 41, handling: 48, power: 36, dash: 75 } },
-            { rank: 38, name: "TescoReturns806", char: "エッグマン", charType: "パワー", machineType: "ダッシュ", machineBody: "タイプ-W ウィンディ", gadgets: ["ドリフトチャージ短縮キット", "セカンドファストチャージ", "アイテムストックプラス"], stats: { speed: 36, accel: 44, handling: 54, power: 33, dash: 76 } },
-            { rank: 39, name: "Ghostman2135", char: "初音ミク", charType: "ダッシュ", machineType: "ダッシュ", machineBody: "タイプ-W ウィンディ", gadgets: ["サードファストチャージ", "テクニカルドリフト", "セカンドファストチャージ", "アルティメットチャージ"], stats: { speed: 31, accel: 50, handling: 61, power: 22, dash: 76 } },
-            { rank: 40, name: "WR ShyGuy", char: "ウェーブ", charType: "アクセル", machineType: "パワー", machineBody: "トレイルランナー", gadgets: ["クイックリカバー", "ロングスリップストリーム", "スリップストリームボーナス", "リングゲットダッシュミニ"], stats: { speed: 57, accel: 42, handling: 22, power: 67, dash: 52 } },
-            { rank: 41, name: "#1 ARUUU FAN(Fa...", char: "ブレイズ", charType: "スピード", machineType: "ダッシュ", machineBody: "タイプ-J イオタ", gadgets: ["セカンドファストチャージ", "テクニカルドリフト", "サードファストチャージ", "アルティメットチャージ"], stats: { speed: 46, accel: 39, handling: 53, power: 33, dash: 69 } },
-            { rank: 42, name: "WR Squanto", char: "ジェット(AIレーサー)", charType: "スピード", machineType: "ダッシュ", machineBody: "タイプ-W ウィンディ", gadgets: ["アイテムストックトレード", "アイテムストックプラス", "ウィスプ確率アップ"], stats: { speed: 43, accel: 42, handling: 55, power: 32, dash: 68 } },
-            { rank: 43, name: "Tyke", char: "エッグマン(AIレーサー)", charType: "パワー", machineType: "ダッシュ", machineBody: "タイプ-J イオタ", gadgets: ["ジャストチャージボーナス", "セカンドファストチャージ", "サードファストチャージ", "テクニカルドリフト"], stats: { speed: 40, accel: 40, handling: 47, power: 37, dash: 76 } },
-            { rank: 44, name: "gt_su", char: "ジョーカー", charType: "ハンドリング", machineType: "ダッシュ", machineBody: "タイプ-J イオタ", gadgets: ["テクニカルドリフト", "セカンドファストチャージ", "アルティメットチャージ", "サードファストチャージ"], stats: { speed: 33, accel: 46, handling: 60, power: 30, dash: 71 } },
-            { rank: 45, name: "ShiyoKitsuneTTV", char: "ブレイズ", charType: "スピード", machineType: "ダッシュ", machineBody: "タイプ-J イオタ", gadgets: ["テクニカルドリフト", "セカンドファストチャージ", "アルティメットチャージ", "サードファストチャージ"], stats: { speed: 46, accel: 39, handling: 53, power: 33, dash: 69 } },
-            { rank: 46, name: "Heykrow", char: "ブレイズ(AIレーサー)", charType: "スピード", machineType: "ダッシュ", machineBody: "タイプ-J イオタ", gadgets: ["アルティメットチャージ", "サードファストチャージ", "テクニカルドリフト", "セカンドファストチャージ"], stats: { speed: 44, accel: 41, handling: 55, power: 31, dash: 69 } },
-            { rank: 47, name: "evewin_mt", char: "エスピオ(AIレーサー)", charType: "スピード", machineType: "ダッシュ", machineBody: "ウィスポンブースター", gadgets: ["セカンドファストチャージ", "アルティメットチャージ", "サードファストチャージ", "テクニカルドリフト"], stats: { speed: 43, accel: 39, handling: 56, power: 36, dash: 66 } },
-            { rank: 48, name: "PatrickStar", char: "パトリック", charType: "パワー", machineType: "ダッシュ", machineBody: "ブルースター", gadgets: ["アルティメットチャージ", "セカンドファストチャージ", "テクニカルドリフト", "サードファストチャージ"], stats: { speed: 39, accel: 40, handling: 47, power: 38, dash: 76 } },
-            { rank: 49, name: "Creeper", char: "クリーパー", charType: "アクセル", machineType: "ダッシュ", machineBody: "タイプ-J イオタ", gadgets: ["超高速エアトリック", "エアトリックボーナス", "ドリフトチャージ短縮キット"], stats: { speed: 44, accel: 40, handling: 55, power: 31, dash: 67 } },
-            { rank: 50, name: "Alex", char: "アレックス", charType: "パワー", machineType: "ダッシュ", machineBody: "タイプ-W ウィンディ", gadgets: ["アルティメットチャージ", "サードファストチャージ", "セカンドファストチャージ", "テクニカルドリフト"], stats: { speed: 38, accel: 44, handling: 53, power: 38, dash: 74 } }
+            { rank: 1, name: "CallieMacN", char: "エミー", charType: "ハンドリング", machineType: "ハンドリング", parts: ["ホットハッチ", "ホットハッチ", "ピンクカプリオレ"], gadgets: ["ドリフトチャージ短縮キット", "サードファストチャージ", "アルティメットチャージ"], stats: { speed: 22, accel: 60, handling: 81, power: 30, dash: 50 } },
+            { rank: 2, name: "IndigoDestiny", char: "エミー", charType: "ハンドリング", machineType: "ハンドリング", parts: ["マインカート", "マインカート", "マインカート"], gadgets: ["エアトリックボーナス", "超高速エアトリック", "ドリフトチャージ短縮キット"], stats: { speed: 26, accel: 57, handling: 71, power: 37, dash: 52 } },
+            { rank: 3, name: "notnamie", char: "クリーム＆チーズ", charType: "ハンドリング", machineType: "スピード", parts: ["ダークリーパー", "ダークリーパー", "ダークリーパー"], gadgets: ["エアトリックボーナス", "超高速エアトリック", "ドリフトチャージ短縮キット"], stats: { speed: 67, accel: 32, handling: 58, power: 51, dash: 35 } },
+            { rank: 4, name: "sneaky31415", char: "テイルス", charType: "アクセル", machineType: "スピード", parts: ["ダークリーパー", "ダークリーパー", "ダークリーパー"], gadgets: ["超高速エアトリック", "エアトリックボーナス", "ドリフトチャージ短縮キット"], stats: { speed: 75, accel: 38, handling: 46, power: 55, dash: 29 } },
+            { rank: 5, name: "SV★TwitchKEY1DR", char: "ブレイズ(AIレーサー)", charType: "スピード", machineType: "ダッシュ", parts: ["ウィスポンブースター", "ウィスポンブースター"], gadgets: ["テクニカルドリフト", "セカンドファストチャージ", "サードファストチャージ", "アルティメットチャージ"], stats: { speed: 46, accel: 41, handling: 53, power: 33, dash: 67 } },
+            { rank: 6, name: "くろぼん", char: "ソニック", charType: "スピード", machineType: "スピード", parts: ["スピードスターライトニング", "ダークリーパー", "スピードスターライトニング"], gadgets: ["アイテムストックプラス", "ウィスプ確率アップ", "アイテムストックトレード"], stats: { speed: 80, accel: 21, handling: 51, power: 59, dash: 29 } },
+            { rank: 7, name: "Estabanツ", char: "セージ", charType: "アクセル", machineType: "ダッシュ", parts: ["クワッドコプター", "トリプルファン"], gadgets: ["アイテムたくさんキット", "ドリフトチャージ短縮キット"], stats: { speed: 39, accel: 53, handling: 57, power: 30, dash: 64 } },
+            { rank: 8, name: "TimTheGamer12", char: "初音ミク", charType: "ダッシュ", machineType: "ハンドリング", parts: ["マインカート", "マインカート", "マインカート"], gadgets: ["セカンドファストチャージ", "テクニカルドリフト", "サードファストチャージ", "アルティメットチャージ"], stats: { speed: 30, accel: 56, handling: 63, power: 36, dash: 55 } },
+            { rank: 9, name: "SV Jonny", char: "エスピオ", charType: "スピード", machineType: "ダッシュ", parts: ["タイプ-J イオタ", "タイプ-J イオタ"], gadgets: ["アルティメットチャージ", "ダッシュチューン2", "テクニカルドリフト", "ダッシュチューン1"], stats: { speed: 37, accel: 37, handling: 56, power: 34, dash: 88 } },
+            { rank: 10, name: "SOOOOOOOOOOOOONC", char: "ウェーブ", charType: "アクセル", machineType: "スピード", parts: ["ロイヤルチャリオット", "スピードスターライトニング", "レトロフューチャー"], gadgets: ["アイテムストックトレード", "アイテムストックプラス", "ウィスプ確率アップ"], stats: { speed: 74, accel: 38, handling: 42, power: 55, dash: 31 } },
+            { rank: 11, name: "Triangly", char: "エミー(AIレーサー)", charType: "ハンドリング", machineType: "ダッシュ", parts: ["タイプ-W ウィンディ", "タイプ-W ウィンディ"], gadgets: ["テクニカルドリフト", "セカンドファストチャージ", "アルティメットチャージ", "サードファストチャージ"], stats: { speed: 27, accel: 51, handling: 66, power: 23, dash: 73 } },
+            { rank: 12, name: "MaximilianoxD2", char: "初音ミク", charType: "ダッシュ", machineType: "ダッシュ", parts: ["タイプ-J イオタ", "タイプ-J イオタ"], gadgets: ["アルティメットチャージ", "サードファストチャージ", "テクニカルドリフト", "セカンドファストチャージ"], stats: { speed: 35, accel: 46, handling: 57, power: 26, dash: 76 } },
+            { rank: 13, name: "super", char: "ブレイズ", charType: "スピード", machineType: "ダッシュ", parts: ["タイプ-J イオタ", "タイプ-J イオタ"], gadgets: ["セカンドファストチャージ", "テクニカルドリフト", "アルティメットチャージ", "サードファストチャージ"], stats: { speed: 46, accel: 39, handling: 53, power: 33, dash: 69 } },
+            { rank: 14, name: "Absolutely Not", char: "ブレイズ", charType: "スピード", machineType: "ダッシュ", parts: ["ディーヴァマッキナ", "ウィスポンブースター"], gadgets: ["テクニカルドリフト", "セカンドファストチャージ", "サードファストチャージ", "アルティメットチャージ"], stats: { speed: 47, accel: 42, handling: 54, power: 33, dash: 64 } },
+            { rank: 15, name: "svRenee-", char: "ウェアホッグ", charType: "パワー", machineType: "ダッシュ", parts: ["タイプ-J イオタ", "タイプ-J イオタ"], gadgets: ["テクニカルドリフト", "サードファストチャージ", "セカンドファストチャージ", "アルティメットチャージ"], stats: { speed: 40, accel: 41, handling: 48, power: 36, dash: 75 } },
+            { rank: 16, name: "JarLster", char: "エッグマン(AIレーサー)", charType: "パワー", machineType: "ダッシュ", parts: ["タイプ-J イオタ", "タイプ-J イオタ"], gadgets: ["アルティメットチャージ", "セカンドファストチャージ", "テクニカルドリフト", "サードファストチャージ"], stats: { speed: 40, accel: 40, handling: 47, power: 37, dash: 76 } },
+            { rank: 17, name: "EddyK_XV", char: "ナックルズ", charType: "パワー", machineType: "ダッシュ", parts: ["タイプ-W ウィンディ", "タイプ-W ウィンディ"], gadgets: ["アルティメットチャージ", "サードファストチャージ", "テクニカルドリフト", "セカンドファストチャージ"], stats: { speed: 35, accel: 44, handling: 51, power: 34, dash: 76 } },
+            { rank: 18, name: "NeederSpeeder345", char: "シャドウ", charType: "スピード", machineType: "ダッシュ", parts: ["ブルースター", "ブルースター"], gadgets: ["テクニカルドリフト", "セカンドファストチャージ", "アルティメットチャージ", "サードファストチャージ"], stats: { speed: 48, accel: 41, handling: 55, power: 33, dash: 63 } },
+            { rank: 19, name: "ix☆Nova", char: "メタルソニック", charType: "スピード", machineType: "ダッシュ", parts: ["タイプ-J イオタ", "タイプ-J イオタ"], gadgets: ["ファーストファストチャージ", "セカンドファストチャージ", "アイテムストックプラス", "ウィスプ確率アップ"], stats: { speed: 45, accel: 37, handling: 55, power: 36, dash: 67 } },
+            { rank: 20, name: "avie", char: "ウェアホッグ", charType: "パワー", machineType: "ダッシュ", parts: ["タイプ-J イオタ", "タイプ-J イオタ"], gadgets: ["アイテムストックプラス", "ダッシュチューン1", "ドリフトチャージ短縮キット"], stats: { speed: 36, accel: 41, handling: 51, power: 36, dash: 85 } },
+            { rank: 21, name: "♪Panda.Z♪", char: "ルージュ", charType: "ハンドリング", machineType: "ダッシュ", parts: ["タイプ-J イオタ", "タイプ-J イオタ"], gadgets: ["ドリフトチャージ短縮キット", "ジャストチャージボーナス", "サードファストチャージ"], stats: { speed: 31, accel: 48, handling: 64, power: 27, dash: 73 } },
+            { rank: 22, name: "PersonaSomina1up", char: "シャドウ", charType: "スピード", machineType: "ダッシュ", parts: ["タイプ-J イオタ", "タイプ-J イオタ"], gadgets: ["アルティメットチャージ", "セカンドファストチャージ", "テクニカルドリフト", "サードファストチャージ"], stats: { speed: 46, accel: 39, handling: 53, power: 33, dash: 69 } },
+            { rank: 23, name: "NightShide303", char: "メタルソニック", charType: "スピード", machineType: "ダッシュ", parts: ["タイプ-J イオタ", "タイプ-J イオタ"], gadgets: ["テクニカルドリフト", "サードファストチャージ", "アルティメットチャージ", "セカンドファストチャージ"], stats: { speed: 45, accel: 37, handling: 55, power: 36, dash: 67 } },
+            { rank: 24, name: "SV Busydon", char: "ドレッド", charType: "パワー", machineType: "ダッシュ", parts: ["タイプ-J イオタ", "タイプ-J イオタ"], gadgets: ["アルティメットチャージ", "セカンドファストチャージ", "テクニカルドリフト", "サードファストチャージ"], stats: { speed: 39, accel: 39, handling: 47, power: 40, dash: 75 } },
+            { rank: 25, name: "The Hawk", char: "ザボック", charType: "パワー", machineType: "ダッシュ", parts: ["ブルースター", "ブルースター"], gadgets: ["アルティメットチャージ", "サードファストチャージ", "テクニカルドリフト", "セカンドファストチャージ"], stats: { speed: 41, accel: 41, handling: 49, power: 40, dash: 69 } },
+            { rank: 26, name: "Fantaraujo", char: "テイルス", charType: "アクセル", machineType: "ダッシュ", parts: ["タイプ-W ウィンディ", "タイプ-W ウィンディ"], gadgets: ["ファーストファストチャージ", "セカンドファストチャージ", "アルティメットチャージ", "サードファストチャージ"], stats: { speed: 37, accel: 56, handling: 53, power: 29, dash: 65 } },
+            { rank: 27, name: "whimia", char: "ザズ", charType: "アクセル", machineType: "スピード", parts: ["ロイヤルチャリオット", "ロイヤルチャリオット", "ロイヤルチャリオット"], gadgets: ["アイテムストックトレード", "アイテムストックプラス", "ウィスプ確率アップ"], stats: { speed: 76, accel: 39, handling: 41, power: 52, dash: 32 } },
+            { rank: 28, name: "Anhesim", char: "ルージュ", charType: "ハンドリング", machineType: "ダッシュ", parts: ["タイプ-W ウィンディ", "タイプ-W ウィンディ"], gadgets: ["テクニカルドリフト", "セカンドファストチャージ", "アルティメットチャージ", "サードファストチャージ"], stats: { speed: 27, accel: 52, handling: 65, power: 23, dash: 73 } },
+            { rank: 29, name: "Anon7906", char: "ナックルズ", charType: "パワー", machineType: "ダッシュ", parts: ["ブルースター", "ブルースター"], gadgets: ["アルティメットチャージ", "セカンドファストチャージ", "テクニカルドリフト", "エアトリックボーナス"], stats: { speed: 41, accel: 42, handling: 49, power: 38, dash: 70 } },
+            { rank: 30, name: "SV-_-TRXSHTV", char: "スティーブ", charType: "パワー", machineType: "ダッシュ", parts: ["タイプ-J イオタ", "タイプ-J イオタ"], gadgets: ["テクニカルドリフト", "セカンドファストチャージ", "アルティメットチャージ", "サードファストチャージ"], stats: { speed: 38, accel: 41, handling: 48, power: 38, dash: 75 } },
+            { rank: 31, name: "RobertSSJ4", char: "シャドウ", charType: "スピード", machineType: "ダッシュ", parts: ["ブルースター", "ブルースター"], gadgets: ["ファーストファストチャージ", "セカンドファストチャージ", "サードファストチャージ", "アルティメットチャージ"], stats: { speed: 48, accel: 41, handling: 55, power: 33, dash: 63 } },
+            { rank: 32, name: "mikemartn67", char: "シャドウ", charType: "スピード", machineType: "スピード", parts: ["スーパーシャイニング", "スーパーシャイニング", "スーパーシャイニング"], gadgets: ["アイテムストックトレード", "アイテムストックプラス", "ウィスプ確率アップ"], stats: { speed: 74, accel: 22, handling: 50, power: 61, dash: 33 } },
+            { rank: 33, name: "Gabu", char: "ビッグ", charType: "パワー", machineType: "ダッシュ", parts: ["タイプ-W ウィンディ", "タイプ-J イオタ"], gadgets: ["サードファストチャージ", "テクニカルドリフト", "セカンドファストチャージ", "アルティメットチャージ"], stats: { speed: 36, accel: 44, handling: 51, power: 35, dash: 74 } },
+            { rank: 34, name: "Nemeon", char: "初音ミク", charType: "ダッシュ", machineType: "ダッシュ", parts: ["タイプ-W ウィンディ", "タイプ-W ウィンディ"], gadgets: ["テクニカルドリフト", "サードファストチャージ", "アルティメットチャージ", "セカンドファストチャージ"], stats: { speed: 31, accel: 50, handling: 61, power: 22, dash: 76 } },
+            { rank: 35, name: "Kenneth", char: "ストーム", charType: "パワー", machineType: "ダッシュ", parts: ["タイプ-S ストリーム", "タイプ-S ストリーム"], gadgets: ["アルティメットチャージ", "サードファストチャージ", "テクニカルドリフト", "セカンドファストチャージ"], stats: { speed: 35, accel: 43, handling: 51, power: 37, dash: 74 } },
+            { rank: 36, name: "✭AFX✭Fidox", char: "ナイン", charType: "アクセル", machineType: "ダッシュ", parts: ["ウィスポンブースター", "ブルースター"], gadgets: ["超高速エアトリック", "エアトリックボーナス", "ドリフトチャージ短縮キット"], stats: { speed: 42, accel: 54, handling: 53, power: 33, dash: 61 } },
+            { rank: 37, name: "Missing_Ache", char: "ウェアホッグ", charType: "パワー", machineType: "ダッシュ", parts: ["タイプ-J イオタ", "タイプ-J イオタ"], gadgets: ["アルティメットチャージ", "セカンドファストチャージ", "テクニカルドリフト", "エアトリックボーナス"], stats: { speed: 40, accel: 41, handling: 48, power: 36, dash: 75 } },
+            { rank: 38, name: "TescoReturns806", char: "エッグマン", charType: "パワー", machineType: "ダッシュ", parts: ["タイプ-W ウィンディ", "タイプ-W ウィンディ"], gadgets: ["ドリフトチャージ短縮キット", "セカンドファストチャージ", "アイテムストックプラス"], stats: { speed: 36, accel: 44, handling: 54, power: 33, dash: 76 } },
+            { rank: 39, name: "Ghostman2135", char: "初音ミク", charType: "ダッシュ", machineType: "ダッシュ", parts: ["タイプ-W ウィンディ", "タイプ-W ウィンディ"], gadgets: ["サードファストチャージ", "テクニカルドリフト", "セカンドファストチャージ", "アルティメットチャージ"], stats: { speed: 31, accel: 50, handling: 61, power: 22, dash: 76 } },
+            { rank: 40, name: "WR ShyGuy", char: "ウェーブ", charType: "アクセル", machineType: "パワー", parts: ["トレイルランナー", "ランドスマッシャー", "トレイルランナー"], gadgets: ["クイックリカバー", "ロングスリップストリーム", "スリップストリームボーナス", "リングゲットダッシュミニ"], stats: { speed: 57, accel: 42, handling: 22, power: 67, dash: 52 } },
+            { rank: 41, name: "#1 ARUUU FAN(Fa...", char: "ブレイズ", charType: "スピード", machineType: "ダッシュ", parts: ["タイプ-J イオタ", "タイプ-J イオタ"], gadgets: ["セカンドファストチャージ", "テクニカルドリフト", "サードファストチャージ", "アルティメットチャージ"], stats: { speed: 46, accel: 39, handling: 53, power: 33, dash: 69 } },
+            { rank: 42, name: "WR Squanto", char: "ジェット(AIレーサー)", charType: "スピード", machineType: "ダッシュ", parts: ["タイプ-W ウィンディ", "ウィスポンブースター"], gadgets: ["アイテムストックトレード", "アイテムストックプラス", "ウィスプ確率アップ"], stats: { speed: 43, accel: 42, handling: 55, power: 32, dash: 68 } },
+            { rank: 43, name: "Tyke", char: "エッグマン(AIレーサー)", charType: "パワー", machineType: "ダッシュ", parts: ["タイプ-J イオタ", "タイプ-J イオタ"], gadgets: ["ジャストチャージボーナス", "セカンドファストチャージ", "サードファストチャージ", "テクニカルドリフト"], stats: { speed: 40, accel: 40, handling: 47, power: 37, dash: 76 } },
+            { rank: 44, name: "gt_su", char: "ジョーカー", charType: "ハンドリング", machineType: "ダッシュ", parts: ["タイプ-J イオタ", "タイプ-J イオタ"], gadgets: ["テクニカルドリフト", "セカンドファストチャージ", "アルティメットチャージ", "サードファストチャージ"], stats: { speed: 33, accel: 46, handling: 60, power: 30, dash: 71 } },
+            { rank: 45, name: "ShiyoKitsuneTTV", char: "ブレイズ", charType: "スピード", machineType: "ダッシュ", parts: ["タイプ-J イオタ", "タイプ-J イオタ"], gadgets: ["テクニカルドリフト", "セカンドファストチャージ", "アルティメットチャージ", "サードファストチャージ"], stats: { speed: 46, accel: 39, handling: 53, power: 33, dash: 69 } },
+            { rank: 46, name: "Heykrow", char: "ブレイズ(AIレーサー)", charType: "スピード", machineType: "ダッシュ", parts: ["タイプ-J イオタ", "タイプ-J イオタ"], gadgets: ["アルティメットチャージ", "サードファストチャージ", "テクニカルドリフト", "セカンドファストチャージ"], stats: { speed: 44, accel: 41, handling: 55, power: 31, dash: 69 } },
+            { rank: 47, name: "SpongeBob", char: "スポンジ・ボブ", charType: "ハンドリング", machineType: "ダッシュ", parts: ["タイプ-W ウィンディ", "タイプ-W ウィンディ"], gadgets: ["テクニカルドリフト", "サードファストチャージ", "アルティメットチャージ", "セカンドファストチャージ"], stats: { speed: 29, accel: 50, handling: 62, power: 26, dash: 73 } },
+            { rank: 48, name: "PatrickStar", char: "パトリック", charType: "パワー", machineType: "ダッシュ", parts: ["ブルースター", "ブルースター"], gadgets: ["アルティメットチャージ", "セカンドファストチャージ", "テクニカルドリフト", "サードファストチャージ"], stats: { speed: 41, accel: 41, handling: 51, power: 39, dash: 75 } },
+            { rank: 49, name: "Creeper", char: "クリーパー", charType: "アクセル", machineType: "ダッシュ", parts: ["タイプ-J イオタ", "タイプ-J イオタ"], gadgets: ["超高速エアトリック", "エアトリックボーナス", "ドリフトチャージ短縮キット"], stats: { speed: 41, accel: 53, handling: 55, power: 31, dash: 67 } },
+            { rank: 50, name: "Alex", char: "アレックス", charType: "パワー", machineType: "ダッシュ", parts: ["タイプ-W ウィンディ", "タイプ-W ウィンディ"], gadgets: ["アルティメットチャージ", "サードファストチャージ", "セカンドファストチャージ", "テクニカルドリフト"], stats: { speed: 38, accel: 44, handling: 53, power: 38, dash: 74 } }
         ]
     };
 
     // ==========================================
-    //  2. ロジック・状態管理
+    //  3. ロジック・状態管理
     // ==========================================
 
     const ROW_CAPACITY = 3;
@@ -1161,6 +1192,10 @@
         render(); document.getElementById('shareArea').style.display='none';
     }}
 
+    // ==========================================
+    //  3. ランキング画面用ロジック (ページ切り替え・描画)
+    // ==========================================
+
     function showPage(pageId) {
         document.getElementById('page-main').style.display = 'none';
         document.getElementById('page-ranking').style.display = 'none';
@@ -1169,68 +1204,94 @@
         window.scrollTo(0, 0);
     }
 
+    // ポップアップ開閉
+    function openModal(player) {
+        const modal = document.getElementById('player-modal');
+        const body = document.getElementById('modal-body');
+        
+        body.innerHTML = `
+            <h3 style="border-bottom:2px solid #eee; padding-bottom:10px; margin-top:0;">
+                <span style="color:#0055ff;">#${player.rank}</span> ${player.name}
+            </h3>
+            <div style="display:flex; gap:15px; margin-bottom:15px;">
+                <div>
+                    <strong>キャラ:</strong> ${player.char} [${player.charType}]
+                </div>
+                <div>
+                    <strong>マシン:</strong> ${player.machineType}
+                </div>
+            </div>
+            
+            <div style="background:#f9f9f9; padding:10px; border-radius:6px; margin-bottom:15px;">
+                <strong>🏎️ マシンパーツ</strong>
+                <ul style="margin:5px 0 0 20px; color:#444;">
+                    ${player.parts.map(p => `<li>${p}</li>`).join('')}
+                </ul>
+            </div>
+
+            <div style="background:#f9f9f9; padding:10px; border-radius:6px; margin-bottom:15px;">
+                <strong>📊 ステータス</strong><br>
+                <div style="font-family:monospace; margin-top:5px; font-size:1rem;">
+                    <span style="color:#d32f2f; font-weight:bold;">S:</span>${player.stats.speed} 
+                    <span style="color:#ff9800; font-weight:bold; margin-left:10px;">A:</span>${player.stats.accel} 
+                    <span style="color:#2196f3; font-weight:bold; margin-left:10px;">H:</span>${player.stats.handling} 
+                    <span style="color:#4caf50; font-weight:bold; margin-left:10px;">P:</span>${player.stats.power} 
+                    <span style="color:#9c27b0; font-weight:bold; margin-left:10px;">D:</span>${player.stats.dash}
+                </div>
+            </div>
+
+            <div style="margin-bottom:10px;"><strong>🛠️ ガジェット構成</strong></div>
+            <div class="gadget-grid">
+                ${player.gadgets.map(g => `<div class="grid-item">${g}</div>`).join('')}
+                ${/* 6枠に満たない場合の空枠埋め */ ""}
+                ${Array(6 - player.gadgets.length).fill('<div class="grid-item" style="background:#eee;"></div>').join('')}
+            </div>
+        `;
+        
+        modal.style.display = 'flex';
+    }
+
+    function closeModal(e) {
+        // 背景クリックまたは閉じるボタンで閉じる
+        document.getElementById('player-modal').style.display = 'none';
+    }
+
     function renderRanking() {
+        // プレイヤーリスト描画
         const playerList = rankingData.playerList;
         const pContainer = document.getElementById('player-list-container');
         pContainer.innerHTML = "";
         
         if (!playerList || playerList.length === 0) {
             pContainer.innerHTML = "<p style='padding:10px; color:#666;'>データが見つかりません。</p>";
-            return;
+        } else {
+            playerList.forEach(p => {
+                const div = document.createElement('div');
+                div.className = "player-row";
+                div.onclick = () => openModal(p); // クリックでモーダルを開く
+                
+                div.innerHTML = `
+                    <div style="font-weight:bold; width:40px;">#${p.rank}</div>
+                    <div style="flex:1; color:#0055ff; font-weight:bold;">${p.name}</div>
+                    <div style="color:#666; font-size:0.85rem;">${p.char}</div>
+                `;
+                pContainer.appendChild(div);
+            });
         }
 
-        playerList.forEach(p => {
-            const div = document.createElement('div');
-            div.style.borderBottom = "1px solid #eee";
-            
-            const summary = document.createElement('div');
-            summary.className = "player-row";
-            summary.style.padding = "10px";
-            summary.style.display = "flex";
-            summary.style.justifyContent = "space-between";
-            summary.style.alignItems = "center";
-            summary.innerHTML = `
-                <div style="font-weight:bold;">#${p.rank} <span style="color:#0055ff; margin-left:8px;">${p.name}</span></div>
-                <div style="font-size:0.85rem; color:#666;">${p.char} / ${p.machineBody}</div>
-            `;
-            
-            const detail = document.createElement('div');
-            detail.className = "player-detail";
-            detail.innerHTML = `
-                <div style="margin-bottom:6px;"><strong>TYPE:</strong> ${p.charType} × ${p.machineType}</div>
-                <div style="margin-bottom:6px; font-family:monospace; font-size:0.95rem;">
-                    <span style="color:#d32f2f; font-weight:bold; margin-right:3px;">S:</span>${p.stats.speed} 
-                    <span style="color:#ff9800; font-weight:bold; margin-left:8px; margin-right:3px;">A:</span>${p.stats.accel} 
-                    <span style="color:#2196f3; font-weight:bold; margin-left:8px; margin-right:3px;">H:</span>${p.stats.handling} 
-                    <span style="color:#4caf50; font-weight:bold; margin-left:8px; margin-right:3px;">P:</span>${p.stats.power} 
-                    <span style="color:#9c27b0; font-weight:bold; margin-left:8px; margin-right:3px;">D:</span>${p.stats.dash}
-                </div>
-                <div style="margin-bottom:0;">
-                    <strong>GADGETS:</strong><br>
-                    <ul style="margin:4px 0 0 20px; padding:0; color:#444;">${p.gadgets.map(g => `<li>${g}</li>`).join('')}</ul>
-                </div>
-            `;
-            
-            summary.onclick = () => {
-                const isHidden = detail.style.display === "none";
-                detail.style.display = isHidden ? "block" : "none";
-            };
-            detail.style.display = "none"; 
-
-            div.appendChild(summary);
-            div.appendChild(detail);
-            pContainer.appendChild(div);
-        });
-
-        const createGraph = (data, containerId) => {
+        // 統計グラフ描画ヘルパー
+        const createGraph = (data, containerId, maxValFixed = null) => {
             const container = document.getElementById(containerId);
             container.innerHTML = "";
-            const maxVal = Math.max(...data.map(d => d.percent));
+            
+            // 指定がなければ最大値を使用、あれば固定値（50）を使用
+            const maxVal = maxValFixed !== null ? maxValFixed : Math.max(...data.map(d => d.count));
             
             data.forEach((item, i) => {
                 const div = document.createElement('div');
                 div.style.marginBottom = "8px";
                 div.style.fontSize = "0.9rem";
+                
                 let icon = "";
                 if(i===0) icon="🥇"; else if(i===1) icon="🥈"; else if(i===2) icon="🥉";
                 
@@ -1240,17 +1301,19 @@
                         <span style="color:#666;">${item.count}人 (${item.percent}%)</span>
                     </div>
                     <div class="rank-bar">
-                        <div class="rank-fill" style="width:${(item.percent / maxVal) * 100}%;"></div>
+                        <div class="rank-fill" style="width:${(item.count / maxVal) * 100}%;"></div>
                     </div>
                 `;
                 container.appendChild(div);
             });
         };
 
-        createGraph(rankingData.stats.gadgets, 'rank-gadgets');
-        createGraph(rankingData.stats.charTypes, 'rank-chartypes');
-        createGraph(rankingData.stats.machines, 'rank-machines');
+        // ★変更: グラフの上限を50（参加人数）に固定
+        createGraph(rankingData.stats.gadgets, 'rank-gadgets', 50);
+        createGraph(rankingData.stats.charTypes, 'rank-chartypes', 50);
+        createGraph(rankingData.stats.machines, 'rank-machines', 50);
         
+        // シナジー情報
         const synContainer = document.getElementById('rank-synergy');
         synContainer.innerHTML = "";
         rankingData.synergy.forEach(s => {
